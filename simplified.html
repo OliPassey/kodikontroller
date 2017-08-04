@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <title>Kodi Kontroller</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <style type="text/css">
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: sans-serif;
+            margin: 0;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            margin: .2em;
+        }
+        
+        main {
+            padding: 0 1em 1em;
+        }
+        
+        .screen {
+            width: 20%;
+            margin: 1em;
+            padding: 1em;
+            box-shadow: .2em .2em 1em rgba(0,0,0,.5);
+        }
+        
+        .screenshot_holder {
+            width: 100%;
+            padding-bottom: 56.25%;
+            background-size: cover;
+        }
+        
+        input, textarea {
+            width: 100%;
+            margin: 1em 0 .5em;
+            padding: .25em;
+        }
+        
+        textarea[name="response"] {
+            font-size: 75%;
+            background: #999999;
+            color: #ffffff;
+        }
+        
+        label {
+            font-size: 75%;
+            position: relative;
+            top: .75em;
+        }
+        
+        footer {
+            position: absolute;
+            width: 100%;
+            padding: .5em;
+            bottom: 0;
+            background-color: #cccccc;
+        }
+        
+        footer p {
+            margin: 0;
+            text-align: center;
+        }
+        
+        footer a {
+            color: inherit;
+            padding: .5em;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: #ffffff;
+            background-color: #aaaaaa;
+        }
+        
+        .online {
+            background-color: #77dd77;
+            font-size: 1.5em;
+            color: #ffffff;
+        }
+        
+        .offline {
+            background-color: #ff6961;
+            font-size: 1.5em;
+            color: #ffffff;
+            text-decoration: blink;
+            font-weight: bolder;
+            text-transform: capitalize;
+        }
+    
+    </style>
+
+    <link href="jquery-mobile/jquery.mobile.theme-1.0.min.css" rel="stylesheet" type="text/css" />
+    <link href="jquery-mobile/jquery.mobile.structure-1.0.min.css" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+
+    <div data-role="page" id="page">
+    
+    
+        <header>
+        
+            <h1>Kodi Kontroller v0.1 </h1>
+            
+        </header>
+
+
+        
+        <main>
+        
+            <section class="output">
+                <label for="response">Message log:</label><br>
+                <textarea name="response" readonly rows="10"></textarea>
+            </section>
+        
+            <!-- BEGIN Make a bunch of these, filling in real values for "domain.or.ip:1234" -->
+        
+            <article class="screen" data-kodi-target="http://domain.or.ip:1234">
+        
+                <h2>Screen 1</h2>
+                
+                <div class="screenshot_holder" style="background-image: url('screenshot000.png')">
+                </div>
+                                
+                <input name="url" type="text" placeholder="Enter a URL">
+                <button data-kodi-action="play">Play</button>
+                
+                <br>
+                
+                <input name="message" type="text" placeholder="Your Message">
+                <button data-kodi-action="notify">Notify</button>
+                
+            </article>
+            
+            <!-- END Make a bunch of these -->
+
+        </main>
+
+
+        
+        <footer>
+        
+            <p><a href="http://olipassey.me.uk" target="_blank">olipassey.me.uk</a></p>
+            
+        </footer>
+        
+    </div>
+    
+</body>
+
+
+<script>
+
+    $( 'button' ).each( function() {
+    
+        var $this = $(this);
+        
+        var log = function( msg ) {
+            var output = $('[name="response"]');
+            output.val( output.val() + msg );
+        }
+        
+        $this.click( function() {
+        
+        
+            var kodi_address = $this.parent().data('kodi-target');
+            var kodi_action  = $this.data('kodi-action');
+            var screen_name  = $this.parent().find('h2').text();
+            
+            var url = $this.parent().find('[name="url"]')[0].value;
+            var message = $this.parent().find('[name="message"]')[0].value;
+            
+            var rpc_data = '';
+            
+            
+            // Create a timestamp
+            // (OMFG JS Date formatting sucks...)
+            var timestamp = new Date();
+            var timestamp_human = ("0"+(timestamp.getDate()+1)).slice(-2) + '/' + ("0"+(timestamp.getMonth()+1)).slice(-2) + '/' + timestamp.getFullYear()
+              + ' ' + ("0" + timestamp.getHours()).slice(-2) + ':' + ("0"+timestamp.getMinutes()).slice(-2) + ':' + ("0"+timestamp.getSeconds()).slice(-2);
+              
+            // Add the timestamp and screen name to the output log
+            log('[' + timestamp_human + '] ' + '<' + screen_name + '> : ');     
+            
+            switch (kodi_action) {
+                
+                case 'play':
+                
+                    if (url === '') {
+                        // Exit if url is empty
+                        // TODO: validate url
+                        log("Error: No URL supplied\n");
+                        break;
+                    }
+                    
+                    log("Sending " + url + " ... ");
+                    
+                    // Set the RPC data variable
+                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"file":"' + url + '"}},"id":"1"}' );
+                    
+                    break;
+                
+                
+                case 'notify':
+                
+                    if (message === '') {
+                        // Exit if message is empty
+                        // TODO: escape/check message
+                        log("Error: No message supplied\n");
+                        break;
+                    }
+                    
+                    log("Sending \"" + message + "\" ... ");
+                    
+                    // Set the RPC data variable
+                    // Not sure of the details needed here so just commenting out for now and putting a fail message...
+                    // rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"file":"' + url + '"}},"id":"1"}' );
+                    log("FAIL (because the code currently isn't generating RPC data)\n");
+                    
+                    break;
+                
+                
+                default:
+                
+                    // Not a recognised action
+                    log("Error: unknown action\n");
+                    
+            }
+            
+            
+            
+            // Send the AJAX XHR if rpc_data variable is not the empty string
+            if (rpc_data !== '') {
+            
+                $.ajax({
+                    type: 'GET',
+                    url: kodi_address + '/jsonrpc',
+                    dataType: 'jsonp',
+                    jsonpCallback: 'jsonCallback',
+                    type: 'GET',
+                    async: true,
+                    timeout: 5000,
+                    data: rpc_data
+                })
+                
+                // If Success, Notify User
+                .done( function( data, textStatus, jqXHR ) {
+                    if ( jqXHR.status == 200 && data['result'] == 'OK' ) {
+                        log("Done\n");
+                    } else {
+                        log("Error\n");
+                    }
+                })
+                
+                // Older Versions Of Kodi/XBMC Tend To Fail Due To CORS But Typically If A '200' Is Returned Then It Has Worked!
+                .fail( function( jqXHR, textStatus ) {
+                    if ( jqXHR.status == 200 ) {
+                        log("Done\n" );
+                    } else {
+                        log("Error: " + textStatus + "\n" );
+                    }
+                });
+            
+            }                
+        })
+    });
+    
+</script>
+
+
+</html>
