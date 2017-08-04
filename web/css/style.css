@@ -1,0 +1,97 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+}
+
+header {
+    width: 100%;
+    height: 4rem;
+    position: fixed;
+    background-color: #cccccc;
+}
+
+header h1 {
+    line-height: 4rem;
+    margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: .2rem;
+    text-align: center;
+}
+
+main {
+    padding: 5rem 1rem 1rem;
+}
+
+textarea[name="response"] {
+    width: 100%;
+    margin: 0 0 .5rem;
+    background: #999999;
+    color: #ffffff;
+}
+
+label {        
+    font-size: 75%;
+    position: relative;
+}
+
+.screen {
+    width: 19%;
+    margin: 1rem 1.25% 1rem 0;
+    padding: 1rem;
+    box-shadow: .2rem .2rem 1rem rgba(0,0,0,.5);
+    float: left;
+}
+
+.screen:nth-of-type(5n) {
+    margin: 1rem 0 1rem 0;
+}
+
+.screenshot_holder {
+    width: 100%;
+    padding-bottom: 56.25%;
+    background-size: cover;
+}
+
+input {
+    width: 80%;
+    padding: .25rem;
+    margin: 1rem 0 .5rem;
+    display: block;
+    float: left;
+}
+
+button {
+    width: 20%;
+    padding: .25rem;
+    margin: 1rem 0 .5rem;
+}
+
+footer {
+    position: fixed;
+    width: 100%;
+    padding: .5rem;
+    bottom: 0;
+    background-color: #cccccc;
+}
+
+footer p {
+    margin: 0;
+    text-align: center;
+}
+
+footer a {
+    color: inherit;
+    padding: .5rem;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ffffff;
+    background-color: #aaaaaa;
+}
