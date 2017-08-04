@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+
+        <title>Kodi Kontroller</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    </head>
+
+    <body>
+
+        <div data-role="page" id="page">
+        
+        
+            <header>
+            
+                <h1>Kodi Kontroller v0.1</h1>
+                
+            </header>
+
+
+            
+            <main>
+            
+                <section class="output">
+                    <label for="response">Message log:</label><br>
+                    <textarea name="response" readonly rows="6"></textarea>
+                </section>
+                
+                <section class="screens">
+            
+                    <!-- BEGIN Screen template -->
+                
+                        <article id="template" class="screen" data-kodi-target="http://domain.or.ip:1234">
+                    
+                            <h2>Template</h2>
+                            
+                            <div class="screenshot_holder" style="background-image: url('img/screenshot000.png')">
+                            </div>
+                                            
+                            <input name="url" type="text" placeholder="Enter a URL">
+                            <button data-kodi-action="play">Play</button>
+                            
+                            <br>
+                            
+                            <input name="message" type="text" placeholder="Your Message">
+                            <button data-kodi-action="notify">Notify</button>
+                            
+                        </article>
+                    
+                    <!-- END Screen template -->
+
+                </section>
+                    
+            </main>
+
+
+            
+            <footer>
+            
+                <p><a href="http://olipassey.me.uk" target="_blank">olipassey.me.uk</a></p>
+                
+            </footer>
+            
+        </div>
+        
+    </body>
+
+
+    <script src="js/script.js"></script>
+
+
+</html>
