@@ -43,19 +43,19 @@ $(function() {
         } 
         
     }
-
+    
+    var log = function( msg ) {
+        var output = $('[name="response"]');
+        output.val( output.val() + msg );
+        if(output.length) {
+            output.scrollTop(output[0].scrollHeight - output.height());
+        }
+    }
 
     $( 'button' ).each( function() {
 
         var $this = $(this);
         
-        var log = function( msg ) {
-            var output = $('[name="response"]');
-            output.val( output.val() + msg );
-            if(output.length) {
-                output.scrollTop(output[0].scrollHeight - output.height());
-            }
-        }
         
         $this.click( function() {
         
@@ -93,7 +93,7 @@ $(function() {
                     log("Sending URL \"" + url + "\" ... ");
                     
                     // Set the RPC data variable
-                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"file":"' + url + '"}},"id":"1"}' );
+                    rpc_data = 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"file":"' + url + '"}},"id":"1"}' );
                     
                     break;
                 
