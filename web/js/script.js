@@ -1,17 +1,5 @@
 // KodiKontroller init functions
 
-var screen_list = {
-    "Screen One"   : "https://scrn1.test.fake:1234",
-    "Screen Two"   : "https://scrn2.test.fake:1234",
-    "Screen Three" : "https://scrn3.test.fake:1234",
-    "Screen Four"  : "https://scrn4.test.fake:1234",
-    "Screen Five"  : "https://scrn3.test.fake:1234",
-    "Screen Six"   : "https://scrn4.test.fake:1234",
-    "Screen Seven" : "https://scrn3.test.fake:1234",
-    "Screen Eight" : "https://scrn4.test.fake:1234",
-    "Screen Nine"  : "https://scrn3.test.fake:1234",
-    "Screen Ten"   : "https://scrn4.test.fake:1234",
-};
 
 
 $(function() {
@@ -21,37 +9,54 @@ $(function() {
     var interface_template = $('article.screen#template');
     var interface_counter = 0;
 
+    var interface_groups = {};
+
     // Hide the template
-    interface_template.detach()
+    interface_template.detach();
 
-    // Create interfaces
-    for (var screen in screen_list) {
+    
+    // Create interfaces from config array
+    for (var i in screen_list) {
 
-        if (screen_list.hasOwnProperty(screen)) {
-        
-            var new_screen = interface_template.clone();
-            
-            new_screen.css({opacity:0});
-            
-            new_screen.removeAttr('id');
-            new_screen.data('kodi-target', screen_list[screen]);
-            new_screen.find('h2').text(screen);
-            
-            new_screen.appendTo(interface_holder);
-            new_screen.delay(100*interface_counter++).animate({opacity:1}, 300, 'easeOutSine');
-            
-        } 
+        interface_groups[screen_list[i].group] = true;
+
+        var new_screen = interface_template.clone();
+
+        new_screen.css({opacity:0});
+
+        new_screen.removeAttr('id');
+        new_screen.data('kodi-target', screen_list[i].host);
+        new_screen.data('kodi-group', screen_list[i].group);
+        new_screen.find('h2').text(screen_list[i].name);
+
+        new_screen.appendTo(interface_holder);
+        new_screen.delay(100*interface_counter++).animate({opacity:1}, 300, 'easeOutSine');
         
     }
-    
+
+
+    // Normalise interface_groups into simple array
+    console.log(interface_groups);
+    var temp_groups = [];
+    for (var group in interface_groups) {
+        if (interface_groups.hasOwnProperty(group)) {
+            temp_groups.push(group);
+        }
+    }
+    interface_groups = temp_groups;
+
+
+    // Set up logging function
     var log = function( msg ) {
         var output = $('[name="response"]');
         output.val( output.val() + msg );
         if(output.length) {
             output.scrollTop(output[0].scrollHeight - output.height());
         }
-    }
+    };
 
+
+    // Add actions to all buttons
     $( 'button' ).each( function() {
 
         var $this = $(this);
@@ -63,6 +68,7 @@ $(function() {
             var kodi_address = $this.parent().data('kodi-target');
             var kodi_action  = $this.data('kodi-action');
             var screen_name  = $this.parent().find('h2').text();
+            var screen_group = $this.parent().data('kodi-group');
             
             var url = $this.parent().find('[name="url"]')[0].value;
             var message = $this.parent().find('[name="message"]')[0].value;
@@ -89,7 +95,16 @@ $(function() {
                         log("Error: No URL supplied\n");
                         break;
                     }
-                    
+
+                    // Handle youtube URLs
+                    // TODO generalize and include playlists, youtu.be URLs
+                    if (url.search('youtube.com') !== -1) {
+                        var re = /v=[^&$]*/i;
+                        var ytid = url.match(re)[0].substr(2);
+                        url = 'plugin://plugin.video.youtube/play/?video_id=' + ytid;
+                    }
+
+                    // Handle SAMBA shares
                     log("Sending URL \"" + url + "\" ... ");
                     
                     // Set the RPC data variable
@@ -110,9 +125,16 @@ $(function() {
                     log("Sending message \"" + message + "\" ... ");
                     
                     // Set the RPC data variable
-                    // Not sure of the details needed here so just commenting out for now and putting a fail message...
-                    // rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Player.Open","params":{"item":{"file":"' + url + '"}},"id":"1"}' );
-                    log("FAIL (because the code currently isn't generating RPC data)\n");
+                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"1","method":"GUI.ShowNotification","params":{"title":"Notification","message":"' + message + '"}}' );
+
+                    break;
+                
+                case 'reset' :
+
+
+                    log("Resetting screen playlist ... ");
+
+                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"1","method":"Player.Open","params":{"item":{"directory":"/storage/videos/"}}}' );
                     
                     break;
                 
@@ -130,13 +152,12 @@ $(function() {
             if (rpc_data !== '') {
             
                 $.ajax({
-                    type: 'GET',
                     url: kodi_address + '/jsonrpc',
                     dataType: 'jsonp',
                     jsonpCallback: 'jsonCallback',
                     type: 'GET',
                     async: true,
-                    timeout: 5000,
+                    timeout: 10000,
                     data: rpc_data
                 })
                 
