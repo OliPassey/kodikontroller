@@ -1,10 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Saira+Semi+Condensed');
+
 * {
     box-sizing: border-box;
 }
 
 body {
-    font-family: sans-serif;
+    font-family: "Saira Semi Condensed", sans-serif;
     margin: 0;
+    padding: 0 0 2rem;
+    background-image: url('../img/bg.jpg');
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 header {
@@ -28,11 +34,17 @@ main {
     padding: 5rem 1rem 1rem;
 }
 
+main:after {
+    content: " ";
+    display: table;
+    clear: both;
+}
+
 textarea[name="response"] {
     width: 100%;
     margin: 0 0 .5rem;
-    background: #999999;
-    color: #ffffff;
+    background: rgba(0,0,0,.8);
+    color: #00ff00;
 }
 
 label {        
@@ -46,6 +58,7 @@ label {
     padding: 1rem;
     box-shadow: .2rem .2rem 1rem rgba(0,0,0,.5);
     float: left;
+    background-color: rgba(255,255,255,.8);
 }
 
 .screen:nth-of-type(5n) {
@@ -56,6 +69,7 @@ label {
     width: 100%;
     padding-bottom: 56.25%;
     background-size: cover;
+    box-shadow: .2rem .2rem 1rem rgba(0,0,0,.5);
 }
 
 input {

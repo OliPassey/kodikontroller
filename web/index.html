@@ -25,7 +25,7 @@
         
             <header>
             
-                <h1>Kodi Kontroller v0.1</h1>
+                <h1>Kodi Kontroller v0.2</h1>
                 
             </header>
 
@@ -42,11 +42,11 @@
             
                     <!-- BEGIN Screen template -->
                 
-                        <article id="template" class="screen" data-kodi-target="http://domain.or.ip:1234">
+                        <article id="template" class="screen">
                     
                             <h2>Template</h2>
                             
-                            <div class="screenshot_holder" style="background-image: url('img/screenshot000.png')">
+                            <div class="screenshot_holder" style="background-image: url('img/logo.png')">
                             </div>
                                             
                             <input name="url" type="text" placeholder="Enter a URL">
@@ -56,7 +56,11 @@
                             
                             <input name="message" type="text" placeholder="Your Message">
                             <button data-kodi-action="notify">Notify</button>
-                            
+
+                            <br>
+
+                            <button data-kodi-action="reset">Reset</button>
+
                         </article>
                     
                     <!-- END Screen template -->
@@ -78,6 +82,7 @@
     </body>
 
 
+    <script src="js/config.js"></script>
     <script src="js/script.js"></script>
 
 
