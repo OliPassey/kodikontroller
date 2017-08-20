@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <title>Kodi Kontroller</title>
+        
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        
+        <link rel="stylesheet" href="css/style.css">
+
+    </head>
+
+    <body>
+
+        <div data-role="page" id="page">
+        
+        
+            <header>
+            
+                <h1>Kodi Kontroller v0.2</h1>
+                
+            </header>
+
+
+            
+            <main>
+            
+                <section class="output">
+                    <label for="response">Message log:</label><br>
+                    <textarea name="response" readonly rows="6"></textarea>
+                </section>
+                
+                <section class="screens" >
+            
+                    <!-- BEGIN Screen template -->
+                
+                        <article id="template" class="screen">
+                    
+                            <h2>Template</h2>
+                            <center>Status: Online / Offline / TimeOut</center>
+                            <div class="screenshot_holder" style="background-image: url('img/logo.png')">
+                            </div>
+                                            
+                            <input name="url" type="text" placeholder="Enter a URL">
+                            <button data-kodi-action="play">Play</button>
+                            
+                            <br>
+                            
+                            <input name="message" type="text" placeholder="Your Message">
+                            <button data-kodi-action="notify">Notify</button>
+
+                            <br>
+							Content
+                            <button data-kodi-action="logos">FOE Logos</button>
+							<button data-kodi-action="genvideo">Public Video</button>
+							
+							<br>
+							System
+							<button data-kodi-action="reset">Reboot System</button>
+							<button data-kodi-action="cec-activate">Display On</button>
+							<button data-kodi-action="cec-standby">Display Off</button>
+
+                        </article>
+                    
+                    <!-- END Screen template -->
+
+                </section>
+                    
+            </main>
+
+
+            
+            <footer>
+            
+                <p><a href="http://olipassey.me.uk/kodikontroller" target="_blank">olipassey.me.uk</a></p>
+                
+            </footer>
+            
+        </div>
+        
+    </body>
+
+
+    <script src="js/config.js"></script>
+    <script src="js/script.js"></script>
+
+
+</html>
