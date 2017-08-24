@@ -132,14 +132,53 @@ $(function() {
                 case 'reset' :
 
 
-                    log("Resetting screen playlist ... ");
+                    log("Rebooting Instance ... ");
 
-                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"1","method":"Player.Open","params":{"item":{"directory":"/storage/videos/"}}}' );
+                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"1","method":"System.Reboot"}' );
                     
                     break;
                 
+				case 'logos' :
+				
+				
+					log("Cycling FOE Logos ... ");
+					
+					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"2","method":"Player.Open","params":{"item":{"directory":"smb://EMBASSY-NAS/photo/"}}}' );
+					
+					break;
+				
+				case 'genvideo' :
+				
+				
+					log("Cycling generic public FOE Videos ... ");
+					
+					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"2","method":"Player.Open","params":{"item":{"directory":"smb://EMBASSY-NAS/photo/"}}}' );
+					
+					break;
                 
-                default:
+				case 'cec-activate' :
+				
+					// This function requires the Kodi JSON-CEC Plugin from https://github.com/joshjowen/script.json-cec
+					// Kodi Support Thread: https://forum.kodi.tv/showthread.php?tid=149356&page=2
+					// Currently Untested
+					log("Display On ... ");
+					
+					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"script.json-cec","params":{"command":"activate"}},"id":1}' );
+					
+					break;
+
+				case 'cec-standby' :
+				
+					// This function requires the Kodi JSON-CEC Plugin from https://github.com/joshjowen/script.json-cec
+					// Kodi Support Thread: https://forum.kodi.tv/showthread.php?tid=149356&page=2
+					// Currently Untested
+					log("Display Off ... ");
+					
+					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"script.json-cec","params":{"command":"standby"}},"id":1}' );
+					
+					break;					
+                
+				default:
                 
                     // Not a recognised action
                     log("Error: unknown action\n");
