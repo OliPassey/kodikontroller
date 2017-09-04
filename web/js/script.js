@@ -36,7 +36,6 @@ $(function() {
 
 
     // Normalise interface_groups into simple array
-    console.log(interface_groups);
     var temp_groups = [];
     for (var group in interface_groups) {
         if (interface_groups.hasOwnProperty(group)) {
@@ -63,15 +62,21 @@ $(function() {
         
         
         $this.click( function() {
+
+            var screen = $this.parent();
+
+            // Walk up the DOM if screen doesn't have a data-kodi-target attribute
+            while (typeof screen.data('kodi-target') === 'undefined') {
+                screen = screen.parent();
+            }
         
-        
-            var kodi_address = $this.parent().data('kodi-target');
+            var kodi_address = screen.data('kodi-target');
             var kodi_action  = $this.data('kodi-action');
-            var screen_name  = $this.parent().find('h2').text();
-            var screen_group = $this.parent().data('kodi-group');
+            var screen_name  = screen.find('h2').text();
+            var screen_group = screen.data('kodi-group');
             
-            var url = $this.parent().find('[name="url"]')[0].value;
-            var message = $this.parent().find('[name="message"]')[0].value;
+            var url = screen.find('[name="url"]')[0].value;
+            var message = screen.find('[name="message"]')[0].value;
             
             var rpc_data = '';
             
@@ -96,13 +101,26 @@ $(function() {
                         break;
                     }
 
+                    // Prepare regex var
+                    var re;
+
                     // Handle youtube URLs
                     // TODO generalize and include playlists, youtu.be URLs
                     if (url.search('youtube.com') !== -1) {
-                        var re = /v=[^&$]*/i;
+                        re = /v=[^&$]*/i;
                         var ytid = url.match(re)[0].substr(2);
                         url = 'plugin://plugin.video.youtube/play/?video_id=' + ytid;
                     }
+
+                    // Handle vimeo URLs
+                    // TODO all the things.
+                    // https://vimeo.com/xxxxxxxx -> plugin://plugin.video.vimeo/play/?video_id=xxxxxxxx
+                    if (url.search('vimeo.com') !== -1) {
+                       re = /vimeo\.com\/[^&$]*/i;
+                       var vimid = url.match(re)[0].substr(10);
+                       url = 'plugin://plugin.video.vimeo/play/?video_id=' + vimid;
+                    }
+                    
 
                     // Handle SAMBA shares
                     log("Sending URL \"" + url + "\" ... ");
@@ -125,7 +143,7 @@ $(function() {
                     log("Sending message \"" + message + "\" ... ");
                     
                     // Set the RPC data variable
-                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"1","method":"GUI.ShowNotification","params":{"title":"Notification","message":"' + message + '"}}' );
+                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"1","method":"GUI.ShowNotification","params":{"title":"Notification","message":"' + message + '","displaytime":20000}}' );
 
                     break;
                 
@@ -159,8 +177,8 @@ $(function() {
 				case 'cec-activate' :
 				
 					// This function requires the Kodi JSON-CEC Plugin from https://github.com/joshjowen/script.json-cec
-					// Kodi Support Thread: https://forum.kodi.tv/showthread.php?tid=149356&page=2
-					// Currently Untested
+					// Tested and working well.
+
 					log("Display On ... ");
 					
 					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"script.json-cec","params":{"command":"activate"}},"id":1}' );
@@ -170,15 +188,34 @@ $(function() {
 				case 'cec-standby' :
 				
 					// This function requires the Kodi JSON-CEC Plugin from https://github.com/joshjowen/script.json-cec
-					// Kodi Support Thread: https://forum.kodi.tv/showthread.php?tid=149356&page=2
-					// Currently Untested
+					// Tested and working well.
 					log("Display Off ... ");
 					
 					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"script.json-cec","params":{"command":"standby"}},"id":1}' );
 					
 					break;					
                 
-				default:
+                case 'img-notify-bottom' :
+                
+                    // This function requires the Kodi Banners Addon from http://kodi.lanik.org/banners.html
+                    // Tested and working well.
+                    log("Image Notification Sent ... ");
+                    
+                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"service.banners","params":{"imageloc":"smb://10.20.0.241/kodi-kontroller/gfx/alert-statuscake.jpg","displaytime":"3000","position":"top"}},"id":1}' );
+                    
+                    break;
+				
+                case 'img-notify-cent' :
+                
+                    // This function requires the Kodi Banners Addon from http://kodi.lanik.org/banners.html
+                    // Tested and working well.
+                    log("Image Notification Sent ... ");
+                    
+                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"service.banners","params":{"imageloc":"D:\\img.jpg","displaytime":"3000","position":"center"}},"id":1}' );
+                    
+                    break;
+
+                default:
                 
                     // Not a recognised action
                     log("Error: unknown action\n");

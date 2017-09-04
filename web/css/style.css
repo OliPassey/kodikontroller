@@ -65,6 +65,33 @@ label {
     margin: 1rem 0 1rem 0;
 }
 
+.power-options {
+    float: right;
+    position: relative;
+    padding: .5rem;
+    cursor: pointer;
+    right: -1rem;
+    top: -1rem;
+}
+
+.power-options-popout {
+    background: #ffffff;
+    box-shadow: .2rem .2rem 1rem rgba(0,0,0,.5);
+    width: 10rem;
+    right: -.5rem;
+    position: absolute;
+    padding: .5rem;
+    display: none;
+}
+
+.power-options-popout button {
+    width: 100%;
+}
+
+.power-options:hover .power-options-popout {
+    display: block;
+}
+
 .screenshot_holder {
     width: 100%;
     padding-bottom: 56.25%;
@@ -81,8 +108,11 @@ input {
 }
 
 button {
-    width: 20%;
     padding: .25rem;
+}
+
+button.inline {
+    width: 20%;
     margin: 1rem 0 .5rem;
 }
 
