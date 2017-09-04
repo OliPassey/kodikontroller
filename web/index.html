@@ -13,6 +13,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 
         <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
 
         <link rel="stylesheet" href="css/style.css">
 
@@ -44,30 +45,59 @@
 
                         <article id="template" class="screen">
 
+                            <div class="power-options">
+                                <i class="fa fa-power-off fa-fw fa-lg" aria-hidden="true"></i>
+                                <div class="power-options-popout">
+                                    <button data-kodi-action="reset">
+                                        <p>
+                                            <i class="fa fa-bolt fa-fw fa-lg" aria-hidden="true"></i>
+                                            <br><br>
+                                            Reboot System
+                                        </p>
+                                    </button>
+                                    <button data-kodi-action="cec-activate">
+                                        <p>
+                                            <i class="fa fa-television fa-fw fa-lg" aria-hidden="true"></i>
+                                            <i class="fa fa-check fa-fw fa-lg" aria-hidden="true"></i>
+                                            <br><br>
+                                            Display On
+                                        </p>
+                                    </button>
+                                    <button data-kodi-action="cec-standby">
+                                        <p>
+                                            <i class="fa fa-television fa-fw fa-lg" aria-hidden="true"></i>
+                                            <i class="fa fa-times fa-fw fa-lg" aria-hidden="true"></i>
+                                            <br><br>
+                                            Display Off
+                                        </p>
+                                    </button>
+                                </div>
+                            </div>
+
+
+
                             <h2>Template</h2>
-                            <center>Status: Online / Offline / TimeOut</center>
+
                             <div class="screenshot_holder" style="background-image: url('img/logo.png')">
                             </div>
 
                             <input name="url" type="text" placeholder="Enter a URL">
-                            <button data-kodi-action="play">Play</button>
+                            <button data-kodi-action="play" class="inline">Play</button>
 
                             <br>
 
                             <input name="message" type="text" placeholder="Your Message">
-                            <button data-kodi-action="notify">Notify</button>
+                            <button data-kodi-action="notify" class="inline">Notify</button>
 
-                            <br>
-							Content
-                            <button data-kodi-action="logos">FOE Logos</button>
-							<button data-kodi-action="genvideo">Public Video</button>
+                            <p>Content<br>
+                                <button data-kodi-action="logos">FOE Logos</button>
+                                <button data-kodi-action="genvideo">Public Video</button>
+                            </p>
 
-							<br>
-							System
-							<button data-kodi-action="reset">Reboot System</button>
-							<button data-kodi-action="cec-activate">Display On</button>
-							<button data-kodi-action="cec-standby">Display Off</button>
-
+                            <p>Image Notify<br>
+                                <button data-kodi-action="img-notify-bottom">Bottom</button>
+                                <button data-kodi-action="img-notify-cent">Centred</button>
+                            </p>
                         </article>
 
                     <!-- END Screen template -->
@@ -94,5 +124,3 @@
 
 
 </html>
-
-
