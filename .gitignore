@@ -1,4 +1,3 @@
 .idea/
+assets/js/config.js
 web/js/config.js
-
-web/js/config-sample.js
