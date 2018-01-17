@@ -11,8 +11,9 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-
-        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
         <link rel="stylesheet" href="assets/font-awesome/css/font-awesome.min.css">
 
         <link rel="stylesheet" href="assets/css/style.css">
@@ -78,9 +79,11 @@
 
                             <h2>Template</h2>
 
-                            <div class="screenshot_holder" style="background-image: url('img/logo.png')">
+                            <div class="screenshot_holder" style="background-image: url('assets/img/logo.png')">
                             </div>
-
+							
+							
+							
                             <input name="url" type="text" placeholder="Enter a URL">
                             <button data-kodi-action="play" class="inline">Play</button>
 
@@ -90,14 +93,24 @@
                             <button data-kodi-action="notify" class="inline">Notify</button>
 
                             <p>Content<br>
-                                <button data-kodi-action="logos">FOE Logos</button>
-                                <button data-kodi-action="genvideo">Public Video</button>
+                                <button data-kodi-action="stats">Stats</button>
+                                <button data-kodi-action="social">Social</button>
+								<button data-kodi-action="technical">Tech</button>
                             </p>
 
                             <p>Image Notify<br>
                                 <button data-kodi-action="img-notify-bottom">Bottom</button>
                                 <button data-kodi-action="img-notify-cent">Centred</button>
+								<button data-kodi-action="img-notify-top">Top</button>
                             </p>
+							
+							<p>Auto On<br>
+							<input class="timepicker" name="screenon"/>
+							<button data-kodi-action="set-screen-on-time">Set</button>			
+							Auto Off<br>
+							<input class="timepicker" name="screenoff"/>
+							<button data-kodi-action="set-screen-off-time">Set</button>
+							</p>
                         </article>
 
                     <!-- END Screen template -->
@@ -115,7 +128,7 @@
             </footer>
 
         </div>
-
+	<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
     </body>
 
 

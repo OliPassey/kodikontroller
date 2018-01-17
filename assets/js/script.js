@@ -156,19 +156,28 @@ $(function() {
                     
                     break;
                 
-				case 'logos' :
+				case 'stats' :
 				
 				
-					log("Cycling FOE Logos ... ");
+					log("Loading general stats and KPIs");
 					
 					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"2","method":"Player.Open","params":{"item":{"directory":"smb://EMBASSY-NAS/photo/"}}}' );
 					
 					break;
 				
-				case 'genvideo' :
+				case 'social' :
 				
 				
-					log("Cycling generic public FOE Videos ... ");
+					log("Loading web, digital & social content...");
+					
+					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"2","method":"Player.Open","params":{"item":{"directory":"smb://EMBASSY-NAS/photo/"}}}' );
+					
+					break;
+					
+				case 'technical' :
+				
+				
+					log("Loading technical dashboards...");
 					
 					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"2","method":"Player.Open","params":{"item":{"directory":"smb://EMBASSY-NAS/photo/"}}}' );
 					
@@ -201,7 +210,7 @@ $(function() {
                     // Tested and working well.
                     log("Image Notification Sent ... ");
                     
-                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"service.banners","params":{"imageloc":"smb://10.20.0.241/kodi-kontroller/gfx/alert-statuscake.jpg","displaytime":"3000","position":"top"}},"id":1}' );
+                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"service.lowerthird","params":{"imageloc":"smb://10.20.0.241/kodi-kontroller/gfx/alert-statuscake.jpg","displaytime":"45000","position":"bottom"}},"id":1}' );
                     
                     break;
 				
@@ -211,10 +220,41 @@ $(function() {
                     // Tested and working well.
                     log("Image Notification Sent ... ");
                     
-                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"service.banners","params":{"imageloc":"D:\\img.jpg","displaytime":"3000","position":"center"}},"id":1}' );
+                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"service.lowerthird","params":{"imageloc":"D:\\img.jpg","displaytime":"45000","position":"center"}},"id":1}' );
                     
                     break;
+				
+				case 'img-notify-top' :
+                
+                    // This function requires the Kodi Banners Addon from http://kodi.lanik.org/banners.html
+                    // Tested and working well.
+                    log("Image Notification Sent ... ");
+                    
+                    rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"service.lowerthird","params":{"imageloc":"D:\\img.jpg","displaytime":"45000","position":"top"}},"id":1}' );
+                    
+                    break;
+					
+				case 'set-screen-on-time' :
+					$(document).ready(function(){
+					$('input.timepicker').timepicker({
+					timeFormat: 'HH:mm:ss',
+					// year, month, day and seconds are not important
+					minTime: new Date(0, 0, 0, 8, 0, 0),
+					maxTime: new Date(0, 0, 0, 19, 0, 0),
+					// time entries start being generated at 6AM but the plugin 
+					// shows only those within the [minTime, maxTime] interval
+					startHour: 8,
+					// the value of the first item in the dropdown, when the input
+					// field is empty. This overrides the startHour and startMinute 
+					// options
+					startTime: new Date(0, 0, 0, 8, 00, 0),
+					// items in the dropdown are separated by at interval minutes
+					interval: 30
+					});
+					});
+					break;
 
+				
                 default:
                 
                     // Not a recognised action
