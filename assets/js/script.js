@@ -11,6 +11,8 @@ $(function() {
 
     var interface_groups = {};
 
+	
+	
     // Hide the template
     interface_template.detach();
 
@@ -241,7 +243,7 @@ $(function() {
 					// year, month, day and seconds are not important
 					minTime: new Date(0, 0, 0, 8, 0, 0),
 					maxTime: new Date(0, 0, 0, 19, 0, 0),
-					// time entries start being generated at 6AM but the plugin 
+					// time entries start being generated at 8AM but the plugin 
 					// shows only those within the [minTime, maxTime] interval
 					startHour: 8,
 					// the value of the first item in the dropdown, when the input
@@ -249,11 +251,32 @@ $(function() {
 					// options
 					startTime: new Date(0, 0, 0, 8, 00, 0),
 					// items in the dropdown are separated by at interval minutes
-					interval: 30
+					interval: 30,
+					defaultTime: 8
 					});
 					});
 					break;
 
+				case 'set-screen-off-time' :
+					$(document).ready(function(){
+					$('input.timepicker').timepicker({
+					timeFormat: 'HH:mm:ss',
+					// year, month, day and seconds are not important
+					minTime: new Date(0, 0, 0, 8, 0, 0),
+					maxTime: new Date(0, 0, 0, 19, 0, 0),
+					// time entries start being generated at 8AM but the plugin 
+					// shows only those within the [minTime, maxTime] interval
+					startHour: 8,
+					// the value of the first item in the dropdown, when the input
+					// field is empty. This overrides the startHour and startMinute 
+					// options
+					startTime: new Date(0, 0, 0, 8, 00, 0),
+					// items in the dropdown are separated by at interval minutes
+					interval: 30,
+					defaultTime: 18
+					});
+					});
+					break;
 				
                 default:
                 

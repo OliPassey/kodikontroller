@@ -4,7 +4,7 @@
     <head>
 
         <title>Kodi Kontroller</title>
-
+		<link rel="shortcut icon" href="favicon.ico" />
         <meta charset="utf-8" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -27,7 +27,7 @@
 
             <header>
 
-                <h1>Kodi Kontroller v0.2.2</h1>
+                <h1>Kodi Kontroller v0.2.3</h1>
 
             </header>
 
@@ -35,10 +35,6 @@
 
             <main>
 
-                <section class="output">
-                    <label for="response">Message log:</label><br>
-                    <textarea name="response" readonly rows="6"></textarea>
-                </section>
 
                 <section class="screens" >
 
@@ -84,13 +80,10 @@
 							
 							
 							
-                            <input name="url" type="text" placeholder="Enter a URL">
+                            <input name="url" type="text" placeholder="Enter a URL or Location">
                             <button data-kodi-action="play" class="inline">Play</button>
 
                             <br>
-
-                            <input name="message" type="text" placeholder="Your Message">
-                            <button data-kodi-action="notify" class="inline">Notify</button>
 
                             <p>Content<br>
                                 <button data-kodi-action="stats">Stats</button>
@@ -102,6 +95,10 @@
                                 <button data-kodi-action="img-notify-bottom">Bottom</button>
                                 <button data-kodi-action="img-notify-cent">Centred</button>
 								<button data-kodi-action="img-notify-top">Top</button>
+								<br>
+								Duration: 1Min <br>
+								Repeat: 30Mins<br>
+							
                             </p>
 							
 							<p>Auto On<br>
@@ -116,7 +113,10 @@
                     <!-- END Screen template -->
 
                 </section>
-
+                <section class="output">
+                    <label for="response">Message log:</label><br>
+                    <textarea name="response" readonly rows="6"></textarea>
+                </section>
             </main>
 
 
