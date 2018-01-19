@@ -159,17 +159,17 @@ $(function() {
                     break;
                 
 				case 'stats' :
-				
-				
+
+
 					log("Loading general stats and KPIs");
 					
 					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"2","method":"Player.Open","params":{"item":{"directory":"smb://EMBASSY-NAS/photo/"}}}' );
 					
 					break;
-				
+
 				case 'social' :
-				
-				
+
+
 					log("Loading web, digital & social content...");
 					
 					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"2","method":"Player.Open","params":{"item":{"directory":"smb://EMBASSY-NAS/photo/"}}}' );
@@ -177,16 +177,16 @@ $(function() {
 					break;
 					
 				case 'technical' :
-				
-				
+
+
 					log("Loading technical dashboards...");
 					
 					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","id":"2","method":"Player.Open","params":{"item":{"directory":"smb://EMBASSY-NAS/photo/"}}}' );
 					
 					break;
-                
+
 				case 'cec-activate' :
-				
+
 					// This function requires the Kodi JSON-CEC Plugin from https://github.com/joshjowen/script.json-cec
 					// Tested and working well.
 
@@ -197,7 +197,7 @@ $(function() {
 					break;
 
 				case 'cec-standby' :
-				
+
 					// This function requires the Kodi JSON-CEC Plugin from https://github.com/joshjowen/script.json-cec
 					// Tested and working well.
 					log("Display Off ... ");
@@ -205,7 +205,7 @@ $(function() {
 					rpc_data= 'request=' + encodeURIComponent( '{"jsonrpc":"2.0","method":"Addons.ExecuteAddon","params":{"addonid":"script.json-cec","params":{"command":"standby"}},"id":1}' );
 					
 					break;					
-                
+
                 case 'img-notify-bottom' :
                 
                     // This function requires the Kodi Banners Addon from http://kodi.lanik.org/banners.html
