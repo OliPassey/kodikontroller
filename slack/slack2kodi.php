@@ -27,9 +27,15 @@
  } elseif (substr($text, -4) == '.jpg') {
       $uniquepart = $text;
       #echo $uniquepart;
+ } elseif (substr($text, -5) == '.jpeg') {
+      $uniquepart = $text;
+      #echo $uniquepart;
+ } elseif (substr($text, -4) == '.gif') {
+      $uniquepart = $text;
+      #echo $uniquepart;
  } else {
    $msg = "Usage:\n";
-   $msg .= "To display a jpg or png, just use the URL\n";
+   $msg .= "To display an image (JPG, JPEG, PNG, GIF), just use the URL\n";
    $msg .= "To play a youtube, use _youtube <ID>_\n";
    $msg .= "To show a file from \\\\server_name\\share\\folder use _local <filename>_\n";
    die($msg);
