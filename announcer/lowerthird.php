@@ -18,7 +18,7 @@ function create_image($user){
 			
 
 			// define the base image that we lay our text on
-			$im = imagecreatefromjpeg("pass.jpg");
+			$im = imagecreatefromjpeg("media/lt01.jpg");
 			
 			// setup the text colours
 			$color['grey'] = imagecolorallocate($im, 221, 221, 220);
@@ -102,12 +102,12 @@ function center_text($string, $font_size){
 		array(
 			'name'=> $_POST['name'], 
 			'font-size'=>'100',
-			'color'=>'skyblue'),
+			'color'=>'white'),
 			
 		array(
 			'name'=> $_POST['job'],
-			'font-size'=>'76',
-			'color'=>'white'),
+			'font-size'=>'66',
+			'color'=>'grey'),
 			
 		array(
 			'name'=> $_POST['email'],
@@ -130,7 +130,7 @@ $filename = create_image($user);
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>FOE-Announcer</title>
+<title>Announcer, LowerThird</title>
 <link href="../style.css" rel="stylesheet" type="text/css" />
 
 <style>
@@ -179,17 +179,14 @@ input{
     <tr>
     <td width="53">Heading:</td>
     <td width="302"><input type="text" value="<?php if(isset($_POST['name'])){echo $_POST['name'];}?>" name="name" maxlength="47" placeholder="Heading" /></td>
-    <td width="112">Max 46</td>
   </tr>
   <tr>
     <td>Line 2</td>
     <td><input type="text" value="<?php if(isset($_POST['job'])){echo $_POST['job'];}?>" name="job" maxlength="80" placeholder="Text 1" /></td>
-    <td>Max 80</td>
   </tr>
   <tr>
     <td>Line 3</td>
     <td><input type="text" value="<?php if(isset($_POST['email'])){echo $_POST['email'];}?>" name="email" maxlength="90" placeholder="Text 2" /></td>
-    <td>Max 90</td>
   </tr>
 </table>
 <br/>

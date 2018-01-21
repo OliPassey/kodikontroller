@@ -18,7 +18,7 @@ function create_image($user){
 			
 
 			// define the base image that we lay our text on
-			$im = imagecreatefromjpeg("pass.jpg");
+			$im = imagecreatefromjpeg("media/pass.jpg");
 			
 			// setup the text colours
 			$color['grey'] = imagecolorallocate($im, 221, 221, 220);
@@ -27,7 +27,7 @@ function create_image($user){
 			$color['skyblue'] = imagecolorallocate($im, 135, 206, 250);
 			
 			// this defines the starting height for the text block
-			$y = imagesy($im) - $height = 240;
+			$y = imagesy($im) - $height = 700;
 			 
 		// loop through the array and write the text	
 		foreach ($user as $value){
@@ -35,7 +35,7 @@ function create_image($user){
 			$x = center_text($value['name'], $value['font-size']);	
 			imagettftext($im, $value['font-size'], 0, $x, $y+$i, $color[$value['color']], $fontname,$value['name']);
 			// add 32px to the line height for the next text block
-			$i = $i+105;	
+			$i = $i+130;	
 			
 		}
 			// create the image
@@ -62,17 +62,17 @@ function center_text($string, $font_size){
 	
 		array(
 			'name'=> 'Add your headlines here!', 
-			'font-size'=>'100',
+			'font-size'=>'200',
 			'color'=>'white'),
 			
 		array(
 			'name'=> 'Give us all the juicy details, tell me everything!',
-			'font-size'=>'76',
+			'font-size'=>'150',
 			'color'=>'grey'),
 			
 		array(
 			'name'=> 'Does it have a time, date or venue?',
-			'font-size'=>'50',
+			'font-size'=>'125',
 			'color'=>'grey'
 			)
 			
@@ -101,17 +101,17 @@ function center_text($string, $font_size){
 	
 		array(
 			'name'=> $_POST['name'], 
-			'font-size'=>'100',
-			'color'=>'skyblue'),
-			
-		array(
-			'name'=> $_POST['job'],
-			'font-size'=>'76',
+			'font-size'=>'125',
 			'color'=>'white'),
 			
 		array(
+			'name'=> $_POST['job'],
+			'font-size'=>'85',
+			'color'=>'grey'),
+			
+		array(
 			'name'=> $_POST['email'],
-			'font-size'=>'50',
+			'font-size'=>'75',
 			'color'=>'grey'
 			)
 			
@@ -130,7 +130,7 @@ $filename = create_image($user);
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>FOE-Announcer</title>
+<title>Announcer, FullScreen</title>
 <link href="../style.css" rel="stylesheet" type="text/css" />
 
 <style>
@@ -179,17 +179,14 @@ input{
     <tr>
     <td width="53">Heading:</td>
     <td width="302"><input type="text" value="<?php if(isset($_POST['name'])){echo $_POST['name'];}?>" name="name" maxlength="47" placeholder="Heading" /></td>
-    <td width="112">Max 46</td>
   </tr>
   <tr>
     <td>Line 2</td>
     <td><input type="text" value="<?php if(isset($_POST['job'])){echo $_POST['job'];}?>" name="job" maxlength="80" placeholder="Text 1" /></td>
-    <td>Max 80</td>
   </tr>
   <tr>
     <td>Line 3</td>
     <td><input type="text" value="<?php if(isset($_POST['email'])){echo $_POST['email'];}?>" name="email" maxlength="90" placeholder="Text 2" /></td>
-    <td>Max 90</td>
   </tr>
 </table>
 <br/>
