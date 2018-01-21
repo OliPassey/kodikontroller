@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8"/>
-        <title>Slim 3</title>
+        <title>KodiKontroller</title>
         <link href='//fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
         <style>
             body {
@@ -23,16 +23,45 @@
                 font-weight: 200;
                 margin-bottom: 0;
             }
+            table {
+                margin: 1em auto;
+            }
+            td {
+                padding: .5em;
+            }
         </style>
     </head>
     <body>
-        <h1>Slim</h1>
-        <div>a microframework for PHP</div>
-
-        <?php if (isset($name)) : ?>
-            <h2>Hello <?= htmlspecialchars($name); ?>!</h2>
-        <?php else: ?>
-            <p>Try <a href="http://www.slimframework.com">SlimFramework</a></p>
-        <?php endif; ?>
+        <h1>Kodi Kontroller</h1>
+        <div>Multi-screen management</div>
+        <h2>Currently registered screens</h2>
+        <p>(Sample output)</p>
+        <table>
+            <tr>
+                <th>Screen name</th>
+                <th>Group</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>South wing reception</td>
+                <td>Public</td>
+                <td>Online</td>
+            </tr>
+            <tr>
+                <td>The Hub</td>
+                <td>Public</td>
+                <td>Online</td>
+            </tr>
+            <tr>
+                <td>North wing breakfast bar</td>
+                <td>Public</td>
+                <td>Offline</td>
+            </tr>
+            <tr>
+                <td>Technical Solutions</td>
+                <td>Tech</td>
+                <td>Online</td>
+            </tr>
+        </table>
     </body>
 </html>
