@@ -2,7 +2,8 @@
 ## by Oliver Passey & James South
 [olipassey.me.uk/kodikontroller](http://olipassey.me.uk/kodikontroller/)
 ### Current Status: It Lives, but needs love.
-####To do
+
+#### To do:
 Kontroller:
 
 	Variables to config.js,
