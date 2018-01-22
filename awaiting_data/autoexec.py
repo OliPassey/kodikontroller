@@ -4,4 +4,4 @@
 # until KodiKontroller picks it up as online and sends a content command   #
 # ======================================================================== #
 import xbmc
-xbmc.executebuiltin("SlideShow(/storage/pictures/awaiting_data.jpg)")
+xbmc.executebuiltin("SlideShow(/storage/pictures/)")
