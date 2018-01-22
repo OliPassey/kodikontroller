@@ -3,7 +3,9 @@ assets/js/config.js
 
 
 # Slim PHP framework
+/server/config.yml
 /server/vendor/
+/server/cache/
 /server/logs/*
 !/server/logs/README.md
 
