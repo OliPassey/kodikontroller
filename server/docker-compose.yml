@@ -4,7 +4,7 @@ services:
     kodikontroller:
         image: php:7-alpine
         working_dir: /var/www
-        command: php -S 0.0.0.0:8080 -t public index.php
+        command: sh php-server-setup.sh
         environment:
             docker: "true"
         ports:
