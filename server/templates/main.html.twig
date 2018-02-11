@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <meta charset="utf-8"/>
+
+        <title>KodiKontroller</title>
+
+        <base href="{{ baseUrl }}/">
+
+        <link rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Lato:300'>
+        <link rel="stylesheet" type='text/css' href="assets/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" type='text/css' href="assets/css/style.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    </head>
+
+
+    <body>
+
+
+        <header>
+
+            <h1>KodiKontroller</h1>
+
+        </header>
+
+
+        <main>
+
+            <section class="output">
+
+                <label for="response">Message log:<br>
+                    <textarea name="response" readonly rows="6"></textarea>
+                </label>
+
+            </section>
+
+            <section class="screens" >
+
+                {% for screen in config.screens %}
+                    {% include 'components/screen-panel.html.twig' %}
+                {% endfor %}
+
+            </section>
+
+        </main>
+
+
+        <footer>
+
+            <p><a href="http://olipassey.me.uk/kodikontroller" target="_blank">olipassey.me.uk</a></p>
+
+        </footer>
+
+
+        <script src="assets/js/script.js"></script>
+
+    </body>
+
+</html>
