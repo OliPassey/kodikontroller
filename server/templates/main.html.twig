@@ -39,11 +39,13 @@
 
             </section>
 
-            <section class="screens" >
+            <section class="panels" >
 
+                {% set count = 0 %}
                 {% for screen in screens %}
                     {% set screenArray = screen.toArray() %}
                     {% include 'components/screen-panel.html.twig' with screenArray %}
+                    {% set count = count + 1 %}
                 {% endfor %}
 
             </section>

@@ -56,16 +56,23 @@ label {
     position: relative;
 }
 
+section.panels {
+    text-align: center;
+}
+
 .panel {
+    text-align: left;
     width: 19%;
     margin: 1rem 1.25% 1rem 0;
     padding: 1rem;
     box-shadow: .2rem .2rem 1rem rgba(0,0,0,.5);
-    float: left;
+    display: inline-block;
     background-color: rgba(255,255,255,.8);
+    opacity: 0;
+    animation: appear 300ms ease-in forwards 1;
 }
 
-.screen:nth-of-type(5n) {
+.panel:nth-of-type(5n) {
     margin: 1rem 0 1rem 0;
 }
 
@@ -83,6 +90,7 @@ label {
     box-shadow: .2rem .2rem 1rem rgba(0,0,0,.5);
     width: 10rem;
     right: -.5rem;
+    cursor: auto;
     position: absolute;
     padding: .5rem;
     display: none;
@@ -90,6 +98,22 @@ label {
 
 .power-options-popout button {
     width: 100%;
+    padding: 1em 0;
+    margin: .25em 0;
+    border: 1px solid #ddd;
+    background-color: #eee;
+    cursor: pointer;
+    transition: border-color .1s ease-in-out,
+                background-color .1s ease-in-out,
+                box-shadow .1s ease-in-out;
+}
+
+.power-options-popout button:hover {
+    width: 100%;
+    padding: 1em 0;
+    background-color: #ddd;
+    border-color: #aaa;
+    box-shadow: .1rem .1rem .3rem rgba(0,0,0,.25);
 }
 
 .power-options:hover .power-options-popout {
@@ -142,4 +166,8 @@ footer a {
 a:hover {
     color: #ffffff;
     background-color: #aaaaaa;
+}
+
+@keyframes appear {
+    to {opacity: 1;}
 }
