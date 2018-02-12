@@ -3,35 +3,15 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Symfony\Component\Yaml\Yaml;
-use \KodiKontroller\KodiKontrollerScreen;
-use \KodiKontroller\KodiKontrollerCommand;
+use KodiKontroller\KodiKontrollerScreen;
+use KodiKontroller\KodiKontrollerCommand;
 
 
 // ----- Tests -----
 
 $app->get('/test', function (Request $request, Response $response, array $args) {
-    $args['config'] = Yaml::parseFile(__DIR__ . '/../config.yml');
-    $args['baseUrl'] = $this->request->getUri()->getBaseUrl();
-    $data = $request->getParsedBody();
-
-    $commandData = [
-        "jsonrpc" => "2.0",
-        "id" => "1",
-        "method" => "GUI.ShowNotification",
-        "params" => [
-            "title" => "Notification",
-            "message" => "Hi",
-            "displaytime" => 10000,
-        ]
-    ];
-
-    $targetData = [
-        'host' => 'http://kodi:password@192.168.0.28:8081',
-    ];
-
-    $command = new KodiKontrollerCommand($targetData, $commandData);
-
-    return $command->exec();
+    $k = $this->get('kontroller');
+    return '[' . $k->getTargetType('pud') . ']<br>';
 });
 
 
@@ -39,7 +19,8 @@ $app->get('/test', function (Request $request, Response $response, array $args) 
 // ----- Main interface -----
 
 $app->get('/main', function (Request $request, Response $response, array $args) {
-    $args['config'] = Yaml::parseFile(__DIR__ . '/../config.yml');
+    $k = $this->get('kontroller');
+    $args['screens'] = $k->getScreens();
     return $this->view->render($response, 'main.html.twig', $args);
 });
 
@@ -48,9 +29,19 @@ $app->get('/main', function (Request $request, Response $response, array $args) 
 // ----- AJAX Endpoints -----
 
 $app->post('/send/{target}', function (Request $request, Response $response, array $args) {
-    $args['config'] = Yaml::parseFile(__DIR__ . '/../config.yml');
-    $data = $request->getParsedBody();
-    return $response->withStatus(400);
+
+    $target = $args['target'];
+    $requestData = $request->getParsedBody()['request'];
+    $kontroller = $this->get('kontroller');
+
+    $command = new KodiKontrollerCommand($target, $requestData, $kontroller);
+    $data = $command->exec();
+
+    $status = (isset($data->result) && $data->result == 'OK') ? 200 : 500;
+    $response = $response->withJson($data);;
+
+    return $response->withStatus($status);
+
 });
 
 

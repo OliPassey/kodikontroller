@@ -41,8 +41,9 @@
 
             <section class="screens" >
 
-                {% for screen in config.screens %}
-                    {% include 'components/screen-panel.html.twig' %}
+                {% for screen in screens %}
+                    {% set screenArray = screen.toArray() %}
+                    {% include 'components/screen-panel.html.twig' with screenArray %}
                 {% endfor %}
 
             </section>

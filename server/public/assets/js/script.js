@@ -6,12 +6,12 @@
     var log = function (source, msg) {
 
         // Create a timestamp
-        // (OMFG JS Date formatting sucks...)
+        // (OMG JS Date formatting sucks...)
         var timestamp = new Date();
         var timestamp_human = ("0"+(timestamp.getDate()+1)).slice(-2) + '/' + ("0"+(timestamp.getMonth()+1)).slice(-2) + '/' + timestamp.getFullYear()
             + ' ' + ("0" + timestamp.getHours()).slice(-2) + ':' + ("0"+timestamp.getMinutes()).slice(-2) + ':' + ("0"+timestamp.getSeconds()).slice(-2);
 
-        msg = '[' + timestamp_human + ']  [' + source + '] ' + msg + "\n";
+        msg = '[' + timestamp_human + ']  [' + source + ']  ' + msg + "\n";
 
         var output = $('[name="response"]');
         output.val( output.val() + msg);
@@ -22,18 +22,21 @@
 
 
     // Add actions to all buttons
-    $('button').each( function() {
+    $('.panel button').each( function() {
 
         var $this = $(this);
 
-
         $this.click( function() {
 
-            var target = $this.data('kodi-target');
-            var action  = $this.data('kodi-action');
-            var panel = $('#panel_' + target);
+            // Walk up the DOM to find a data-kodi-target attribute on a parent element
+            var panel = $this.parent();
+            while (typeof panel.data('kodi-target') === 'undefined') {
+                panel = panel.parent();
+            }
 
-            var kodi_host = panel.data('kodi-host');
+            var target = panel.data('kodi-target');
+            var panel = $(panel);
+            var action  = $this.data('kodi-action');
 
             if (typeof target === 'undefined') {
                 log("ERROR", "No target was defined, nothing to send.");
@@ -68,15 +71,23 @@
                     var re;
 
                     // Handle youtube URLs
-                    // TODO generalize and include playlists, youtu.be URLs
+                    // TODO: generalize and include playlists
+                    // https://www.youtube.com/watch?v=B7AjF4of300
                     if (url.search('youtube.com') !== -1) {
                         re = /v=[^&$]*/i;
                         var ytid = url.match(re)[0].substr(2);
                         url = 'plugin://plugin.video.youtube/play/?video_id=' + ytid;
                     }
 
+                    // https://youtu.be/B7AjF4of300
+                    if (url.search('youtu.be') !== -1) {
+                        re = /be\/[^&$]*/i;
+                        var ytid = url.match(re)[0].substr(3);
+                        url = 'plugin://plugin.video.youtube/play/?video_id=' + ytid;
+                    }
+
                     // Handle vimeo URLs
-                    // TODO all the things.
+                    // TODO: all the things.
                     // https://vimeo.com/xxxxxxxx -> plugin://plugin.video.vimeo/play/?video_id=xxxxxxxx
                     if (url.search('vimeo.com') !== -1) {
                        re = /vimeo\.com\/[^&$]*/i;
@@ -254,12 +265,10 @@
             if (rpc_data !== '') {
 
                 $.ajax({
-                    url: kodi_host + '/jsonrpc',
-                    dataType: 'jsonp',
-                    jsonpCallback: 'jsonCallback',
-                    type: 'GET',
+                    url: '/send/' + target,
                     async: true,
-                    timeout: 10000,
+                    type: "POST",
+                    timeout: 5000,
                     data: rpc_data
                 })
 
@@ -272,7 +281,7 @@
                     }
                 })
 
-                // Older Versions Of Kodi/XBMC Tend To Fail Due To CORS But Typically If A '200' Is Returned Then It Has Worked!
+                // Older Versions Of Kodi/XBMC Tend To Fail Due To CORS But Typically If a '200' Is Returned Then It Has Worked!
                 .fail( function( jqXHR, textStatus ) {
                     if ( jqXHR.status == 200 ) {
                         log(target, "Done\n" );

@@ -1,37 +1,42 @@
 groups:
 
-  - name:        public
+  public:
     displayName: Public screens
     autoOn:      08:00:00
     autoOff:     18:15:00
 
-  - name:        tech
-    displayName: Technical Solutions
+  private:
+    displayName: Private screens
     autoOn:      08:00:00
     autoOff:     18:15:00
 
 
 screens:
 
-  - name:        screen1
+  screen1:
     displayName: Screen One
     host:        https://user:password@scrn1.test.fake:1234
-    group:       public
+    groups:
+      - public
 
-  - name:        screen2
+  screen2:
     displayName: Screen Two
     host:        https://user:password@scrn2.test.fake:1234
-    group:       public
+    groups:
+      - private
 
-  - name:        screen3
+  screen3:
     displayName: Screen Three
     host:        https://user:password@scrn3.test.fake:1234
-    group:       tech
+    groups:
+      - public
 
-  - name:        screen4
+  screen4:
     displayName: Screen Four
     host:        https://user:password@scrn4.test.fake:1234
-    group:       tech
+    groups:
+      - public
+      - private
 
 
 locations:

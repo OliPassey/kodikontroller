@@ -1,16 +1,16 @@
-<article id="panel_{{- screen.name -}}" class="panel screen-panel" data-kodi-host="{{- screen.host -}}">
+<article id="panel_{{- screenArray.name -}}" class="panel screen-panel" data-kodi-target="{{- screenArray.name -}}">
 
     {% include 'components/screen-panel__power-options.html.twig' %}
 
-    <h2>{{- screen.displayName -}}</h2>
+    <h2>{{- screenArray.displayName -}}</h2>
 
     <div class="screenshot_holder" style="background-image: url('assets/img/logo.png')"></div>
 
     <input name="url" type="text" placeholder="Enter a URL or location">
-    <button data-kodi-target="{{- screen.name -}}" data-kodi-action="play" class="inline">Play</button>
+    <button data-kodi-action="play" class="inline">Play</button>
 
     <input name="message" type="text" placeholder="Enter a message">
-    <button data-kodi-target="{{- screen.name -}}" data-kodi-action="notify" class="inline">Notify</button>
+    <button data-kodi-action="notify" class="inline">Notify</button>
 
     <br>
 
