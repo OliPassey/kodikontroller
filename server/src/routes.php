@@ -21,6 +21,7 @@ $app->get('/test', function (Request $request, Response $response, array $args) 
 $app->get('/main', function (Request $request, Response $response, array $args) {
     $k = $this->get('kontroller');
     $args['screens'] = $k->getScreens();
+    $args['groups'] = $k->getGroups();
     return $this->view->render($response, 'main.html.twig', $args);
 });
 

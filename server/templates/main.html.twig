@@ -39,12 +39,27 @@
 
             </section>
 
-            <section class="panels" >
+            <section class="panels">
+
+                <h2>Screens</h2>
 
                 {% set count = 0 %}
-                {% for screen in screens %}
-                    {% set screenArray = screen.toArray() %}
-                    {% include 'components/screen-panel.html.twig' with screenArray %}
+                {% for target in screens %}
+                    {% set targetArray = target.toArray() %}
+                    {% include 'components/target-panel.html.twig' with targetArray %}
+                    {% set count = count + 1 %}
+                {% endfor %}
+
+            </section>
+
+            <section class="panels">
+
+                <h2>Groups</h2>
+
+                {% set count = 0 %}
+                {% for target in groups %}
+                    {% set targetArray = target.toArray() %}
+                    {% include 'components/target-panel.html.twig' with targetArray %}
                     {% set count = count + 1 %}
                 {% endfor %}
 
