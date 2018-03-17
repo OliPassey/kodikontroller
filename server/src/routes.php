@@ -10,8 +10,16 @@ use KodiKontroller\KodiKontrollerCommand;
 // ----- Tests -----
 
 $app->get('/test', function (Request $request, Response $response, array $args) {
+
     $k = $this->get('kontroller');
-    return '[' . $k->getTargetType('pud') . ']<br>';
+    $target = "screen1";
+    $request = '{"jsonrpc":"2.0","id":"1","method":"Player.Open","params":{"item":{"file":"http://10.20.0.21:8085/media/dummy-news-cycle.m3u"}}}';
+
+
+    $command = new KodiKontrollerCommand($target, $request, $k);
+    $data = $command->exec();
+
+    return print_r($data, true);
 });
 
 

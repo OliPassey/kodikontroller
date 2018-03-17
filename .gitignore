@@ -1,6 +1,9 @@
 .idea/
 assets/js/config.js
 
+# Announcer
+/announcer/covers/*
+
 
 # Slim PHP framework
 /server/config.yml
