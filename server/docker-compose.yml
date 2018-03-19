@@ -1,13 +1,38 @@
 version: '2'
-
 services:
-    kodikontroller:
-        image: php:7-alpine
-        working_dir: /var/www
-        command: sh php-server-setup.sh
-        environment:
-            docker: "true"
-        ports:
-            - 8080:8080
-        volumes:
-            - .:/var/www
+  nginx:
+    networks:
+      - amazeeio-network
+      - default
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    labels:
+      lagoon.type: nginx-php
+      lagoon.name: nginx
+    volumes:
+      - .:/app:delegated
+    environment:
+      - AMAZEEIO_URL=kodikontroller.docker.amazee.io
+      - AMAZEEIO=AMAZEEIO
+      - AMAZEEIO_HTTP_PORT=8080
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    labels:
+      lagoon.type: nginx-php
+      lagoon.name: nginx
+    volumes:
+      - .:/app:delegated
+  mariadb:
+    build:
+      context: .
+      dockerfile: Dockerfile.mariadb
+    user: '111111'
+    labels:
+      lagoon.type: mariadb
+
+networks:
+  amazeeio-network:
+    external: true

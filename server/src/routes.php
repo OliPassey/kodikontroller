@@ -11,9 +11,12 @@ use KodiKontroller\KodiKontrollerCommand;
 
 $app->get('/test', function (Request $request, Response $response, array $args) {
 
+    $uri = $request->getUri();
+    $baseUrl = $uri->getScheme() . '://' . $uri->getHost() . ':' . $uri->getPort();
+
     $k = $this->get('kontroller');
-    $target = "screen1";
-    $request = '{"jsonrpc":"2.0","id":"1","method":"Player.Open","params":{"item":{"file":"http://10.20.0.21:8085/media/dummy-news-cycle.m3u"}}}';
+    $target = "screen2";
+    $request = '{"jsonrpc":"2.0","id":"1","method":"Player.Open","params":{"item":{"file":"' . $baseUrl . '/media/dummy-news-cycle.m3u"}}}';
 
 
     $command = new KodiKontrollerCommand($target, $request, $k);
