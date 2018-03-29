@@ -10,8 +10,19 @@ use KodiKontroller\KodiKontrollerCommand;
 // ----- Tests -----
 
 $app->get('/test', function (Request $request, Response $response, array $args) {
+
+    $uri = $request->getUri();
+    $baseUrl = $uri->getScheme() . '://' . $uri->getHost() . ':' . $uri->getPort();
+
     $k = $this->get('kontroller');
-    return '[' . $k->getTargetType('pud') . ']<br>';
+    $target = "screen2";
+    $request = '{"jsonrpc":"2.0","id":"1","method":"Player.Open","params":{"item":{"file":"' . $baseUrl . '/media/dummy-news-cycle.m3u"}}}';
+
+
+    $command = new KodiKontrollerCommand($target, $request, $k);
+    $data = $command->exec();
+
+    return print_r($data, true);
 });
 
 
@@ -21,6 +32,7 @@ $app->get('/test', function (Request $request, Response $response, array $args) 
 $app->get('/main', function (Request $request, Response $response, array $args) {
     $k = $this->get('kontroller');
     $args['screens'] = $k->getScreens();
+    $args['groups'] = $k->getGroups();
     return $this->view->render($response, 'main.html.twig', $args);
 });
 
