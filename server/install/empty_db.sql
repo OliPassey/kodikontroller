@@ -1,3 +1,5 @@
+USE kodikontroller;
+
 -- MySQL dump 10.16 Distrib 10.1.28-MariaDB, for Linux (x86_64)
  --
  -- Host: localhost Database: kodikontroller
