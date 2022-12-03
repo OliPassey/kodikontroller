@@ -15,11 +15,14 @@ if (isset($_POST['youtube_url'])) {
   $kodi->Player->Open(['item' => ['file' => 'plugin://plugin.video.youtube/?action=play_video&videoid=' . $video_id]]);
 }
 
-// Check if a notification message was submitted
-if (isset($_POST['notification_message'])) {
+try {
   // Send the notification to Kodi
-  $kodi->GUI->ShowNotification(['title' => 'New Notification', 'message' => $_POST['notification_message']]);
+  $kodi->ShowNotification(['title' => 'New Notification', 'message' => $_POST['notification_message']]);
+} catch (Exception $e) {
+  // Log the error message
+  error_log($e->getMessage());
 }
+
 
 // Display the GUI form for controlling Kodi
 echo '
