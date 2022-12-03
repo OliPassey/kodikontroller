@@ -9,9 +9,6 @@ $kodi_endpoints = array(
   'Bedroom' => new KodiAPI('http://kodi:Southpark6279@10.0.0.170:8080/jsonrpc')
 );
 
-
-
-
 // Check if a YouTube URL was submitted
 if (isset($_POST['youtube_url']) && isset($_POST['kodi_endpoint'])) {
   // Extract the video ID from the URL
@@ -106,6 +103,4 @@ echo '
 <input type="submit" name="stop_playback" value="Stop Playback" />
 </body>
 </html>
-
 ';
-
