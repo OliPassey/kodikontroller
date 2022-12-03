@@ -88,7 +88,39 @@ class Player {
     // Return the response data
     return $response_data['result'];
   }
+
+  // Define the Stop method
+  public function Stop($params) {
+    // Build the request data
+    $request_data = array(
+      'jsonrpc' => '2.0',
+      'method' => 'Player.Stop',
+      'params' => $params,
+      'id' => 1
+    );
+
+    // Encode the request data as JSON
+    $request_json = json_encode($request_data);
+
+    // Send the request to the Kodi API
+    $ch = curl_init($this->base_url);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $request_json);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'Content-Type: application/json',
+      'Content-Length: ' . strlen($request_json)
+    ));
+    $response_json = curl_exec($ch);
+
+    // Decode the response data
+    $response_data = json_decode($response_json, true);
+
+    // Return the response data
+    return $response_data['result'];
+  }
 }
+
 
 class GUI {
   // Define the class properties
@@ -131,5 +163,6 @@ class GUI {
     return $response_data['result'];
   }
 }
+
 
 

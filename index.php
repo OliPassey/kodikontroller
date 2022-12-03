@@ -36,6 +36,14 @@ if (isset($_POST['youtube_url']) && isset($_POST['kodi_endpoint'])) {
   }
 }
 
+// Check if the "Stop Playback" button was clicked
+if (isset($_POST['stop_playback'])) {
+  // Loop through all Kodi endpoints
+  foreach ($kodi_endpoints as $kodi_endpoint) {
+    // Stop playback on the current Kodi endpoint
+    $kodi_endpoint->Player->Stop();
+  }
+}
 
 
 // Display the GUI form for controlling Kodi
@@ -80,7 +88,9 @@ echo '
 <header>
   <h1>KodiKontroller</h1>
 </header>
-<br><br>
+<br>
+<input type="submit" name="stop_playback" value="Stop Playback" />
+<br>
 <form action="" method="post">
   <label>YouTube URL:</label>
   <input type="text" name="youtube_url" />
