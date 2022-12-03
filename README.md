@@ -1,6 +1,6 @@
 ![KodiKontroller Logo](https://github.com/OliPassey/kodikontroller/raw/master/logo.PNG)
 ## by Oliver Passey
-### Current Status: Started over December 2022.
+### Current Status: Restarted over December 2022.
 
 #### New To Do List;
 MVP Level GUI for sending 
