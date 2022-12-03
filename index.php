@@ -55,9 +55,7 @@ echo '
     body {
       background-color: #333;
       color: #fff;
-      display: flex;
-      justify-content: space-between;
-    }
+      }
     
     .youtube-section, .notification-section {
       width: 45%;
@@ -88,9 +86,6 @@ echo '
 <header>
   <h1>KodiKontroller</h1>
 </header>
-<br>
-<input type="submit" name="stop_playback" value="Stop Playback" />
-<br>
 <form action="" method="post">
   <label>YouTube URL:</label>
   <input type="text" name="youtube_url" />
@@ -104,12 +99,13 @@ echo '
   <option value="Bedroom">Bedroom</option>
 </select>
 
-
-  <input type="submit" value="Play on Kodi" />
-  <input type="submit" value="Send Notification" />
+<input type="submit" value="Play on Kodi" />
+<input type="submit" value="Send Notification" />
 </form>
-
+<p>
+<input type="submit" name="stop_playback" value="Stop Playback" />
 </body>
 </html>
+
 ';
 
