@@ -4,10 +4,11 @@
 
 #### New To Do List;
 MVP Level GUI for sending 
-- [ ] YouTube links to instances
-- [ ] Notifications
+- [x] YouTube links to instances
+- [x] Notifications
 - [ ] Image Content for Dashboarding (Url based for now)
 - [ ] Some level of templating for usability
+- [ ] Multiple endpoints
 
 Phase 2:
 - [ ] Lower Third Notifications
