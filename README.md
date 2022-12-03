@@ -1,9 +1,23 @@
 ![KodiKontroller Logo](https://github.com/OliPassey/kodikontroller/raw/master/logo.PNG)
-## by Oliver Passey & James South
-[olipassey.me.uk/kodikontroller](http://olipassey.me.uk/kodikontroller/)
-### Current Status: It Lives, but needs love.
+## by Oliver Passey
+### Current Status: Started over December 2022.
 
-#### To do:
+#### New To Do List;
+MVP Level GUI for sending 
+	YouTube links to instances
+	Notifications
+	Image Content for Dashboarding (Url based for now)
+	Some level of templating for usability
+
+Phase 2:
+	Lower Third Notifications
+	Auto Generated Video Notifications with FFMPEG
+	Adding and removing nodes from GUI
+
+
+
+
+#### Legacy To do:
 Kontroller:
 
 	Variables to config.js
