@@ -5,8 +5,8 @@ include 'youtube-api.php';
 
 // Define the array of Kodi endpoints
 $kodi_endpoints = array(
-  'Office' => new KodiAPI('http://kodi:Southpark6279@10.0.0.7:8080/jsonrpc'),
-  'Bedroom' => new KodiAPI('http://kodi:Southpark6279@10.0.0.170:8080/jsonrpc')
+  'Office' => new KodiAPI('http://kodi:kodi@10.0.0.7:8080/jsonrpc'),
+  'Bedroom' => new KodiAPI('http://kodi:kodi@10.0.0.170:8080/jsonrpc')
 );
 
 // Check if a YouTube URL was submitted
