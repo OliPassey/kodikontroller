@@ -15,12 +15,9 @@ if (isset($_POST['youtube_url'])) {
   $kodi->Player->Open(['item' => ['file' => 'plugin://plugin.video.youtube/?action=play_video&videoid=' . $video_id]]);
 }
 
-try {
+if (isset($_POST['notification_message'])) {
   // Send the notification to Kodi
-  $kodi->ShowNotification(['title' => 'New Notification', 'message' => $_POST['notification_message']]);
-} catch (Exception $e) {
-  // Log the error message
-  error_log($e->getMessage());
+  $kodi->GUI->ShowNotification(['title' => 'New Notification', 'message' => $_POST['notification_message']]);
 }
 
 
@@ -28,10 +25,17 @@ try {
 echo '
 <html>
 <head>
+<title>KodiKontroller</title>
   <style>
     body {
       background-color: #333;
       color: #fff;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .youtube-section, .notification-section {
+      width: 45%;
     }
 
     label {
@@ -56,15 +60,28 @@ echo '
   </style>
 </head>
 <body>
+<header>
+  <h1>KodiKontroller</h1>
+</header>
+
+<div class="youtube-section">
+  <h2>YouTube URL</h2>
   <form action="" method="post">
     <label>YouTube URL:</label>
     <input type="text" name="youtube_url" />
     <input type="submit" value="Play on Kodi" />
+  </form>
+</div>
 
+<div class="notification-section">
+  <h2>Notification Message</h2>
+  <form action="" method="post">
     <label>Notification Message:</label>
     <input type="text" name="notification_message" />
     <input type="submit" value="Send Notification" />
   </form>
+</div>
+
 </body>
 </html>
 ';
