@@ -6,29 +6,11 @@
 MVP Level GUI for sending 
 - [x] YouTube links to instances
 - [x] Notifications
+- [x] Multiple endpoints
 - [ ] Image Content for Dashboarding (Url based for now)
 - [ ] Some level of templating for usability
-- [ ] Multiple endpoints
 
 Phase 2:
 - [ ] Lower Third Notifications
 - [ ] Auto Generated Video Notifications with FFMPEG
 - [ ] Adding and removing nodes from GUI
-
-
-
-
-#### Legacy To do:
-Kontroller:
-Announcer:
-Slack2Kodi:
-Kodi Work:
-Long-Term Work:
-
-	New Kodi Skin (Display):
-		Minimal Home Screen
-		Quick Access to BBC News
-	Standardised LibreElec build or Backup / Restore Option
-	Chrominium Support - Project looks dead, ~20 versions behind production
-	
-	

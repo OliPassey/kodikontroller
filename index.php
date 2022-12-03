@@ -3,22 +3,39 @@
 include 'kodi-api.php';
 include 'youtube-api.php';
 
-// Connect to the Kodi API
-$kodi = new KodiAPI('http://kodi:Southpark6279@10.0.0.7:8080/jsonrpc');
+// Define the array of Kodi endpoints
+$kodi_endpoints = array(
+  'Office' => new KodiAPI('http://kodi:Southpark6279@10.0.0.7:8080/jsonrpc'),
+  'Bedroom' => new KodiAPI('http://kodi:Southpark6279@10.0.0.170:8080/jsonrpc')
+);
+
+
+
 
 // Check if a YouTube URL was submitted
-if (isset($_POST['youtube_url'])) {
+if (isset($_POST['youtube_url']) && isset($_POST['kodi_endpoint'])) {
   // Extract the video ID from the URL
   $video_id = youtube_extract_video_id($_POST['youtube_url']);
 
-  // Play the YouTube video on Kodi
-  $kodi->Player->Open(['item' => ['file' => 'plugin://plugin.video.youtube/?action=play_video&videoid=' . $video_id]]);
+  // Check if the video ID is valid
+  if ($video_id !== false) {
+    // Connect to the selected Kodi API endpoint
+    $kodi = $kodi_endpoints[$_POST['kodi_endpoint']];
+
+    // Play the YouTube video on Kodi
+    $kodi->Player->Open(['item' => ['file' => 'plugin://plugin.video.youtube/?action=play_video&videoid=' . $video_id]]);
+  }
+
+  // Check if a notification message was submitted
+  if (isset($_POST['notification_message']) && isset($_POST['kodi_endpoint'])) {
+    // Connect to the selected Kodi API endpoint
+    $kodi = $kodi_endpoints[$_POST['kodi_endpoint']];
+
+    // Send the notification to Kodi
+    $kodi->GUI->ShowNotification(['title' => 'New Notification', 'message' => $_POST['notification_message']]);
+  }
 }
 
-if (isset($_POST['notification_message'])) {
-  // Send the notification to Kodi
-  $kodi->GUI->ShowNotification(['title' => 'New Notification', 'message' => $_POST['notification_message']]);
-}
 
 
 // Display the GUI form for controlling Kodi
@@ -63,25 +80,26 @@ echo '
 <header>
   <h1>KodiKontroller</h1>
 </header>
+<br><br>
+<form action="" method="post">
+  <label>YouTube URL:</label>
+  <input type="text" name="youtube_url" />
 
-<div class="youtube-section">
-  <h2>YouTube URL</h2>
-  <form action="" method="post">
-    <label>YouTube URL:</label>
-    <input type="text" name="youtube_url" />
-    <input type="submit" value="Play on Kodi" />
-  </form>
-</div>
+  <label>Notification Message:</label>
+  <input type="text" name="notification_message" />
 
-<div class="notification-section">
-  <h2>Notification Message</h2>
-  <form action="" method="post">
-    <label>Notification Message:</label>
-    <input type="text" name="notification_message" />
-    <input type="submit" value="Send Notification" />
-  </form>
-</div>
+  <label>Kodi Endpoint:</label>
+  <select name="kodi_endpoint">
+  <option value="Office">Office</option>
+  <option value="Bedroom">Bedroom</option>
+</select>
+
+
+  <input type="submit" value="Play on Kodi" />
+  <input type="submit" value="Send Notification" />
+</form>
 
 </body>
 </html>
 ';
+
