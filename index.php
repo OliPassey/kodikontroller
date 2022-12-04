@@ -5,7 +5,7 @@ include 'youtube-api.php';
 
 // Define the array of Kodi endpoints
 $kodi_endpoints = array(
-  'Office' => new KodiAPI('http://kodi:kodi@10.0.0.7:8080/jsonrpc'),
+  'Office' => new KodiAPI('http://kodi:Southpark6279@10.0.0.7:8080/jsonrpc'),
   'Bedroom' => new KodiAPI('http://kodi:kodi@10.0.0.170:8080/jsonrpc')
 );
 
@@ -34,7 +34,7 @@ if (isset($_POST['youtube_url']) && isset($_POST['kodi_endpoint'])) {
 }
 
 // Check if the "Stop Playback" button was clicked
-if (isset($_POST['stop_playback'])) {
+if (isset($_POST['stop_playback']) && $_POST['stop_playback'] == "Stop Playback") {
   // Loop through all Kodi endpoints
   foreach ($kodi_endpoints as $kodi_endpoint) {
     // Stop playback on the current Kodi endpoint
