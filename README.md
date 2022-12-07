@@ -14,3 +14,22 @@ MVP Level GUI for sending
 Phase 2:
 - [ ] Lower Third Notifications
 - [ ] Adding and removing nodes from GUI
+
+### Instructions
+In order to use this code you must create / amend the kodi_endpoints.json file with your endpoints.
+File will looks like this;
+
+{
+    "Office": {
+      "username": "kodi",
+      "password": "kodi",
+      "host": "192.168.0.12",
+      "port": "8080"
+    },
+    "Bedroom": {
+      "username": "kodi",
+      "password": "kodi",
+      "host": "192.168.0.17",
+      "port": "8080"
+    }
+  }
