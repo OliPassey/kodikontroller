@@ -68,19 +68,62 @@ echo '
       margin-bottom: 5px;
     }
 
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: none;
-      color: #333;
-      background-color: #fff;
+    <!-- HTML !-->
+    <button class="input" role="button">Button 5</button>
+    
+    /* CSS */
+    .input {
+      align-items: center;
+      background-clip: padding-box;
+      background-color: #fa6400;
+      border: 1px solid transparent;
+      border-radius: .25rem;
+      box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+      box-sizing: border-box;
+      color: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      justify-content: center;
+      line-height: 1.25;
+      margin: 0;
+      min-height: 3rem;
+      padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+      position: relative;
+      text-decoration: none;
+      transition: all 250ms;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      vertical-align: baseline;
+      width: auto;
+    }
+    
+    .input:hover,
+    .input:focus {
+      background-color: #fb8332;
+      box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+    }
+    
+    .input:hover {
+      transform: translateY(-1px);
+    }
+    
+    .input:active {
+      background-color: #c85000;
+      box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
+      transform: translateY(0);
     }
 
     input[type="submit"] {
-      background-color: #333;
+      background-color: #fa6400;
       color: #fff;
       cursor: pointer;
+      border-radius: 3px;
+      height: 31px;
+      width: 130px;
     }
   </style>
 </head>
@@ -100,7 +143,7 @@ echo '
   <option value="Office">Office</option>
   <option value="Bedroom">Bedroom</option>
 </select>
-
+<p>
 <input type="submit" value="Play on Kodi" />
 <input type="submit" value="Send Notification" />
 </form>
