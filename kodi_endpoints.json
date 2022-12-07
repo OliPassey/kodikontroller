@@ -1,0 +1,14 @@
+{ 
+  "Office": { 
+    "username": "kodi", 
+    "password": "kodi", 
+    "host": "192.168.0.12", 
+    "port": "8080"
+    }, 
+  "Bedroom": { 
+    "username": "kodi",
+    "password": "kodi",
+    "host": "192.168.0.17",
+    "port": "8080" 
+    } 
+}
