@@ -13,38 +13,43 @@ if (isset($_POST['input-video'])) {
   $ffmpeg = '/usr/bin/ffmpeg';
 
   // Set up the output file path.
-  $outputFile = '/var/www/olipassey/kodi/video/out/video_' . $timestamp . '.mp4';
+  $outputFile = './video/out/video_' . $timestamp . '.mp4';
 
   // Set up the font and font size for the text.
-  $font = '/path/to/font.ttf';
-  $fontSize = 24;
+  $font = './foe_display-webfont.ttf';
+  $fontSize = 124;
 
   // Set the text to be added to the video.
-  $text = 'This text will be added to the video.';
+  $text = $_POST['text'];;
 
   // Set the color of the text in hexadecimal format.
   $color = '#ff0000';
 
   // Set the position of the text on the video.
-  $position = 'bottom';
+  $position = 'center';
 
   // Set the padding around the text in pixels.
   $padding = 10;
 
   // Set the duration of the text in seconds.
   $duration = 10;
+  
+  // Calculate the x and y coordinates of the text
+  $x = (w - text_w) / 2;
+  $y = (h - text_h) / 2;
 
   // Set up the command to run FFMPEG.
   $command = "$ffmpeg -i $inputFile -vf ";
 
   // Add the text to the video using the font, font size, color, position, padding, and duration.
-  $command .= "drawtext=fontfile=$font:fontsize=$fontSize:fontcolor=$color:x=(w-text_w)/2:y=(h-text_h)/2:text='$text'";
+  $command .= "drawtext=fontfile=$font:fontsize=$fontSize:fontcolor=$color:x=$x:y=$y:text='$text'";
 
   // Save the output video.
   $command .= " -y $outputFile";
 
   // Run the FFMPEG command.
   exec($command);
+  echo $command;
 }
 ?>
 <!-- HTML code goes here -->
@@ -55,7 +60,7 @@ if (isset($_POST['input-video'])) {
   <select id="input-video" name="input-video">
     <?php
     // Get an array of all files with the .mp4 extension in the input folder
-    $inputFolder = '/var/www/olipassey/kodi/video/in/';
+    $inputFolder = './video/in/';
     $inputFiles = glob($inputFolder . '*.mp4');
 
     // Loop through the array of input files and create an option for each one

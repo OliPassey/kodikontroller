@@ -118,7 +118,7 @@ echo '
     }
 
     input[type="submit"] {
-      background-color: #fa6400;
+      background-color: #0067a9;
       color: #fff;
       cursor: pointer;
       border-radius: 3px;
@@ -129,9 +129,10 @@ echo '
 </head>
 <body>
 <header>
-  <h1>KodiKontroller</h1>
+  <img src="https://github.com/OliPassey/kodikontroller/raw/master/logo.PNG" height=120px>
 </header>
 <form action="" method="post">
+    <h4>Usage: Enter a YouTube URL or Message to be sent, select your endpoint, and click the appropriate button</h4>
   <label>YouTube URL:</label>
   <input type="text" name="youtube_url" />
 
