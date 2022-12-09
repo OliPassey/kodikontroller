@@ -7,7 +7,7 @@ MVP Level GUI for sending
 - [x] YouTube links to instances
 - [x] Notifications
 - [x] Multiple endpoints
-- [x] Image Content for Dashboarding (Url based for now)
+- [ ] Image Content for Dashboarding (Url based for now)
 
 # In Progress, working but not perfect
 - [ ] Auto Generated Video Notifications with FFMPEG
