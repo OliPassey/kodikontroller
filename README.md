@@ -2,22 +2,6 @@
 ## by Oliver Passey
 ### Current Status: Restarted over December 2022.
 
-#### New To Do List;
-MVP Level GUI for sending 
-- [x] YouTube links to instances
-- [x] Notifications
-- [x] Multiple endpoints
-- [ ] Image Content for Dashboarding (Url based for now)
-
-# In Progress, working but not perfect
-- [ ] Auto Generated Video Notifications with FFMPEG
-- [ ] Auto Generated Image with text overlay Notifications
-- [ ] Some level of templating for usability
-
-Phase 2:
-- [ ] Lower Third Notifications
-- [ ] Adding and removing nodes from GUI
-
 ### Usage
 
 This is the control part of an office dashboard display system, utilising Kodi.
@@ -28,3 +12,20 @@ Kodi should be set up as usual and a user / pass set on the web browser. Details
 Everything is very manual at the moment, but the long term goal is to build a scheduler to automate display, and then the use case is to use this app for one-off notifications or amending the schedule.
 
 Longer term is to build an API so alerting platforms can call and display alerts on screen.
+
+### New To Do List;
+MVP Level GUI for sending 
+- [x] YouTube links to instances
+- [x] Notifications
+- [x] Multiple endpoints
+- [ ] Image Content for Dashboarding (Url based for now)
+
+### In Progress, working but not perfect
+- [ ] Auto Generated Video Notifications with FFMPEG
+- [ ] Auto Generated Image with text overlay Notifications
+- [ ] Some level of templating for usability
+
+Phase 2:
+- [ ] Lower Third Notifications
+- [ ] Adding and removing nodes from GUI
+
