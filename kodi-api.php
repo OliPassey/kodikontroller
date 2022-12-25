@@ -46,6 +46,40 @@ class KodiAPI {
     // Return the response data
     return $response_data['result'];
   }
+
+  public function GetActivePlayers() {
+    // Build the request data
+    $request_data = array(
+      'jsonrpc' => '2.0',
+      'method' => 'Player.GetActivePlayers',
+      'id' => 1
+    );
+  
+    // Encode the request data as JSON
+    $request_json = json_encode($request_data);
+  
+    // Send the request to the Kodi API
+    $ch = curl_init($this->base_url);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 2);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $request_json);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      'Content-Type: application/json',
+      'Content-Length: ' . strlen($request_json)
+    ));
+    $response_json = curl_exec($ch);
+  
+    // Decode the response data
+    $response_data = json_decode($response_json, true);
+  
+    // Return the response data
+    return $response_data['result'];
+    print_r($response_data);
+
+  }
+  
 }
 
 class Player {
@@ -90,18 +124,18 @@ class Player {
   }
 
   // Define the Stop method
-  public function Stop($params) {
+  public function Stop($playerId) {
     // Build the request data
     $request_data = array(
       'jsonrpc' => '2.0',
       'method' => 'Player.Stop',
-      'params' => $params,
+      'params' => array('playerid' => $playerId),
       'id' => 1
     );
-
+  
     // Encode the request data as JSON
     $request_json = json_encode($request_data);
-
+  
     // Send the request to the Kodi API
     $ch = curl_init($this->base_url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
@@ -112,13 +146,14 @@ class Player {
       'Content-Length: ' . strlen($request_json)
     ));
     $response_json = curl_exec($ch);
-
+  
     // Decode the response data
     $response_data = json_decode($response_json, true);
-
+  
     // Return the response data
     return $response_data['result'];
   }
+  
 }
 
 

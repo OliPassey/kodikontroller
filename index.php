@@ -14,6 +14,8 @@ foreach ($kodi_endpoints as $name => $endpoint) {
 }
 
 
+
+
 // Check if a YouTube URL was submitted
 if (isset($_POST['youtube_url']) && isset($_POST['kodi_endpoint'])) {
   // Extract the video ID from the URL
@@ -37,16 +39,25 @@ if (isset($_POST['youtube_url']) && isset($_POST['kodi_endpoint'])) {
     $kodi->GUI->ShowNotification(['title' => 'New Notification', 'message' => $_POST['notification_message']]);
   }
 }
-
 // Check if the "Stop Playback" button was clicked
 if (isset($_POST['stop_playback']) && $_POST['stop_playback'] == "Stop Playback") {
   // Loop through all Kodi endpoints
   foreach ($kodi_endpoints as $kodi_endpoint) {
-    // Stop playback on the current Kodi endpoint
-    $kodi_endpoint->Player->Stop();
+    // Get the active players for the current Kodi endpoint
+    $active_players = $kodi_endpoint->GetActivePlayers();
+
+    // Check if there are any active players
+    if (!empty($active_players)) {
+      // Loop through the active players
+      foreach ($active_players as $player) {
+        // Stop playback on the current player
+        $kodi_endpoint->Player->Stop(['playerid' => $player['playerid']]);
+      }
+    }
   }
 }
 
+ 
 
 // Display the GUI form for controlling Kodi
 echo '
@@ -131,6 +142,7 @@ echo '
 <header>
   <img src="https://github.com/OliPassey/kodikontroller/raw/master/logo.PNG" height=120px>
 </header>
+
 <form action="" method="post">
     <h4>Usage: Enter a YouTube URL or Message to be sent, select your endpoint, and click the appropriate button</h4>
   <label>YouTube URL:</label>
@@ -147,9 +159,31 @@ echo '
 <p>
 <input type="submit" value="Play on Kodi" />
 <input type="submit" value="Send Notification" />
+
 </form>
 <p>
 <input type="submit" name="stop_playback" value="Stop Playback" />
 </body>
 </html>
 ';
+// Loop through the Kodi endpoints
+foreach ($kodi_endpoints as $name => $kodi_endpoint) {
+  // Get the active players for the current Kodi endpoint
+  $active_players = $kodi_endpoint->GetActivePlayers();
+
+  // Print the name of the Kodi endpoint
+  echo '<h1>' . $name . '</h1>';
+
+  // Check if there are any active players
+  if (!empty($active_players)) {
+    // Loop through the active players
+    foreach ($active_players as $player) {
+      // Print the player type and ID
+      echo 'Player type: ' . $player['type'] . '<br>';
+      echo 'Player ID: ' . $player['playerid'] . '<br>';
+    }
+  } else {
+    // Print a message if there are no active players
+    echo 'There are no active players.';
+  }
+}
