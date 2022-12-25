@@ -159,18 +159,18 @@ echo '
 <p>
 <input type="submit" value="Play on Kodi" />
 <input type="submit" value="Send Notification" />
-
+<input type="submit" name="stop_playback" value="Stop Playback" />
 </form>
 <p>
-<input type="submit" name="stop_playback" value="Stop Playback" />
+
 </body>
 </html>
 ';
-// Loop through the Kodi endpoints
+// Display what is currently playing on what player for each Kodi endpoint
 foreach ($kodi_endpoints as $name => $kodi_endpoint) {
   // Get the active players for the current Kodi endpoint
   $active_players = $kodi_endpoint->GetActivePlayers();
-
+  
   // Print the name of the Kodi endpoint
   echo '<h1>' . $name . '</h1>';
 
@@ -181,9 +181,17 @@ foreach ($kodi_endpoints as $name => $kodi_endpoint) {
       // Print the player type and ID
       echo 'Player type: ' . $player['type'] . '<br>';
       echo 'Player ID: ' . $player['playerid'] . '<br>';
+
+      // Call the Player.GetItem method to get the currently playing item
+      $item = $kodi_endpoint->Player->GetItem(['playerid' => $player['playerid']]);
+
+      // Print the title of the currently playing item
+      echo 'Title: ' . $item['item'] . '<br>';
     }
   } else {
     // Print a message if there are no active players
     echo 'There are no active players.';
   }
 }
+
+
