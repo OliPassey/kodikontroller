@@ -29,3 +29,6 @@ Phase 2:
 - [ ] Lower Third Notifications
 - [ ] Adding and removing nodes from GUI
 
+#### Scheduler
+In order for the scheduler to work you must set a cron entry to hit scheduler.php every minute (or whatever frequency you wish)
+* * * * * /usr/local/bin/php /path/to/scheduler.php
