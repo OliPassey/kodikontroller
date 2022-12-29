@@ -1,8 +1,1 @@
-$scheduled_content = [
-    'content_type' => 'image',
-    'content_url' => 'https://example.com/image.jpg',
-    'display_duration' => 30,
-    'kodi_endpoint' => 'living_room',
-    'start_date' => '2022-01-01',
-    'end_date' => '2022-01-31'
-  ]
+[]

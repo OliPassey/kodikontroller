@@ -58,121 +58,117 @@ if (isset($_POST['stop_playback']) && $_POST['stop_playback'] == "Stop Playback"
 }
 
  
-
+// <link rel="stylesheet" type="text/css" href="style.css">
 // Display the GUI form for controlling Kodi
 echo '
 <html>
 <head>
 <title>KodiKontroller</title>
-  <style>
-    body {
-      background-color: #333;
-      color: #fff;
-      }
-    
-    .youtube-section, .notification-section {
-      width: 45%;
-    }
+<style>
+.kodi-endpoint {
+  display: inline-block;
+  margin: 20px;
+  border: 1px solid black;
+  padding: 10px;
+}
+.burger-menu {
+  display: none;
+}
 
-    label {
-      display: block;
-      margin-bottom: 5px;
-    }
+select, input {
+  border-radius: 6px;
+  height: 30px;
+  margin: 2px;
+}
 
-    <!-- HTML !-->
-    <button class="input" role="button">Button 5</button>
-    
-    /* CSS */
-    .input {
-      align-items: center;
-      background-clip: padding-box;
-      background-color: #fa6400;
-      border: 1px solid transparent;
-      border-radius: .25rem;
-      box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
-      box-sizing: border-box;
-      color: #fff;
-      cursor: pointer;
-      display: inline-flex;
-      font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      justify-content: center;
-      line-height: 1.25;
-      margin: 0;
-      min-height: 3rem;
-      padding: calc(.875rem - 1px) calc(1.5rem - 1px);
-      position: relative;
-      text-decoration: none;
-      transition: all 250ms;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-      vertical-align: baseline;
-      width: auto;
-    }
-    
-    .input:hover,
-    .input:focus {
-      background-color: #fb8332;
-      box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
-    }
-    
-    .input:hover {
-      transform: translateY(-1px);
-    }
-    
-    .input:active {
-      background-color: #c85000;
-      box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
-      transform: translateY(0);
-    }
+.burger-menu-icon {
+  width: 25px;
+  height: 3px;
+  background-color: black;
+  margin: 5px;
+}
 
-    input[type="submit"] {
-      background-color: #0067a9;
-      color: #fff;
-      cursor: pointer;
-      border-radius: 3px;
-      height: 31px;
-      width: 130px;
-    }
-  </style>
+.navigation {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  list-style: none;
+}
+
+.navigation li {
+  margin: 0 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .burger-menu {
+    display: block;
+  }
+
+  .navigation {
+    display: none;
+  }
+}
+
+</style>
 </head>
 <body>
+
+<script src="burger.js"></script>
+
 <header>
   <img src="https://github.com/OliPassey/kodikontroller/raw/master/logo.PNG" height=120px>
 </header>
+<div class="burger-menu">
+  <div class="burger-menu-icon"></div>
+</div>
 
+<nav class="navigation">
+  <ul>
+    <li><a href="https://olipassey.me.uk/kodi/">Home</a></li>
+    <li><a href="https://olipassey.me.uk/kodi/hosts.php">Endpoints</a></li>
+    <li><a href="https://olipassey.me.uk/kodi/scheduler.php">Scheduler</a></li>
+  </ul>
+</nav>
+<div class="input_form">
 <form action="" method="post">
-    <h4>Usage: Enter a YouTube URL or Message to be sent, select your endpoint, and click the appropriate button</h4>
+
+  <h4>Usage: Enter a YouTube URL or Message to be sent, select your endpoint, and click the appropriate button</h4>
   <label>YouTube URL:</label>
-  <input type="text" name="youtube_url" />
-
+  <input type="text" name="youtube_url" /><br>
   <label>Notification Message:</label>
-  <input type="text" name="notification_message" />
-
+  <input type="text" name="notification_message" /><br>
   <label>Kodi Endpoint:</label>
-  <select name="kodi_endpoint">
-  <option value="Office">Office</option>
-  <option value="Bedroom">Bedroom</option>
+  <select name="kodi_endpoint">';
+
+  // Loop through the array of Kodi endpoints and display them as options
+  foreach ($kodi_endpoints as $name => $endpoint) {
+    echo '<option value="' . $name . '">' . $name . '</option>';
+  }
+  
+  echo '
 </select>
 <p>
+<section>
+<br>
 <input type="submit" value="Play on Kodi" />
 <input type="submit" value="Send Notification" />
 <input type="submit" name="stop_playback" value="Stop Playback" />
+</section>
 </form>
+</div>
 <p>
-
 </body>
 </html>
+
+<div>
 ';
 // Display what is currently playing on what player for each Kodi endpoint
 foreach ($kodi_endpoints as $name => $kodi_endpoint) {
+  echo '<div class="kodi-endpoint">';
   // Get the active players for the current Kodi endpoint
   $active_players = $kodi_endpoint->GetActivePlayers();
-  
   // Print the name of the Kodi endpoint
-  echo '<h1>' . $name . '</h1>';
+  echo '<h1><img src=kodiblk.png height="24" width="24">' . $name . '</h1>';
 
   // Check if there are any active players
   if (!empty($active_players)) {
@@ -187,11 +183,90 @@ foreach ($kodi_endpoints as $name => $kodi_endpoint) {
 
       // Print the title of the currently playing item
       echo 'Title: ' . $item['item'] . '<br>';
+      echo '</div>';      
     }
   } else {
     // Print a message if there are no active players
     echo 'There are no active players.';
+    echo '</div>';
   }
 }
 
+// Removed inline styling from HTML
+  // <style>
+  //   body {
+  //     background-color: #333;
+  //     color: #fff;
+  //     background-image: url(https://olipassey.me.uk/kodi/bg.jpg);
+  //     background-size: cover;
+  //     }
+    
+  //   grad1 {
+  //     background-color: #cccccc;
+  //     opacity: .4; 
+  //   }
 
+  //   .youtube-section, .notification-section {
+  //     width: 45%;
+  //   }
+  //   label {
+  //     display: block;
+  //     margin-bottom: 5px;
+  //   }
+  //   <!-- HTML !-->
+  //   <button class="input" role="button">Button 5</button>
+    
+  //   /* CSS */
+  //   .input {
+  //     align-items: center;
+  //     background-clip: padding-box;
+  //     background-color: #fa6400;
+  //     border: 1px solid transparent;
+  //     border-radius: .25rem;
+  //     box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+  //     box-sizing: border-box;
+  //     color: #fff;
+  //     cursor: pointer;
+  //     display: inline-flex;
+  //     font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  //     font-size: 16px;
+  //     font-weight: 600;
+  //     justify-content: center;
+  //     line-height: 1.25;
+  //     margin: 0;
+  //     min-height: 3rem;
+  //     padding: calc(.875rem - 1px) calc(1.5rem - 1px);
+  //     position: relative;
+  //     text-decoration: none;
+  //     transition: all 250ms;
+  //     user-select: none;
+  //     -webkit-user-select: none;
+  //     touch-action: manipulation;
+  //     vertical-align: baseline;
+  //     width: auto;
+  //   }
+    
+  //   .input:hover,
+  //   .input:focus {
+  //     background-color: #fb8332;
+  //     box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+  //   }
+    
+  //   .input:hover {
+  //     transform: translateY(-1px);
+  //   }
+    
+  //   .input:active {
+  //     background-color: #c85000;
+  //     box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
+  //     transform: translateY(0);
+  //   }
+  //   input[type="submit"] {
+  //     background-color: #0067a9;
+  //     color: #fff;
+  //     cursor: pointer;
+  //     border-radius: 3px;
+  //     height: 31px;
+  //     width: 130px;
+  //   }
+  // </style>
