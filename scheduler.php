@@ -131,3 +131,13 @@ if (count($scheduled_content_array) > 0) {
   echo '<p>There are no scheduled content items.</p>';
 }
 
+// Check if the delete parameter is set in the query string
+if (isset($_GET['delete'])) {
+  // Delete the scheduled content item from the array
+  unset($scheduled_content_array[$_GET['delete']]);
+  // Update the JSON file with the modified array
+  file_put_contents('scheduled_content.json', json_encode($scheduled_content_array));
+  // Redirect back to the page to refresh the display
+  header('Location: scheduler.php');
+  exit;
+}
