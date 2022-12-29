@@ -36,44 +36,6 @@ if (isset($_POST['content_type']) && isset($_POST['content_url']) && isset($_POS
   exit;
 }
 
-// Check if there is any scheduled content that needs to be played
-$scheduled_content_json = file_get_contents('scheduled_content.json');
-$scheduled_content_array = json_decode($scheduled_content_json, true);
-
-foreach ($scheduled_content_array as $index => $scheduled_content) {
-  // Check if the current time is within the start and end dates
-  $current_time = new DateTime('now');
-  $start_time = new DateTime($scheduled_content['start_date']);
-  $end_time = new DateTime($scheduled_content['end_date']);
-
-  if ($current_time >= $start_time && $current_time <= $end_time) {
-    // Connect to the Kodi API endpoint
-    $kodi = $kodi_endpoints[$scheduled_content['kodi_endpoint']];
-
-    // Check the content type
-    if ($scheduled_content['content_type'] == 'image') {
-      // Display the image on Kodi
-      $kodi->GUI->ShowPicture(['picture' => $scheduled_content['content_url'], 'displaytime' => $scheduled_content['display_duration']]);
-    } elseif ($scheduled_content['content_type'] == 'video') {
-      // Play the video on Kodi
-      $kodi->Player->Open(['item' => ['file' => $scheduled_content['content_url']]]);
-    } elseif ($scheduled_content['content_type'] == 'youtube') {
-      // Extract the video ID from the URL
-      $video_id = youtube_extract_video_id($scheduled_content['content_url']);
-
-      // Check if the video ID is valid
-      if ($video_id !== false) {
-        // Play the YouTube video on Kodi
-        $kodi->Player->Open(['item' => ['file' => 'plugin://plugin.video.youtube/?action=play_video&videoid=' . $video_id]]);
-      }
-    }
-
-    // Remove the scheduled content from the JSON file
-    unset($scheduled_content_array[$index]);
-    file_put_contents('scheduled_content.json', json_encode($scheduled_content_array));
-  }
-}
-
 // Display the GUI form for scheduling content
 echo '
 <html>
@@ -133,8 +95,39 @@ echo '
   </form>
 </body>
 </html>';
+// Read the scheduled content JSON file
+$scheduled_content_json = file_get_contents('scheduled_content.json');
+$scheduled_content_array = json_decode($scheduled_content_json, true);
+// Check if there are any scheduled content items
+if (count($scheduled_content_array) > 0) {
+  // Display the table of scheduled content items
+  echo '<h2>Current Scheduled Content</h2>';
+  echo '<table>';
+  echo '<tr>';
+  echo '<th>Content Type</th>';
+  echo '<th>Content URL</th>';
+  echo '<th>Display Duration</th>';
+  echo '<th>Kodi Endpoint</th>';
+  echo '<th>Start Date</th>';
+  echo '<th>End Date</th>';
+  echo '<th>Action</th>';
+  echo '</tr>';
 
-   
-
-
+  // Loop through the scheduled content items
+  foreach ($scheduled_content_array as $index => $scheduled_content) {
+    echo '<tr>';
+    echo '<td>' . $scheduled_content['content_type'] . '</td>';
+    echo '<td>' . $scheduled_content['content_url'] . '</td>';
+    echo '<td>' . $scheduled_content['display_duration'] . '</td>';
+    echo '<td>' . $scheduled_content['kodi_endpoint'] . '</td>';
+    echo '<td>' . $scheduled_content['start_date'] . '</td>';
+    echo '<td>' . $scheduled_content['end_date'] . '</td>';
+    echo '<td><a href="scheduler.php?delete=' . $index . '">Delete</a></td>';
+    echo '</tr>';
+  }
+  echo '</table>';
+} else {
+  // Display a message if there are no scheduled content items
+  echo '<p>There are no scheduled content items.</p>';
+}
 
