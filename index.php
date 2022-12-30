@@ -64,12 +64,22 @@ echo '
 <html>
 <head>
 <title>KodiKontroller</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
+html {
+  background-image: url("bg.jpg");
+}
+
+body {
+  background: none;
+}
 .kodi-endpoint {
   display: inline-block;
   margin: 20px;
   border: 1px solid black;
   padding: 10px;
+  background-color: #f1f1f1;
+  box-shadow: 5px 10px #888888;
 }
 .burger-menu {
   display: none;
@@ -191,82 +201,3 @@ foreach ($kodi_endpoints as $name => $kodi_endpoint) {
     echo '</div>';
   }
 }
-
-// Removed inline styling from HTML
-  // <style>
-  //   body {
-  //     background-color: #333;
-  //     color: #fff;
-  //     background-image: url(https://olipassey.me.uk/kodi/bg.jpg);
-  //     background-size: cover;
-  //     }
-    
-  //   grad1 {
-  //     background-color: #cccccc;
-  //     opacity: .4; 
-  //   }
-
-  //   .youtube-section, .notification-section {
-  //     width: 45%;
-  //   }
-  //   label {
-  //     display: block;
-  //     margin-bottom: 5px;
-  //   }
-  //   <!-- HTML !-->
-  //   <button class="input" role="button">Button 5</button>
-    
-  //   /* CSS */
-  //   .input {
-  //     align-items: center;
-  //     background-clip: padding-box;
-  //     background-color: #fa6400;
-  //     border: 1px solid transparent;
-  //     border-radius: .25rem;
-  //     box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
-  //     box-sizing: border-box;
-  //     color: #fff;
-  //     cursor: pointer;
-  //     display: inline-flex;
-  //     font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
-  //     font-size: 16px;
-  //     font-weight: 600;
-  //     justify-content: center;
-  //     line-height: 1.25;
-  //     margin: 0;
-  //     min-height: 3rem;
-  //     padding: calc(.875rem - 1px) calc(1.5rem - 1px);
-  //     position: relative;
-  //     text-decoration: none;
-  //     transition: all 250ms;
-  //     user-select: none;
-  //     -webkit-user-select: none;
-  //     touch-action: manipulation;
-  //     vertical-align: baseline;
-  //     width: auto;
-  //   }
-    
-  //   .input:hover,
-  //   .input:focus {
-  //     background-color: #fb8332;
-  //     box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
-  //   }
-    
-  //   .input:hover {
-  //     transform: translateY(-1px);
-  //   }
-    
-  //   .input:active {
-  //     background-color: #c85000;
-  //     box-shadow: rgba(0, 0, 0, .06) 0 2px 4px;
-  //     transform: translateY(0);
-  //   }
-  //   input[type="submit"] {
-  //     background-color: #0067a9;
-  //     color: #fff;
-  //     cursor: pointer;
-  //     border-radius: 3px;
-  //     height: 31px;
-  //     width: 130px;
-  //   }
-  // </style>

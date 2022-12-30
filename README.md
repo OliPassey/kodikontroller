@@ -18,21 +18,21 @@ MVP Level GUI for sending
 - [x] YouTube links to instances
 - [x] Notifications
 - [x] Multiple endpoints
+- [x] Adding and removing nodes from GUI
 - [ ] Image Content for Dashboarding (Url based for now)
 - [ ] Auto Generated Video Notifications with FFMPEG
 - [ ] Auto Generated Image with text overlay Notifications
 - [ ] Some level of templating for usability
 - [ ] Lower Third Notifications from Native Kodi Notifications (Kodi Addon / SKin)
-- [ ] Adding and removing nodes from GUI
 - [ ] Add a default playlist for when no content exists in the system
 - [ ] Ability to add instances to groups, and target groups.
 - [ ] "Open Hours" to stop content and shut off screens (HDMI-CEC)
 
 ### Scheduler
-In order for the scheduler to work you must set a cron entry to hit scheduler.php every minute (or whatever frequency you wish)
-* * * * * /usr/local/bin/php /path/to/scheduler.php
+In order for the scheduler to work you must set a cron entry to hit runner.php every minute (or whatever frequency you wish)
+* * * * * /usr/local/bin/php /path/to/runner.php
 
-Note this is a work in progress feature and is currently not working.
+Note this is a work in progress feature and is currently not working correctly, it'll fire off the first item in the array but has no idea about length of content, or sending anything beyond the first item.
 
 ### Help!
-I am not a developer, I like to tinker with code - if you want to see a project like this exist and are able to offer some assistance, please get in contact. 
+I am not a developer, I like to tinker with code - if you want to see a project like this exist and are able to offer some assistance, please get in contact. Oli @ Infosec.Exchange (Mastodon) oli @ olipassey . me .uk (email)
