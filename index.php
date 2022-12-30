@@ -80,6 +80,7 @@ body {
   padding: 10px;
   background-color: rgba(241, 241, 241, .7);
   box-shadow: 5px 10px rgb(136, 136, 136, .5);
+  border-radius: 6px;
 }
 .burger-menu {
   display: none;
@@ -193,7 +194,7 @@ foreach ($kodi_endpoints as $name => $kodi_endpoint) {
   // Get the active players for the current Kodi endpoint
   $active_players = $kodi_endpoint->GetActivePlayers();
   // Print the name of the Kodi endpoint
-  echo '<h1><img src=kodiblk.png height="24" width="24">' . $name . '</h1>';
+  echo '<h1><img src=kodiblk.png height="24" width="24"> ' . $name . '</h1>';
 
   // Check if there are any active players
   if (!empty($active_players)) {
