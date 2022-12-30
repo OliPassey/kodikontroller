@@ -73,13 +73,13 @@ html {
 body {
   background: none;
 }
-.kodi-endpoint {
+.kodi-endpoint, .input_form {
   display: inline-block;
   margin: 20px;
   border: 1px solid black;
   padding: 10px;
-  background-color: #f1f1f1;
-  box-shadow: 5px 10px #888888;
+  background-color: rgba(241, 241, 241, .7);
+  box-shadow: 5px 10px rgb(136, 136, 136, .5);
 }
 .burger-menu {
   display: none;
@@ -90,6 +90,19 @@ select, input {
   height: 30px;
   margin: 2px;
 }
+
+label{
+  display:inline-block;
+  width:200px;
+  margin-right:30px;
+  text-align:right;
+  }
+  
+fieldset{
+  border:none;
+  width:500px;
+  margin:0px auto;
+  }
 
 .burger-menu-icon {
   width: 25px;
@@ -137,6 +150,8 @@ select, input {
     <li><a href="https://olipassey.me.uk/kodi/">Home</a></li>
     <li><a href="https://olipassey.me.uk/kodi/hosts.php">Endpoints</a></li>
     <li><a href="https://olipassey.me.uk/kodi/scheduler.php">Scheduler</a></li>
+    <li><a href="https://olipassey.me.uk/kodi/announcer/fullscreen.php">Img Generator</a></li>
+    <li><a href="https://olipassey.me.uk/kodi/videoannouncer/ffmpeg-text-overlay.php">Video Generator</a></li>
   </ul>
 </nav>
 <div class="input_form">
@@ -162,7 +177,7 @@ select, input {
 <br>
 <input type="submit" value="Play on Kodi" />
 <input type="submit" value="Send Notification" />
-<input type="submit" name="stop_playback" value="Stop Playback" />
+
 </section>
 </form>
 </div>

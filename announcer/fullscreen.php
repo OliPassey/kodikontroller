@@ -61,18 +61,18 @@ function center_text($string, $font_size){
 	$user = array(
 	
 		array(
-			'name'=> 'Add your headlines here!', 
-			'font-size'=>'200',
+			'name'=> 'Heading', 
+			'font-size'=>'125',
 			'color'=>'white'),
 			
 		array(
-			'name'=> 'Give us all the juicy details, tell me everything!',
-			'font-size'=>'150',
+			'name'=> 'Line One',
+			'font-size'=>'85',
 			'color'=>'grey'),
 			
 		array(
-			'name'=> 'Does it have a time, date or venue?',
-			'font-size'=>'125',
+			'name'=> 'Line Two',
+			'font-size'=>'75',
 			'color'=>'grey'
 			)
 			
