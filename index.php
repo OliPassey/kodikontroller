@@ -73,7 +73,7 @@ html {
 body {
   background: none;
 }
-.kodi-endpoint, .input_form {
+.kodi-endpoint, .yt_input_form, .notify_input_form {
   display: inline-block;
   margin: 20px;
   border: 1px solid black;
@@ -155,32 +155,52 @@ fieldset{
     <li><a href="https://olipassey.me.uk/kodi/videoannouncer/ffmpeg-text-overlay.php">Video Generator</a></li>
   </ul>
 </nav>
-<div class="input_form">
-<form action="" method="post">
+<div class="yt_input_form">
+  <form action="" method="post">
+    <h4>Usage: Enter a YouTube URL, select your endpoint, and click the Play on Kodi button</h4>
+    <label>YouTube URL:</label>
+    <input type="text" name="youtube_url" /><br>
+    <label>Kodi Endpoint:</label>
+    <select name="kodi_endpoint">';
 
-  <h4>Usage: Enter a YouTube URL or Message to be sent, select your endpoint, and click the appropriate button</h4>
-  <label>YouTube URL:</label>
-  <input type="text" name="youtube_url" /><br>
-  <label>Notification Message:</label>
-  <input type="text" name="notification_message" /><br>
-  <label>Kodi Endpoint:</label>
-  <select name="kodi_endpoint">';
+    // Loop through the array of Kodi endpoints and display them as options
+    foreach ($kodi_endpoints as $name => $endpoint) {
+      echo '<option value="' . $name . '">' . $name . '</option>';
+    }
 
-  // Loop through the array of Kodi endpoints and display them as options
-  foreach ($kodi_endpoints as $name => $endpoint) {
-    echo '<option value="' . $name . '">' . $name . '</option>';
-  }
-  
-  echo '
-</select>
-<p>
-<section>
-<br>
-<input type="submit" value="Play on Kodi" />
-<input type="submit" value="Send Notification" />
+    echo '
+    </select>
+    <p>
+      <section>
+        <br>
+        <input type="submit" value="Play on Kodi" />
+      </section>
+    </p>
+  </form>
+</div>
 
-</section>
-</form>
+<div class="notify_input_form">
+  <form action="" method="post">
+    <h4>Usage: Enter a notification message and select your endpoint, then click the Send Notification button</h4>
+    <label>Notification Message:</label>
+    <input type="text" name="notification_message" /><br>
+    <label>Kodi Endpoint:</label>
+    <select name="kodi_endpoint">';
+
+    // Loop through the array of Kodi endpoints and display them as options
+    foreach ($kodi_endpoints as $name => $endpoint) {
+      echo '<option value="' . $name . '">' . $name . '</option>';
+    }
+
+    echo '
+    </select>
+    <p>
+      <section>
+        <br>
+        <input type="submit" value="Send Notification" />
+      </section>
+    </p>
+  </form>
 </div>
 <p>
 </body>

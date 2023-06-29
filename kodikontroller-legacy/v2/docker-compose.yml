@@ -1,0 +1,38 @@
+version: '2'
+
+services:
+
+  nginx:
+    networks:
+      - amazeeio-network
+      - default
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    volumes:
+      - .:/app:delegated
+    environment:
+      - AMAZEEIO_URL=kodikontroller.docker.amazee.io
+      - AMAZEEIO=AMAZEEIO
+      - AMAZEEIO_HTTP_PORT=8080
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    volumes:
+      - .:/app:delegated
+
+  mariadb:
+    build:
+      context: .
+      dockerfile: Dockerfile.mariadb
+    user: '111111'
+    environment:
+      - MARIADB_USER=kodikontroller
+      - MARIADB_PASSWORD=kodikontroller
+      - MARIADB_DATABASE=kodikontroller
+
+networks:
+  amazeeio-network:
+    external: true
