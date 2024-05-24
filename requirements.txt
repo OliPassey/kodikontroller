@@ -1,0 +1,9 @@
+Flask==2.0.3
+Flask-mongoengine==1.0.0
+Flask-Migrate==3.1.0
+Flask-Script==2.0.6
+Werkzeug==2.2.2
+pytest
+pytest-flask
+python-dateutil
+requests
