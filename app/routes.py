@@ -1,5 +1,5 @@
 from flask import request, jsonify, Blueprint, render_template
-from app.models import Host  # Assuming you have these models defined as shown earlier
+from app.models import Host, Group, Schedule, Playlist, Media
 from mongoengine.errors import ValidationError, NotUniqueError
 from bson.objectid import ObjectId
 from mongoengine import InvalidQueryError
@@ -13,16 +13,15 @@ main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    # Fetch all hosts from the database
-    hosts = Host.objects.all()  # This fetches all Host records
+    hosts = Host.objects.all()
     return render_template('index.html', hosts=hosts)
 
-@main.route('/media', methods=['GET'])
+@main.route('/admin/media', methods=['GET'])
 def get_media():
     media_list = Media.objects()
     return jsonify(media_list), 200
 
-@main.route('/media/add', methods=['POST'])
+@main.route('/admin/media/add', methods=['POST'])
 def add_media():
     try:
         new_media = Media(
@@ -39,14 +38,14 @@ def add_media():
     except ValidationError as e:
         return jsonify({"error": str(e)}), 400
 
-@main.route('/media/<id>', methods=['GET'])
+@main.route('/admin/media/<id>', methods=['GET'])
 def get_media_by_id(id):
     media = Media.objects(id=id).first()
     if not media:
         return jsonify({'error': 'Media not found'}), 404
     return jsonify(media), 200
 
-@main.route('/media/update/<id>', methods=['PUT'])
+@main.route('/admin/media/update/<id>', methods=['PUT'])
 def update_media(id):
     media = Media.objects(id=id).first()
     if not media:
@@ -74,7 +73,7 @@ def update_media(id):
 
     return jsonify({"message": "Media updated successfully"}), 200
 
-@main.route('/media/delete/<id>', methods=['DELETE'])
+@main.route('/admin/media/delete/<id>', methods=['DELETE'])
 def delete_media(id):
     media = Media.objects(id=id).first()
     if not media:
@@ -83,7 +82,7 @@ def delete_media(id):
     media.delete()
     return jsonify({"message": "Media deleted successfully"}), 200
 
-@main.route('/groups', methods=['GET'])
+@main.route('/admin/groups', methods=['GET'])
 def get_groups():
     groups = Group.objects()
     groups_list = []
@@ -97,7 +96,7 @@ def get_groups():
                     "name": host.name,
                     "ip": host.ip,
                     "port": host.port,
-                    "username": host.username,  # Changed from 'user' to 'username'
+                    "username": host.username,
                     "status": host.status,
                     "location": host.location,
                     "os": host.os,
@@ -114,7 +113,7 @@ def get_groups():
 
     return jsonify(groups_list), 200
 
-@main.route('/groups/add', methods=['POST'])
+@main.route('/admin/groups/add', methods=['POST'])
 def add_group():
     try:
         new_group = Group(
@@ -129,7 +128,7 @@ def add_group():
     except ValidationError as e:
         return jsonify({"error": str(e)}), 400
 
-@main.route('/groups/update/<id>', methods=['PUT'])
+@main.route('/admin/groups/update/<id>', methods=['PUT'])
 def update_group(id):
     group = Group.objects(id=id).first()
     if not group:
@@ -157,7 +156,7 @@ def update_group(id):
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
     
-@main.route('/groups/delete/<id>', methods=['DELETE'])
+@main.route('/admin/groups/delete/<id>', methods=['DELETE'])
 def delete_group(id):
     group = Group.objects(id=id).first()
     if not group:
@@ -166,7 +165,7 @@ def delete_group(id):
     group.delete()
     return jsonify({"message": "Group deleted successfully"}), 200
 
-@main.route('/hosts', methods=['GET'])
+@main.route('/admin/hosts', methods=['GET'])
 def get_hosts():
     hosts = Host.objects()
     # Manually construct a list of dictionaries representing each host
@@ -187,7 +186,7 @@ def get_hosts():
         host_list.append(host_data)
     return jsonify(host_list), 200
 
-@main.route('/hosts/add', methods=['POST'])
+@main.route('/admin/hosts/add', methods=['POST'])
 def add_host():
     try:
         new_host = Host(
@@ -210,7 +209,7 @@ def add_host():
     except ValidationError as e:
         return jsonify({"error": str(e)}), 400
 
-@main.route('/hosts/update/<id>', methods=['PUT'])
+@main.route('/admin/hosts/update/<id>', methods=['PUT'])
 def update_host(id):
     host = Host.objects(id=id).first()
     if not host:
@@ -222,7 +221,7 @@ def update_host(id):
     except Exception as e:
         return jsonify({'error': 'An error occurred updating the host: {}'.format(str(e))}), 500
 
-@main.route('/hosts/delete/<id>', methods=['DELETE'])
+@main.route('/admin/hosts/delete/<id>', methods=['DELETE'])
 def delete_host(id):
     host = Host.objects(id=id).first()
     if not host:
@@ -231,7 +230,7 @@ def delete_host(id):
     host.delete()
     return jsonify({"message": "Host deleted successfully"}), 200
 
-@main.route('/schedules', methods=['GET'])
+@main.route('/admin/schedules', methods=['GET'])
 def get_schedules():
     schedules = Schedule.objects()
     schedules_list = [{
@@ -245,7 +244,7 @@ def get_schedules():
     } for schedule in schedules]
     return jsonify(schedules_list), 200
 
-@main.route('/schedules/add', methods=['POST'])
+@main.route('/admin/schedules/add', methods=['POST'])
 def add_schedule():
     try:
         startDate = parser.parse(request.json['startDate'])
@@ -268,7 +267,7 @@ def add_schedule():
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-@main.route('/schedules/update/<id>', methods=['PUT'])
+@main.route('/admin/schedules/update/<id>', methods=['PUT'])
 def update_schedule(id):
     schedule = Schedule.objects(id=id).first()
     if not schedule:
@@ -289,7 +288,7 @@ def update_schedule(id):
     except Exception as e:
         return jsonify({'error': 'An error occurred updating the schedule: ' + str(e)}), 500
 
-@main.route('/schedules/delete/<id>', methods=['DELETE'])
+@main.route('/admin/schedules/delete/<id>', methods=['DELETE'])
 def delete_schedule(id):
     schedule = Schedule.objects(id=id).first()
     if not schedule:
@@ -298,7 +297,37 @@ def delete_schedule(id):
     schedule.delete()
     return jsonify({"message": "Schedule deleted successfully"}), 200
 
-@main.route('/notify/hosts/<id>', methods=['POST'])
+@main.route('/admin/playlists/add', methods=['POST'])
+def add_playlist():
+    try:
+        name = request.json.get('name')
+        description = request.json.get('description')
+        content_ids = request.json.get('content', [])
+
+        if not name:
+            return jsonify({"error": "Playlist name is required"}), 400
+
+        # Fetch Media documents from content_ids
+        content = []
+        for media_id in content_ids:
+            media = Media.objects(id=media_id).first()
+            if media:
+                content.append(media)
+
+        new_playlist = Playlist(
+            name=name,
+            description=description,
+            createDate=datetime.utcnow(),
+            content=content
+        )
+        new_playlist.save()
+        return jsonify({"message": "Playlist added successfully", "playlist": new_playlist.to_json()}), 201
+    except ValidationError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+@main.route('/ctrl/notify/hosts/<id>', methods=['POST'])
 def notify_host(id):
     host = Host.objects(id=id).first()
     if not host:
@@ -347,7 +376,6 @@ def notify_host(id):
         app.logger.error(f'An error occurred: {str(e)}')
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
-
     # Convert the command dictionary to a JSON string
     json_command = json.dumps(command)
 
@@ -368,8 +396,9 @@ def notify_host(id):
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
     
-@main.route('/image/hosts/<id>', methods=['POST'])
+@main.route('/ctrl/image/hosts/<id>', methods=['POST'])
 def display_image_host(id):
+    stop_playback(id)
     host = Host.objects(id=id).first()
     if not host:
         return jsonify({'error': 'Host not found'}), 404
@@ -411,8 +440,9 @@ def display_image_host(id):
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
     
-@main.route('/youtube/hosts/<id>', methods=['POST'])
+@main.route('/ctrl/youtube/hosts/<id>', methods=['POST'])
 def play_youtube_video(id):
+    stop_playback(id)
     host = Host.objects(id=id).first()
     if not host:
         return jsonify({'error': 'Host not found'}), 404
@@ -458,15 +488,16 @@ def extract_youtube_id(url):
     else:
         return None  # Return None if no video ID is found
 
-@main.route('/audio/hosts/<id>', methods=['POST'])
+@main.route('/ctrl/audio/hosts/<id>', methods=['POST'])
 def play_audio(id):
     return play_media(id, "audio")
 
-@main.route('/video/hosts/<id>', methods=['POST'])
+@main.route('/ctrl/video/hosts/<id>', methods=['POST'])
 def play_video(id):
     return play_media(id, "video")
 
 def play_media(id, media_type):
+    stop_playback(id)
     host = Host.objects(id=id).first()
     if not host:
         return jsonify({'error': 'Host not found'}), 404
@@ -501,6 +532,96 @@ def play_media(id, media_type):
     except Exception as e:
         return jsonify({'error': f'Failed to send command: {str(e)}'}), 500
 
+@main.route('/ctrl/stop/<id>', methods=['POST'])
+def stop_playback(id):
+    host = Host.objects(id=id).first()
+    if not host:
+        return jsonify({'error': 'Host not found'}), 404
+
+    # Define the JSON-RPC commands to stop playback on Player 1 and Player 2
+    commands = [
+        {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "Player.Stop",
+            "params": {
+                "playerid": 1
+            }
+        },
+        {
+            "jsonrpc": "2.0",
+            "id": 2,
+            "method": "Player.Stop",
+            "params": {
+                "playerid": 2
+            }
+        }
+    ]
+
+    # Build the complete URL with authentication and port
+    url = f"http://{host.username}:{host.password}@{host.ip}:{host.port}/jsonrpc"
+
+    headers = {'Content-Type': 'application/json'}
+    results = []
+
+    try:
+        # Send the stop command for each player
+        for command in commands:
+            json_command = json.dumps(command)
+            response = requests.post(url, headers=headers, data=json_command)
+            response.raise_for_status()
+            results.append(response.json())
+
+        return jsonify({"message": "Playback stopped successfully", "responses": results}), 200
+    except requests.exceptions.HTTPError as e:
+        return jsonify({'error': f'HTTP error occurred: {str(e)}'}), 500
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': f'Request failed: {str(e)}'}), 500
+    except json.JSONDecodeError:
+        return jsonify({'error': 'Failed to decode JSON from Kodi'}), 500
+    except Exception as e:
+        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
+
+@main.route('/admin/hosts/check_status', methods=['GET'])
+def check_host_status():
+    hosts = Host.objects()
+    host_statuses = []
+
+    for host in hosts:
+        try:
+            url = f"http://{host.username}:{host.password}@{host.ip}:{host.port}/jsonrpc"
+            headers = {'Content-Type': 'application/json'}
+            payload = {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "Player.GetActivePlayers"
+            }
+            response = requests.post(url, headers=headers, json=payload, timeout=5)
+            response.raise_for_status()
+
+            active_players = response.json().get('result', [])
+
+            if active_players:
+                host.status = 'active'
+            else:
+                host.status = 'inactive'
+                
+            host.save()
+            host_statuses.append({
+                "id": str(host.id),
+                "name": host.name,
+                "status": host.status
+            })
+        except requests.exceptions.RequestException:
+            host.status = 'error'
+            host.save()
+            host_statuses.append({
+                "id": str(host.id),
+                "name": host.name,
+                "status": host.status
+            })
+
+    return jsonify({"host_statuses": host_statuses}), 200
 
 #####################
 # Standard Handling #

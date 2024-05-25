@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, IntField, DateTimeField, ListField, ReferenceField, BooleanField
+from mongoengine import Document, StringField, IntField, DateTimeField, ListField, ReferenceField, BooleanField, EmbeddedDocument, EmbeddedDocumentField
 from .extensions import db
 
 class Media(db.Document):
@@ -31,5 +31,16 @@ class Schedule(db.Document):
     description = db.StringField()
     startDate = db.DateTimeField(required=True)
     endDate = db.DateTimeField(required=True)
-    playlist = db.ListField(db.ReferenceField('Media'))  # List of media references
+    playlist = db.ListField(db.ReferenceField('Playlist'))  # List of media references
     shuffle = db.BooleanField(default=False)
+
+class ContentItem(EmbeddedDocument):
+    player = db.IntField(required=True, choices=(1, 2, 3))
+    path = db.StringField()
+    url = db.StringField(regex='^http[s]?://')
+
+class Playlist(db.Document):
+    name = db.StringField(required=True)
+    description = db.StringField()
+    createDate = db.DateTimeField(required=True)
+    content = db.ListField(EmbeddedDocumentField(ContentItem))
