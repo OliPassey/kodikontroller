@@ -1,7 +1,59 @@
-// Existing DOMContentLoaded event listener
 document.addEventListener('DOMContentLoaded', function () {
+    //Welcome msg
     console.log('Connecting Console...');
     console.log('Kodi Kontroller v4 has loaded');
+
+    //Fetch YouTube media
+    fetch('/admin/media/youtube')  // Assuming this endpoint returns YouTube media
+    .then(response => response.json())
+    .then(data => {
+        // Select all YouTube dropdowns in each host widget
+        document.querySelectorAll('.host-widget').forEach(widget => {
+            const youtubeSelect = widget.querySelector('.youtube-media-select');
+            // Ensure the dropdown is cleared initially (important if this code runs more than once)
+            youtubeSelect.innerHTML = '<option value="">Select a YouTube video</option>';
+            // Populate the dropdown with new options
+            data.forEach(media => {
+                const option = new Option(media.name, media.url);
+                youtubeSelect.appendChild(option);
+            });
+        });
+    })
+    .catch(error => console.error('Error loading YouTube media:', error));
+
+    // YouTube Dropdown Play button
+    document.querySelector('.play-media-button').addEventListener('click', function () {
+        const select = this.closest('.host-widget').querySelector('.youtube-media-select');
+        const url = select.value;
+        const widget = this.closest('.host-widget');
+        const hostId = widget.getAttribute('data-host-id');
+    
+        if (url) {
+            fetch(`/ctrl/youtube/hosts/${hostId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ youtube_url: url })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('YouTube video sent successfully!');
+                    return response.json();
+                } else {
+                    throw new Error('Failed to send YouTube URL');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                displayError(widget, error.message);
+            });
+        } else {
+            console.error('No YouTube video selected');
+            displayError(widget, 'Please select a YouTube video to play.');
+        }
+    });
+    
 
     // Existing play button functionality
     document.querySelectorAll('.play-button').forEach(button => {
@@ -92,16 +144,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Add Host functionality
     document.getElementById('add-host-button').addEventListener('click', function () {
-        const name = document.getElementById('new-host-name').value.trim();
-        const ip = document.getElementById('new-host-ip').value.trim();
-        const port = parseInt(document.getElementById('new-host-port').value, 10);
-        const username = document.getElementById('new-host-username').value.trim();
-        const password = document.getElementById('new-host-password').value.trim();
-        const group = document.getElementById('new-host-group').value.trim();
-        const cec = document.getElementById('new-host-cec').value.trim();
-        const status = document.getElementById('new-host-status').value.trim();
-        const os = document.getElementById('new-host-os').value.trim();
-        const location = document.getElementById('new-host-location').value.trim();
+        const name = document.getElementById('edit-host-name').value.trim();
+        const ip = document.getElementById('edit-host-ip').value.trim();
+        const port = parseInt(document.getElementById('edit-host-port').value, 10);
+        const username = document.getElementById('edit-host-username').value.trim();
+        const password = document.getElementById('edit-host-password').value.trim();
+        const group = document.getElementById('edit-host-group').value.trim();
+        const cec = document.getElementById('edit-host-cec').value.trim();
+        const status = document.getElementById('edit-host-status').value.trim();
+        const os = document.getElementById('edit-host-os').value.trim();
+        const location = document.getElementById('edit-host-location').value.trim();
 
         const newHost = { name, ip, port, username, password, group, cec, status, os, location };
 
@@ -130,13 +182,95 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Edit Form populate form
+    document.querySelectorAll('.edit-host').forEach(button => {
+        button.addEventListener('click', async function() {
+            const hostId = button.getAttribute('data-id');
+            logToConsole(`Editing host ID: ${hostId}`);
+    
+            try {
+                const response = await fetch(`/admin/hosts/${hostId}`);
+                if (response.ok) {
+                    const hostData = await response.json();
+                    populateHostForm(hostData);
+                    logToConsole(JSON.stringify(hostData, null, 2)); // Convert object to string
+                } else {
+                    throw new Error('Failed to fetch host data.');
+                }
+            } catch (error) {
+                logToConsole(`Error: ${error.message}`);
+            }
+        });
+    });
+    
+    // Save Edit Host
+    document.getElementById('save-host-button').addEventListener('click', async function() {
+        const hostId = document.getElementById('edit-host-id').value;
+        const hostData = {
+            name: document.getElementById('edit-host-name').value,
+            ip: document.getElementById('edit-host-ip').value,
+            port: document.getElementById('edit-host-port').value,
+            username: document.getElementById('edit-host-username').value,
+            password: document.getElementById('edit-host-password').value,
+            group: document.getElementById('edit-host-group').value,
+            cec: document.getElementById('edit-host-cec').value,
+            status: document.getElementById('edit-host-status').value,
+            os: document.getElementById('edit-host-os').value,
+            location: document.getElementById('edit-host-location').value
+        };
+    
+        logToConsole(`Saving host ID: ${hostId}`);
+    
+        try {
+            const response = await fetch(`/admin/hosts/update/${hostId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(hostData)
+            });
+    
+            if (response.ok) {
+                logToConsole(`Host ID: ${hostId} updated successfully.`);
+                location.reload();
+            } else {
+                throw new Error('Failed to update host.');
+            }
+        } catch (error) {
+            logToConsole(`Error: ${error.message}`);
+        }
+    });
+    
+    // Delete Host Func
+    document.querySelectorAll('.delete-host').forEach(button => {
+        button.addEventListener('click', async function() {
+            const hostId = button.getAttribute('data-id');
+            logToConsole(`Deleting host ID: ${hostId}`);
+    
+            try {
+                const response = await fetch(`/admin/hosts/delete/${hostId}`, {
+                    method: 'DELETE'
+                });
+    
+                if (response.ok) {
+                    logToConsole(`Host ID: ${hostId} deleted successfully.`);
+                    location.reload();
+                } else {
+                    throw new Error('Failed to delete host.');
+                }
+            } catch (error) {
+                logToConsole(`Error: ${error.message}`);
+            }
+        });
+    });
+
     // Add Media functionality
     document.getElementById('add-media-button').addEventListener('click', function () {
-        const name = document.getElementById('new-media-name').value.trim();
-        const description = document.getElementById('new-media-description').value.trim();
-        const type = document.getElementById('new-media-type').value.trim();
-        const path = document.getElementById('new-media-path').value.trim();
-        const url = document.getElementById('new-media-url').value.trim();
+        const name = document.getElementById('edit-media-name').value.trim();
+        const description = document.getElementById('edit-media-description').value.trim();
+        const type = document.getElementById('edit-media-type').value.trim();
+        const path = document.getElementById('edit-media-path').value.trim();
+        const url = document.getElementById('edit-media-url').value.trim();
 
         const newMedia = { name, description, type, path, url };
 
@@ -165,14 +299,91 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Edit Media
+    document.querySelectorAll('.edit-media').forEach(button => {
+        button.addEventListener('click', async function() {
+            const mediaId = button.getAttribute('data-id');
+            logToConsole(`Editing media ID: ${mediaId}`);
+    
+            try {
+                const response = await fetch(`/admin/media/${mediaId}`);
+                if (response.ok) {
+                    const mediaData = await response.json();
+                    populateMediaForm(mediaData);
+                    logToConsole(JSON.stringify(mediaData, null, 2)); // Convert object to string
+                } else {
+                    throw new Error('Failed to fetch media data.');
+                }
+            } catch (error) {
+                logToConsole(`Error: ${error.message}`);
+            }
+        });
+    });
+    
+    // Save Edit Media
+    document.getElementById('save-media-button').addEventListener('click', async function() {
+        const mediaId = document.getElementById('edit-media-id').value;
+        const mediaData = {
+            name: document.getElementById('edit-media-name').value,
+            description: document.getElementById('edit-media-description').value,
+            type: document.getElementById('edit-media-type').value,
+            path: document.getElementById('edit-media-path').value,
+            url: document.getElementById('edit-media-url').value
+        };
+    
+        logToConsole(`Saving media ID: ${mediaId}`);
+    
+        try {
+            const response = await fetch(`/admin/media/update/${mediaId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(mediaData)
+            });
+    
+            if (response.ok) {
+                logToConsole(`Media ID: ${mediaId} updated successfully.`);
+                location.reload();
+            } else {
+                throw new Error('Failed to update media.');
+            }
+        } catch (error) {
+            logToConsole(`Error: ${error.message}`);
+        }
+    });
+    
+    // Delete Media
+    document.querySelectorAll('.delete-media').forEach(button => {
+        button.addEventListener('click', async function() {
+            const mediaId = button.getAttribute('data-id');
+            logToConsole(`Deleting media ID: ${mediaId}`);
+    
+            try {
+                const response = await fetch(`/admin/media/delete/${mediaId}`, {
+                    method: 'DELETE'
+                });
+    
+                if (response.ok) {
+                    logToConsole(`Media ID: ${mediaId} deleted successfully.`);
+                    location.reload();
+                } else {
+                    throw new Error('Failed to delete media.');
+                }
+            } catch (error) {
+                logToConsole(`Error: ${error.message}`);
+            }
+        });
+    });
+
     // Add Schedule functionality
     document.getElementById('add-schedule-button').addEventListener('click', function () {
-        const name = document.getElementById('new-schedule-name').value.trim();
-        const description = document.getElementById('new-schedule-description').value.trim();
-        const startDate = document.getElementById('new-schedule-start').value.trim();
-        const endDate = document.getElementById('new-schedule-end').value.trim();
-        const playlist = document.getElementById('new-schedule-playlist').value.trim().split(',');
-        const shuffle = document.getElementById('new-schedule-shuffle').checked;
+        const name = document.getElementById('edit-schedule-name').value.trim();
+        const description = document.getElementById('edit-schedule-description').value.trim();
+        const startDate = document.getElementById('edit-schedule-start').value.trim();
+        const endDate = document.getElementById('edit-schedule-end').value.trim();
+        const playlist = document.getElementById('edit-schedule-playlist').value.trim().split(',').map(id => new ObjectId(id));
+        const shuffle = document.getElementById('edit-schedule-shuffle').checked;
 
         const newSchedule = { name, description, startDate, endDate, playlist, shuffle };
 
@@ -198,6 +409,84 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => {
             console.error('Error:', error);
             displayError(document.querySelector('.add-schedule'), error.message);
+        });
+    });
+
+
+    // Edit Schedule 
+    document.querySelectorAll('.edit-schedule').forEach(button => {
+        button.addEventListener('click', async function() {
+            const scheduleId = button.getAttribute('data-id');
+            logToConsole(`Editing schedule ID: ${scheduleId}`);
+    
+            try {
+                const response = await fetch(`/admin/schedules/${scheduleId}`);
+                if (response.ok) {
+                    const scheduleData = await response.json();
+                    populateScheduleForm(scheduleData);
+                    logToConsole(JSON.stringify(scheduleData, null, 2)); // Convert object to string
+                } else {
+                    throw new Error('Failed to fetch schedule data.');
+                }
+            } catch (error) {
+                logToConsole(`Error: ${error.message}`);
+            }
+        });
+    });
+
+    // Save Edit Schedule
+    document.getElementById('save-schedule-button').addEventListener('click', async function() {
+        const scheduleId = document.getElementById('edit-schedule-id').value;
+        const scheduleData = {
+            name: document.getElementById('edit-schedule-name').value,
+            description: document.getElementById('edit-schedule-description').value,
+            startDate: document.getElementById('edit-schedule-start-date').value,
+            endDate: document.getElementById('edit-schedule-end-date').value,
+            shuffle: document.getElementById('edit-schedule-shuffle').checked
+        };
+    
+        logToConsole(`Saving schedule ID: ${scheduleId}`);
+    
+        try {
+            const response = await fetch(`/admin/schedules/update/${scheduleId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(scheduleData)
+            });
+    
+            if (response.ok) {
+                logToConsole(`Schedule ID: ${scheduleId} updated successfully.`);
+                location.reload();
+            } else {
+                throw new Error('Failed to update schedule.');
+            }
+        } catch (error) {
+            logToConsole(`Error: ${error.message}`);
+        }
+    });
+    
+    // Delete Schedule
+    document.querySelectorAll('.delete-schedule').forEach(button => {
+        button.addEventListener('click', async function() {
+            const scheduleId = button.getAttribute('data-id');
+            logToConsole(`Deleting schedule ID: ${scheduleId}`);
+    
+            try {
+                const response = await fetch(`/admin/schedules/delete/${scheduleId}`, {
+                    method: 'DELETE'
+                });
+    
+                if (response.ok) {
+                    logToConsole(`Schedule ID: ${scheduleId} deleted successfully.`);
+                    location.reload();
+                } else {
+                    throw new Error('Failed to delete schedule.');
+                }
+            } catch (error) {
+                logToConsole(`Error: ${error.message}`);
+            }
         });
     });
 
@@ -234,13 +523,53 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Edit Group
+    document.querySelectorAll('.edit-group').forEach(button => {
+        button.addEventListener('click', function () {
+            const groupId = button.getAttribute('data-id');
+
+            // Fetch existing group data
+            fetch(`/admin/groups/${groupId}`)
+                .then(response => response.json())
+                .then(data => {
+                    populateGroupForm(data);
+                    document.querySelector('#edit-group-modal').style.display = 'block';
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+
+    // Delete Group
+    document.querySelectorAll('.delete-group').forEach(button => {
+        button.addEventListener('click', async function() {
+            const groupId = button.getAttribute('data-id');
+            logToConsole(`Deleting group ID: ${groupId}`);
+    
+            try {
+                const response = await fetch(`/admin/groups/delete/${groupId}`, {
+                    method: 'DELETE'
+                });
+    
+                if (response.ok) {
+                    logToConsole(`Group ID: ${groupId} deleted successfully.`);
+                    location.reload();
+                } else {
+                    throw new Error('Failed to delete group.');
+                }
+            } catch (error) {
+                logToConsole(`Error: ${error.message}`);
+            }
+        });
+    });
+
     // Add Playlist functionality
     document.getElementById('add-playlist-button').addEventListener('click', function () {
-        const name = document.getElementById('new-playlist-name').value.trim();
-        const description = document.getElementById('new-playlist-description').value.trim();
-        const content = document.getElementById('new-playlist-content').value.trim().split(',');
+        const name = document.getElementById('edit-playlist-name').value.trim();
+        const description = document.getElementById('edit-playlist-description').value.trim();
+        const content = document.getElementById('edit-playlist-content').value.trim().split(',');
+        const createDate = new Date().toISOString(); // Get current timestamp in ISO format
 
-        const newPlaylist = { name, description, content };
+        const newPlaylist = { name, description, content, createDate };
 
         fetch('/admin/playlists/add', {
             method: 'POST',
@@ -266,12 +595,121 @@ document.addEventListener('DOMContentLoaded', function () {
             displayError(document.querySelector('.add-playlist'), error.message);
         });
     });
+
+
+    // Edit Playlist
+    document.querySelectorAll('.edit-playlist').forEach(button => {
+        button.addEventListener('click', async function() {
+            const playlistId = button.getAttribute('data-id');
+            logToConsole(`Editing playlist ID: ${playlistId}`);
+    
+            try {
+                const response = await fetch(`/admin/playlists/${playlistId}`);
+                if (response.ok) {
+                    const playlistData = await response.json();
+                    populatePlaylistForm(playlistData);
+                    logToConsole(JSON.stringify(playlistData, null, 2)); // Convert object to string
+                } else {
+                    throw new Error('Failed to fetch playlist data.');
+                }
+            } catch (error) {
+                logToConsole(`Error: ${error.message}`);
+            }
+        });
+    });
+
+    // Save Edit Playlist
+    document.getElementById('save-playlist-button').addEventListener('click', async function() {
+        const playlistId = document.getElementById('edit-playlist-id').value;
+        const playlistData = {
+            name: document.getElementById('edit-playlist-name').value,
+            description: document.getElementById('edit-playlist-description').value,
+            content: document.getElementById('edit-playlist-content').value.trim().split(',')
+        };
+    
+        logToConsole(`Saving playlist ID: ${playlistId}`);
+    
+        try {
+            const response = await fetch(`/admin/playlists/update/${playlistId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(playlistData)
+            });
+    
+            if (response.ok) {
+                logToConsole(`Playlist ID: ${playlistId} updated successfully.`);
+                location.reload();
+            } else {
+                throw new Error('Failed to update playlist.');
+            }
+        } catch (error) {
+            logToConsole(`Error: ${error.message}`);
+        }
+    });
+
+    // Delete Playlist
+    document.querySelectorAll('.delete-playlist').forEach(button => {
+        button.addEventListener('click', async function() {
+            const playlistId = button.getAttribute('data-id');
+            logToConsole(`Deleting playlist ID: ${playlistId}`);
+    
+            try {
+                const response = await fetch(`/admin/playlists/delete/${playlistId}`, {
+                    method: 'DELETE'
+                });
+    
+                if (response.ok) {
+                    logToConsole(`Playlist ID: ${playlistId} deleted successfully.`);
+                    location.reload();
+                } else {
+                    throw new Error('Failed to delete playlist.');
+                }
+            } catch (error) {
+                logToConsole(`Error: ${error.message}`);
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.edit-media').forEach(button => {
+            button.addEventListener('click', () => {
+                const mediaId = button.getAttribute('data-id');
+                fetch(`/media/${mediaId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch media details');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    populateMediaForm(data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error loading media details');
+                });
+            });
+        });
+    });
+    
+    // Event listeners for Update buttons in the edit forms
+    document.querySelector('#save-host-button').addEventListener('click', updateHost);
+    document.querySelector('#save-schedule-button').addEventListener('click', updateSchedule);
+    document.querySelector('#save-group-button').addEventListener('click', updateGroup);
+    document.querySelector('#save-playlist-button').addEventListener('click', updatePlaylist);
+    document.querySelector('#save-contentitem-button').addEventListener('click', updateContentItem);
+
+
 });
+
+
 setInterval(checkHostStatuses, 300000); // Check every 5 minutes
 checkHostStatuses(); // Initial check
 
 function checkHostStatuses() {
-    fetch('/admin/hosts/check_status', {
+    fetch('/admin/host_status', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -279,11 +717,21 @@ function checkHostStatuses() {
     })
     .then(response => response.json())
     .then(data => {
-        const statuses = data.host_statuses;
+        const statuses = data;  // Assuming the data is an array of status objects
         statuses.forEach(status => {
-            const widget = document.querySelector(`.host-widget[data-host-id="${status.id}"]`);
+            const widget = document.querySelector(`.host-widget[data-host-id="${status.host_id}"]`);
             if (widget) {
-                widget.querySelector('.host-status').textContent = status.status;
+                // Update the host status display
+                const statusElement = widget.querySelector('.host-status');
+                if (statusElement) {
+                    statusElement.textContent = `Status: ${status.status}`;
+                }
+                
+                // Update the currently playing media display
+                const playingElement = widget.querySelector('.host-playing');
+                if (playingElement) {
+                    playingElement.textContent = `Now Playing: ${status.playing}`;
+                }
             }
         });
         logToConsole('Host statuses updated');
@@ -292,6 +740,8 @@ function checkHostStatuses() {
         logToConsole(`Error checking host statuses: ${error.message}`);
     });
 }
+
+
 
 function postImageUrl(hostId, imageUrl) {
     console.log(`Sending Image URL: ${imageUrl} to host ID: ${hostId}`);
@@ -401,9 +851,23 @@ function stopPlayback(hostId) {
 }
 
 function displayError(widget, message) {
-    const errorDiv = widget.querySelector('.error-message');
+    let errorDiv = widget.querySelector('.error-message');
+    
+    // If there's no existing error message div, create one
+    if (!errorDiv) {
+        errorDiv = document.createElement('div');
+        errorDiv.classList.add('error-message');
+        widget.appendChild(errorDiv);
+    }
+
     errorDiv.textContent = message;
+
+    // Optionally, remove the error message after a certain time
+    setTimeout(() => {
+        errorDiv.textContent = '';
+    }, 3500);  // Adjust the time as needed
 }
+
 
 // Function to append messages to the console output textarea
 function logToConsole(message) {
@@ -425,4 +889,245 @@ console.log = function(message) {
     } else {
         logToConsole(message);
     }
+}
+
+function populateHostForm(data) {
+    const idField = document.getElementById('edit-host-id');
+    const nameField = document.getElementById('edit-host-name');
+    const ipField = document.getElementById('edit-host-ip');
+    const portField = document.getElementById('edit-host-port');
+    const usernameField = document.getElementById('edit-host-username');
+    const passwordField = document.getElementById('edit-host-password');
+    const groupField = document.getElementById('edit-host-group');
+    const cecField = document.getElementById('edit-host-cec');
+    const statusField = document.getElementById('edit-host-status');
+    const osField = document.getElementById('edit-host-os');
+    const locationField = document.getElementById('edit-host-location');
+
+    if (idField) idField.value = data._id.$oid;
+    if (nameField) nameField.value = data.name;
+    if (ipField) ipField.value = data.ip;
+    if (portField) portField.value = data.port;
+    if (usernameField) usernameField.value = data.username;
+    if (passwordField) passwordField.value = data.password;
+    if (groupField) groupField.value = data.group;
+    if (cecField) cecField.value = data.cec;
+    if (statusField) statusField.value = data.status;
+    if (osField) osField.value = data.os;
+    if (locationField) locationField.value = data.location;
+
+    logToConsole('Populating host form with data:');
+    logToConsole(`ID: ${data._id.$oid}, Name: ${data.name}, IP: ${data.ip}, Port: ${data.port}`);
+}
+
+
+
+function updateHost() {
+    const hostId = document.querySelector('#edit-host-id').value;
+
+    const updatedHostData = {
+        name: document.querySelector('#edit-host-name').value,
+        ip: document.querySelector('#edit-host-ip').value,
+        port: document.querySelector('#edit-host-port').value,
+        username: document.querySelector('#edit-host-username').value,
+        password: document.querySelector('#edit-host-password').value,
+        //group: document.querySelector('#edit-host-group').value || null,
+        cec: document.querySelector('#edit-host-cec').value,
+        status: document.querySelector('#edit-host-status').value,
+        schedule: document.querySelector('#edit-host-schedule').value,
+        os: document.querySelector('#edit-host-os').value,
+        location: document.querySelector('#edit-host-location').value
+    };
+
+    fetch(`/admin/hosts/update/${hostId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedHostData)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to update host');
+        }
+    })
+    .then(data => {
+        console.log('Host updated successfully:', data);
+        document.querySelector('#edit-host-modal').style.display = 'none';
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+
+function populateScheduleForm(data) {
+    document.querySelector('#edit-schedule-id').value = data.id;
+    document.querySelector('#edit-schedule-name').value = data.name;
+    document.querySelector('#edit-schedule-description').value = data.description;
+    document.querySelector('#edit-schedule-start-date').value = data.startDate;
+    document.querySelector('#edit-schedule-end-date').value = data.endDate;
+    document.querySelector('#edit-schedule-shuffle').checked = data.shuffle;
+}
+
+function updateSchedule() {
+    const scheduleId = document.querySelector('#edit-schedule-id').value;
+
+    const updatedScheduleData = {
+        name: document.querySelector('#edit-schedule-name').value,
+        description: document.querySelector('#edit-schedule-description').value,
+        startDate: document.querySelector('#edit-schedule-start-date').value,
+        endDate: document.querySelector('#edit-schedule-end-date').value,
+        shuffle: document.querySelector('#edit-schedule-shuffle').checked
+    };
+
+    fetch(`/schedules/update/${scheduleId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedScheduleData)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to update schedule');
+        }
+    })
+    .then(data => {
+        console.log('Schedule updated successfully:', data);
+        document.querySelector('#edit-schedule-modal').style.display = 'none';
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function populateGroupForm(data) {
+    document.querySelector('#edit-group-id').value = data.id;
+    document.querySelector('#edit-group-name').value = data.name;
+    document.querySelector('#edit-group-description').value = data.description;
+}
+
+function updateGroup() {
+    const groupId = document.querySelector('#edit-group-id').value;
+
+    const updatedGroupData = {
+        name: document.querySelector('#edit-group-name').value,
+        description: document.querySelector('#edit-group-description').value,
+        members: Array.from(document.querySelectorAll('#edit-group-members option:checked')).map(option => option.value)
+    };
+
+    fetch(`/groups/update/${groupId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedGroupData)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to update group');
+        }
+    })
+    .then(data => {
+        console.log('Group updated successfully:', data);
+        document.querySelector('#edit-group-modal').style.display = 'none';
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function populatePlaylistForm(data) {
+    document.querySelector('#edit-playlist-id').value = data.id;
+    document.querySelector('#edit-playlist-name').value = data.name;
+    document.querySelector('#edit-playlist-description').value = data.description;
+    document.querySelector('#edit-playlist-create-date').value = data.createDate;
+}
+
+function updatePlaylist() {
+    const playlistId = document.querySelector('#edit-playlist-id').value;
+
+    const updatedPlaylistData = {
+        name: document.querySelector('#edit-playlist-name').value,
+        description: document.querySelector('#edit-playlist-description').value,
+        createDate: document.querySelector('#edit-playlist-create-date').value,
+        content: Array.from(document.querySelectorAll('#edit-playlist-content option:checked')).map(option => option.value)
+    };
+
+    fetch(`/playlists/update/${playlistId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedPlaylistData)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to update playlist');
+        }
+    })
+    .then(data => {
+        console.log('Playlist updated successfully:', data);
+        document.querySelector('#edit-playlist-modal').style.display = 'none';
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function populateContentItemForm(data) {
+    document.querySelector('#edit-contentitem-id').value = data.id;
+    document.querySelector('#edit-contentitem-player').value = data.player;
+    document.querySelector('#edit-contentitem-path').value = data.path;
+    document.querySelector('#edit-contentitem-url').value = data.url;
+}
+
+function updateContentItem() {
+    const contentItemId = document.querySelector('#edit-contentitem-id').value;
+
+    const updatedContentItemData = {
+        player: document.querySelector('#edit-contentitem-player').value,
+        path: document.querySelector('#edit-contentitem-path').value,
+        url: document.querySelector('#edit-contentitem-url').value
+    };
+
+    fetch(`/contentitems/update/${contentItemId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedContentItemData)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error('Failed to update content item');
+        }
+    })
+    .then(data => {
+        console.log('Content item updated successfully:', data);
+        document.querySelector('#edit-contentitem-modal').style.display = 'none';
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function populateMediaForm(data) {
+    const idField = document.getElementById('edit-media-id');
+    const nameField = document.getElementById('edit-media-name');
+    const descriptionField = document.getElementById('edit-media-description');
+    const typeField = document.getElementById('edit-media-type');
+    const pathField = document.getElementById('edit-media-path');
+    const urlField = document.getElementById('edit-media-url');
+
+    if (idField) idField.value = data._id.$oid;
+    if (nameField) nameField.value = data.name;
+    if (descriptionField) descriptionField.value = data.description || ''; // Handle possible undefined values
+    if (typeField) typeField.value = data.type;
+    if (pathField) pathField.value = data.path || ''; // Handle possible undefined values
+    if (urlField) urlField.value = data.url || '';
+
+    logToConsole('Populating media form with data:');
+    logToConsole(`ID: ${data._id.$oid}, Name: ${data.name}, Type: ${data.type}, Path: ${data.path}, URL: ${data.url}`);
 }

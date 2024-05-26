@@ -1,11 +1,13 @@
+import os
+
 class Config:
     # MongoDB settings
-    MONGODB_DB = 'kodikontroller'        # Name of your database
-    MONGODB_HOST = '10.0.3.12'           # Hostname or IP of the MongoDB server
-    MONGODB_PORT = 27017                 # Port number (default is 27017 for MongoDB)
-    #MONGODB_USERNAME = None              # Optional: specify if your MongoDB is secured
-    #MONGODB_PASSWORD = None              # Optional: specify if your MongoDB is secured
-    #MONGODB_AUTH_SOURCE = 'admin'        # Optional: specify the database to authenticate against
+    MONGODB_DB = os.environ.get('MONGODB_DB', 'kodikontroller') 
+    MONGODB_HOST = os.environ.get('MONGODB_HOST', 'mongodb')  
+    MONGODB_PORT = int(os.environ.get('MONGODB_PORT', 27017))   
+    MONGODB_USERNAME = os.environ.get('MONGODB_USERNAME', None) 
+    MONGODB_PASSWORD = os.environ.get('MONGODB_PASSWORD', None) 
+    MONGODB_AUTH_SOURCE = os.environ.get('MONGODB_AUTH_SOURCE', 'admin') 
 
 class TestConfig(Config):
     TESTING = True

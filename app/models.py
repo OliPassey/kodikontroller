@@ -19,7 +19,7 @@ class Host(db.Document):
     port = db.IntField(required=True)
     username = db.StringField()
     password = db.StringField()
-    group = db.ReferenceField('Group')  # Assuming hosts belong to groups
+    group = db.StringField()  # Removed for now
     cec = db.StringField()  # Consumer Electronics Control (optional)
     status = db.StringField(required=True, choices=('active', 'inactive', 'error'))
     schedule = db.ReferenceField('Schedule')  # Link to a Schedule if applicable

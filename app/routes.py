@@ -14,12 +14,31 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def index():
     hosts = Host.objects.all()
-    return render_template('index.html', hosts=hosts)
+    media = Media.objects.all()
+    return render_template('index.html', hosts=hosts, media=media)
 
 @main.route('/admin/media', methods=['GET'])
 def get_media():
     media_list = Media.objects()
-    return jsonify(media_list), 200
+    # Manually construct a list of dictionaries representing each media item
+    media_list_dict = []
+    for item in media_list:
+        media_data = {
+            "id": str(item.id),
+            "name": item.name,
+            "description": item.description,
+            "type": item.type,
+            "path": item.path,
+            "url": item.url
+        }
+        media_list_dict.append(media_data)
+    return jsonify(media_list_dict), 200
+
+@main.route('/admin/media/youtube')
+def get_youtube_media():
+    youtube_media = Media.objects(type='youtube')
+    return jsonify([{ 'name': media.name, 'url': media.url } for media in youtube_media]), 200
+
 
 @main.route('/admin/media/add', methods=['POST'])
 def add_media():
@@ -46,7 +65,7 @@ def get_media_by_id(id):
     return jsonify(media), 200
 
 @main.route('/admin/media/update/<id>', methods=['PUT'])
-def update_media(id):
+def update_media_by_id(id):
     media = Media.objects(id=id).first()
     if not media:
         return jsonify({'error': 'Media not found'}), 404
@@ -74,7 +93,7 @@ def update_media(id):
     return jsonify({"message": "Media updated successfully"}), 200
 
 @main.route('/admin/media/delete/<id>', methods=['DELETE'])
-def delete_media(id):
+def delete_media_by_id(id):
     media = Media.objects(id=id).first()
     if not media:
         return jsonify({'error': 'Media not found'}), 404
@@ -129,7 +148,7 @@ def add_group():
         return jsonify({"error": str(e)}), 400
 
 @main.route('/admin/groups/update/<id>', methods=['PUT'])
-def update_group(id):
+def update_group_by_id(id):
     group = Group.objects(id=id).first()
     if not group:
         return jsonify({'error': 'Group not found'}), 404
@@ -157,7 +176,7 @@ def update_group(id):
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
     
 @main.route('/admin/groups/delete/<id>', methods=['DELETE'])
-def delete_group(id):
+def delete_group_by_id(id):
     group = Group.objects(id=id).first()
     if not group:
         return jsonify({'error': 'Group not found'}), 404
@@ -186,6 +205,14 @@ def get_hosts():
         host_list.append(host_data)
     return jsonify(host_list), 200
 
+@main.route('/admin/hosts/<id>', methods=['GET'])
+def get_host_by_id(id):
+    host = Host.objects(id=id).first()
+    if not host:
+        return jsonify({'error': 'Host not found'}), 404
+    return jsonify(host), 200
+
+
 @main.route('/admin/hosts/add', methods=['POST'])
 def add_host():
     try:
@@ -210,7 +237,7 @@ def add_host():
         return jsonify({"error": str(e)}), 400
 
 @main.route('/admin/hosts/update/<id>', methods=['PUT'])
-def update_host(id):
+def update_host_by_id(id):
     host = Host.objects(id=id).first()
     if not host:
         return jsonify({'error': 'Host not found'}), 404
@@ -222,7 +249,7 @@ def update_host(id):
         return jsonify({'error': 'An error occurred updating the host: {}'.format(str(e))}), 500
 
 @main.route('/admin/hosts/delete/<id>', methods=['DELETE'])
-def delete_host(id):
+def delete_host_by_id(id):
     host = Host.objects(id=id).first()
     if not host:
         return jsonify({'error': 'Host not found'}), 404
@@ -268,7 +295,7 @@ def add_schedule():
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 @main.route('/admin/schedules/update/<id>', methods=['PUT'])
-def update_schedule(id):
+def update_schedule_by_id(id):
     schedule = Schedule.objects(id=id).first()
     if not schedule:
         return jsonify({'error': 'Schedule not found'}), 404
@@ -289,43 +316,13 @@ def update_schedule(id):
         return jsonify({'error': 'An error occurred updating the schedule: ' + str(e)}), 500
 
 @main.route('/admin/schedules/delete/<id>', methods=['DELETE'])
-def delete_schedule(id):
+def delete_schedule_by_id(id):
     schedule = Schedule.objects(id=id).first()
     if not schedule:
         return jsonify({'error': 'Schedule not found'}), 404
 
     schedule.delete()
     return jsonify({"message": "Schedule deleted successfully"}), 200
-
-@main.route('/admin/playlists/add', methods=['POST'])
-def add_playlist():
-    try:
-        name = request.json.get('name')
-        description = request.json.get('description')
-        content_ids = request.json.get('content', [])
-
-        if not name:
-            return jsonify({"error": "Playlist name is required"}), 400
-
-        # Fetch Media documents from content_ids
-        content = []
-        for media_id in content_ids:
-            media = Media.objects(id=media_id).first()
-            if media:
-                content.append(media)
-
-        new_playlist = Playlist(
-            name=name,
-            description=description,
-            createDate=datetime.utcnow(),
-            content=content
-        )
-        new_playlist.save()
-        return jsonify({"message": "Playlist added successfully", "playlist": new_playlist.to_json()}), 201
-    except ValidationError as e:
-        return jsonify({"error": str(e)}), 400
-    except Exception as e:
-        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 @main.route('/ctrl/notify/hosts/<id>', methods=['POST'])
 def notify_host(id):
@@ -376,26 +373,6 @@ def notify_host(id):
         app.logger.error(f'An error occurred: {str(e)}')
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
-    # Convert the command dictionary to a JSON string
-    json_command = json.dumps(command)
-
-    # Build the complete URL with authentication and port
-    url = f"http://{host.username}:{host.password}@{host.ip}:{host.port}/jsonrpc"
-
-    headers = {'Content-Type': 'application/json'}
-    try:
-        response = requests.post(url, headers=headers, data=json_command)
-        response.raise_for_status()  # This checks for HTTP errors
-        return jsonify({"message": "Notification sent successfully", "response": response.json()}), 200
-    except requests.exceptions.HTTPError as e:
-        return jsonify({'error': f'HTTP error occurred: {str(e)}'}), 500
-    except requests.exceptions.RequestException as e:
-        return jsonify({'error': f'Request failed: {str(e)}'}), 500
-    except json.JSONDecodeError:
-        return jsonify({'error': 'Failed to decode JSON from Kodi'}), 500
-    except Exception as e:
-        return jsonify({'error': f'An error occurred: {str(e)}'}), 500
-    
 @main.route('/ctrl/image/hosts/<id>', methods=['POST'])
 def display_image_host(id):
     stop_playback(id)
@@ -439,7 +416,7 @@ def display_image_host(id):
         return jsonify({'error': 'Failed to decode JSON from Kodi'}), 500
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
-    
+
 @main.route('/ctrl/youtube/hosts/<id>', methods=['POST'])
 def play_youtube_video(id):
     stop_playback(id)
@@ -582,46 +559,95 @@ def stop_playback(id):
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
-@main.route('/admin/hosts/check_status', methods=['GET'])
+@main.route('/admin/playlists/add', methods=['POST'])
+def add_playlist():
+    try:
+        new_playlist = Playlist(
+            name=request.json.get('name'),
+            description=request.json.get('description', ''),
+            createDate=parser.parse(request.json.get('createDate')),
+            content=[
+                Media(
+                    name=content.get('name'),
+                    description=content.get('description', ''),
+                    type=content.get('type'),
+                    path=content.get('path', ''),
+                    url=content.get('url', '')
+                ) for content in request.json.get('content', [])
+            ]
+        )
+        new_playlist.save()
+        return jsonify({"message": "Playlist added successfully"}), 201
+    except ValidationError as e:
+        return jsonify({"error": str(e)}), 400
+    except ValueError as e:  # Catch parsing errors
+        return jsonify({"error": f"Date parsing error: {str(e)}"}), 400
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+@main.route('/admin/host_status', methods=['GET'])
 def check_host_status():
     hosts = Host.objects()
-    host_statuses = []
+    results = []
 
     for host in hosts:
         try:
             url = f"http://{host.username}:{host.password}@{host.ip}:{host.port}/jsonrpc"
             headers = {'Content-Type': 'application/json'}
-            payload = {
+
+            # Get active players
+            active_players_command = {
                 "jsonrpc": "2.0",
                 "id": 1,
                 "method": "Player.GetActivePlayers"
             }
-            response = requests.post(url, headers=headers, json=payload, timeout=5)
+            response = requests.post(url, headers=headers, data=json.dumps(active_players_command))
             response.raise_for_status()
-
             active_players = response.json().get('result', [])
 
+            # Process each active player
             if active_players:
                 host.status = 'active'
+                playing_info_list = []
+
+                for player in active_players:
+                    player_id = player['playerid']
+                    
+                    # Get details of the current item being played by each player
+                    get_item_command = {
+                        "jsonrpc": "2.0",
+                        "id": 1,
+                        "method": "Player.GetItem",
+                        "params": {
+                            "playerid": player_id,
+                            "properties": ["title", "album", "artist", "duration"]
+                        }
+                    }
+                    response = requests.post(url, headers=headers, data=json.dumps(get_item_command))
+                    response.raise_for_status()
+                    playing_info = response.json().get('result', {}).get('item', {})
+
+                    # Append each player's current playing title to a list
+                    playing_info_list.append(playing_info.get('label', 'Unknown Media'))
+
+                # Combine all playing titles for the host
+                host.player = ", ".join(playing_info_list)
             else:
                 host.status = 'inactive'
-                
-            host.save()
-            host_statuses.append({
-                "id": str(host.id),
-                "name": host.name,
-                "status": host.status
-            })
-        except requests.exceptions.RequestException:
-            host.status = 'error'
-            host.save()
-            host_statuses.append({
-                "id": str(host.id),
-                "name": host.name,
-                "status": host.status
-            })
+                host.player = ''
 
-    return jsonify({"host_statuses": host_statuses}), 200
+        except requests.exceptions.RequestException as e:
+            host.status = 'error'
+            host.player = 'Error accessing host'
+
+        host.save()
+        results.append({
+            "host_id": str(host.id),
+            "status": host.status,
+            "playing": host.player
+        })
+
+    return jsonify(results), 200
 
 #####################
 # Standard Handling #
