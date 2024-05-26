@@ -1,4 +1,5 @@
-![image](https://github.com/OliPassey/kodikontroller/assets/7745805/590ae22c-3e01-493b-94eb-a289f560153d)
+![image](https://github.com/OliPassey/kodikontroller/assets/7745805/66125687-3568-4da6-ba1a-cf25535f25f6)
+
 ## Kodi Kontroller v4 (ish) 
 ### by Oliver Passey
 
@@ -14,7 +15,10 @@ Kodi should be set up as usual and a user / pass set on the web browser. Details
 Everything is very manual at the moment, but the long term goal is to build a scheduler to automate display, and then the use case is to use this app for one-off notifications or amending the schedule.
 
 ### New New (2024) To Do List;
-- [ ] Media Management
+- [x] Media Management MVP
+- [ ] Playlists, Schedules, Groups
+- [ ] Screenshot?
+- [ ] Hide Offline Hosts
 
 ### New To Do List;
 MVP Level GUI for sending 
