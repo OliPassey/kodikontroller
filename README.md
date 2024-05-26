@@ -5,7 +5,13 @@
 
 ### Current Status: 
 Kodi Controls are working, Media Mgmt is in progress  
-In order to get this going you will need to sub in your own config.py with details to your MongoDB Server. I'll move this to docker env variables soon.
+In order to get this going you will need to host your own MongoDB server and add the below variables to the Docker container, you will also need to expose port 5000 in the container.   
+- MONGODB_DB
+- MONGODB_HOST
+- MONGODB_PORT
+- MONGODB_USERNAME (Optional)
+- MONGODB_PASSWORD (Optional)
+- MONGODB_AUTH_SOURCE (Defaults to admin)
 
 ### Usage 
 This is the control part of an office dashboard display system, utilising Kodi connected to large monitors & TVs. It was designed with offices in mind but it will be useful anywhere you need to manage multiple screens.  
