@@ -1,10 +1,17 @@
-![image](https://github.com/OliPassey/kodikontroller/assets/7745805/590ae22c-3e01-493b-94eb-a289f560153d)
+![image](https://github.com/OliPassey/kodikontroller/assets/7745805/66125687-3568-4da6-ba1a-cf25535f25f6)
+
 ## Kodi Kontroller v4 (ish) 
 ### by Oliver Passey
 
 ### Current Status: 
 Kodi Controls are working, Media Mgmt is in progress  
-In order to get this going you will need to sub in your own config.py with details to your MongoDB Server. I'll move this to docker env variables soon.
+In order to get this going you will need to host your own MongoDB server and add the below variables to the Docker container, you will also need to expose port 5000 in the container.   
+- MONGODB_DB
+- MONGODB_HOST
+- MONGODB_PORT
+- MONGODB_USERNAME (Optional)
+- MONGODB_PASSWORD (Optional)
+- MONGODB_AUTH_SOURCE (Defaults to admin)
 
 ### Usage 
 This is the control part of an office dashboard display system, utilising Kodi connected to large monitors & TVs. It was designed with offices in mind but it will be useful anywhere you need to manage multiple screens.  
@@ -14,7 +21,10 @@ Kodi should be set up as usual and a user / pass set on the web browser. Details
 Everything is very manual at the moment, but the long term goal is to build a scheduler to automate display, and then the use case is to use this app for one-off notifications or amending the schedule.
 
 ### New New (2024) To Do List;
-- [ ] Media Management
+- [x] Media Management MVP
+- [ ] Playlists, Schedules, Groups
+- [ ] Screenshot?
+- [ ] Hide Offline Hosts
 
 ### New To Do List;
 MVP Level GUI for sending 
