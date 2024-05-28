@@ -21,24 +21,144 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .catch(error => console.error('Error loading YouTube media:', error));
 
-    // YouTube Dropdown Play button
-    document.querySelector('.play-media-button').addEventListener('click', function () {
-        const select = this.closest('.host-widget').querySelector('.youtube-media-select');
+    //Fetch Video media
+    fetch('/admin/media/video')  // Assuming this endpoint returns YouTube media
+    .then(response => response.json())
+    .then(data => {
+        // Select all YouTube dropdowns in each host widget
+        document.querySelectorAll('.host-widget').forEach(widget => {
+            const videoSelect = widget.querySelector('.play-video-select');
+            // Ensure the dropdown is cleared initially (important if this code runs more than once)
+            videoSelect.innerHTML = '<option value="">Select a video</option>';
+            // Populate the dropdown with new options
+            data.forEach(media => {
+                const option = new Option(media.name, media.url);
+                videoSelect.appendChild(option);
+            });
+        });
+    })
+    .catch(error => console.error('Error loading video media:', error));
+
+    //Fetch Audio media
+    fetch('/admin/media/audio')  // Assuming this endpoint returns YouTube media
+    .then(response => response.json())
+    .then(data => {
+        // Select all YouTube dropdowns in each host widget
+        document.querySelectorAll('.host-widget').forEach(widget => {
+            const audioSelect = widget.querySelector('.play-audio-input');
+            // Ensure the dropdown is cleared initially (important if this code runs more than once)
+            audioSelect.innerHTML = '<option value="">Select an audio</option>';
+            // Populate the dropdown with new options
+            data.forEach(media => {
+                const option = new Option(media.name, media.url);
+                audioSelect.appendChild(option);
+            });
+        });
+    })
+    .catch(error => console.error('Error loading audio media:', error));
+
+    //Fetch Image media
+    fetch('/admin/media/image')  // Assuming this endpoint returns YouTube media
+    .then(response => response.json())
+    .then(data => {
+        // Select all YouTube dropdowns in each host widget
+        document.querySelectorAll('.host-widget').forEach(widget => {
+            const imageSelect = widget.querySelector('.image-select-input');
+            // Ensure the dropdown is cleared initially (important if this code runs more than once)
+            imageSelect.innerHTML = '<option value="">Select a image</option>';
+            // Populate the dropdown with new options
+            data.forEach(media => {
+                const option = new Option(media.name, media.url);
+                imageSelect.appendChild(option);
+            });
+        });
+    })
+    .catch(error => console.error('Error loading YouTube media:', error));
+
+    // Video Dropdown Play button
+    document.querySelector('.play-video-button').addEventListener('click', function () {
+        const select = this.closest('.host-widget').querySelector('.play-video-select');
         const url = select.value;
         const widget = this.closest('.host-widget');
         const hostId = widget.getAttribute('data-host-id');
     
         if (url) {
-            fetch(`/ctrl/youtube/hosts/${hostId}`, {
+            fetch(`/ctrl/video/hosts/${hostId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ youtube_url: url })
+                body: JSON.stringify({ media_path: url })
             })
             .then(response => {
                 if (response.ok) {
-                    console.log('YouTube video sent successfully!');
+                    console.log('Video sent successfully!');
+                    return response.json();
+                } else {
+                    throw new Error('Failed to send Video URL');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                displayError(widget, error.message);
+            });
+        } else {
+            console.error('No video selected');
+            displayError(widget, 'Please select a video to play.');
+        }
+    });
+
+    // Audio Dropdown Play button
+    document.querySelector('.play-audio-button').addEventListener('click', function () {
+        const select = this.closest('.host-widget').querySelector('.play-audio-input');
+        const url = select.value;
+        const widget = this.closest('.host-widget');
+        const hostId = widget.getAttribute('data-host-id');
+    
+        if (url) {
+            fetch(`/ctrl/audio/hosts/${hostId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ media_path: url })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Audio sent successfully!');
+                    return response.json();
+                } else {
+                    throw new Error('Failed to send Audio URL');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                displayError(widget, error.message);
+            });
+        } else {
+            console.error('No audio selected');
+            displayError(widget, 'Please select a track to play.');
+        }
+    });
+
+    // Image Dropdown Play button
+    document.querySelector('.select-image-button').addEventListener('click', function () {
+        const select = this.closest('.host-widget').querySelector('.image-select-input');
+        const url = select.value;
+        const widget = this.closest('.host-widget');
+        const hostId = widget.getAttribute('data-host-id');
+    
+        if (url) {
+            fetch(`/ctrl/image/hosts/${hostId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image_url: url })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Image sent successfully!');
                     return response.json();
                 } else {
                     throw new Error('Failed to send YouTube URL');
@@ -49,9 +169,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 displayError(widget, error.message);
             });
         } else {
-            console.error('No YouTube video selected');
-            displayError(widget, 'Please select a YouTube video to play.');
+            console.error('No Image selected');
+            displayError(widget, 'Please select an Image to play.');
         }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const youtubeGroup = document.querySelectorAll(".youtube-group");
+        
+        youtubeGroup.forEach(function (group) {
+            const arrow = group.querySelector(".arrow");
+    
+            arrow.addEventListener("click", function () {
+                const content = this.parentNode.nextElementSibling;
+                content.classList.toggle("hidden");
+            });
+        });
     });
     
 
@@ -734,7 +867,7 @@ function checkHostStatuses() {
                 }
             }
         });
-        logToConsole('Host statuses updated');
+        logToConsole('Ping!...Pong! - Host status updated');
     })
     .catch(error => {
         logToConsole(`Error checking host statuses: ${error.message}`);

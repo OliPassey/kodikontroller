@@ -39,6 +39,20 @@ def get_youtube_media():
     youtube_media = Media.objects(type='youtube')
     return jsonify([{ 'name': media.name, 'url': media.url } for media in youtube_media]), 200
 
+@main.route('/admin/media/video')
+def get_video_media():
+    video_media = Media.objects(type='video')
+    return jsonify([{ 'name': media.name, 'url': media.url } for media in video_media]), 200
+
+@main.route('/admin/media/audio')
+def get_audio_media():
+    audio_media = Media.objects(type='audio')
+    return jsonify([{ 'name': media.name, 'url': media.url } for media in audio_media]), 200
+
+@main.route('/admin/media/image')
+def get_image_media():
+    image_media = Media.objects(type='image')
+    return jsonify([{ 'name': media.name, 'url': media.url } for media in image_media]), 200
 
 @main.route('/admin/media/add', methods=['POST'])
 def add_media():

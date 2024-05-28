@@ -9,6 +9,14 @@ body {
     color: #fff;  /* Adjust text color for visibility on background */
 }
 
+@media (max-width: 768px) {
+    body {
+        background-image: url('/static/img/bg_mobile.jpg');  /* Optional: Load a different, smaller image for mobile devices */
+        background-position: top center;  /* Adjust positioning if necessary for better visibility/focus on mobile */
+        background-size: auto;
+    }
+}
+
 header {
     text-align: center;
     padding: 10px;
@@ -18,7 +26,8 @@ header {
 }
 
 header img {
-    width: 500px;  /* Adjust size as necessary */
+    width: 50%;  /* Adjust size as necessary */
+    max-width: 450px;
 }
 
 .admin-button {

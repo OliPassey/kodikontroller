@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kodi Kontroller v4.0.2</title>
+    <title>Kodi Kontroller v4.0.3</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
 </head>
@@ -23,19 +23,6 @@
             </div>
             <div class="error-message"></div>
             <div class="host-controls">
-                <h3>YouTube</h3>
-                <div class="input-group">
-                    <input type="text" class="youtube-url-input" placeholder="Enter a YouTube URL">
-                    <button class="play-button">Play URL</button>
-                </div>
-                <div class="input-group">
-                    <select class="youtube-media-select">
-                        <option value="">Select a YouTube video</option>
-                        <!-- Options will be populated here dynamically -->
-                    </select>
-                    <button class="play-media-button">Play Selected</button>
-                </div>
-                
                 <div class="notifications-group">
                     <h3>Notifications</h3>
                     <input type="text" class="notification-headline-input" placeholder="Headline">
@@ -54,10 +41,42 @@
                     </div>
                     <button class="notify-button">Send Notification</button>
                 </div>
+                <h3>YouTube</h3>
+                <div class="input-group">
+                    <input type="text" class="youtube-url-input" placeholder="Enter a YouTube URL">
+                    <button class="play-button">Play URL</button>
+                </div>
+                <div class="input-group">
+                    <select class="youtube-media-select">
+                        <option value="">Select a YouTube video</option>
+                        <!-- Options will be populated here dynamically -->
+                    </select>
+                    <button class="play-media-button">Play Selected</button>
+                </div>
+                <h3>Video</h3>
+                <div class="input-group">
+                    <select class="play-video-select">
+                        <option value="">Select a video</option>
+                    </select>
+                    <button class="play-video-button">Play Selected</button>
+                </div>
+                <h3>Audio</h3>
+                <div class="input-group">
+                    <select class="play-audio-input">
+                        <option value="">Select a track</option>
+                    </select>
+                    <button class="play-audio-button">Play Selected</button>
+                </div>
                 <h3>Image</h3>
                 <div class="input-group">
                     <input type="text" class="image-url-input" placeholder="Enter an Image URL">
                     <button class="image-button">Display Image</button>
+                </div>
+                <div class="input-group">
+                    <select class="image-select-input">
+                        <option value="">Select an image</option>
+                    </select>
+                    <button class="select-image-button">Show Selected</button>
                 </div>
             </div>
         </div>
@@ -244,5 +263,6 @@
     <textarea id="console-output" readonly></textarea>
 
     <script src="/static/js/script.js"></script>
+
 </body>
 </html>
