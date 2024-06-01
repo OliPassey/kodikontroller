@@ -466,3 +466,18 @@ header img {
         width: auto; /* Auto width for buttons */
     }
 }
+
+.screenshotContainer {
+    text-align: center; /* Center align the image */
+}
+
+.kodi-image {
+    max-width: 100%; /* Ensure the image fits width-wise to its container */
+    height: auto; /* Maintain aspect ratio */
+    cursor: pointer; /* Show cursor as pointer on hover */
+    transition: transform 0.2s; /* Smooth transition on hover */
+}
+
+.kodi-image:hover {
+    transform: scale(1.1); /* Scale up by 10% on hover */
+}

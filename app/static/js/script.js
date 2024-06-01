@@ -806,35 +806,156 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.edit-media').forEach(button => {
-            button.addEventListener('click', () => {
-                const mediaId = button.getAttribute('data-id');
-                fetch(`/media/${mediaId}`)
+        document.querySelectorAll('.kodi-Image').forEach(kodiImage => {
+            kodiImage.addEventListener('click', () => {
+                // Extract the host ID from the data-host-id attribute of the parent element
+                const hostId = kodiImage.closest('.host-widget').getAttribute('data-host-id');
+                console.log('Host ID:', hostId);
+    
+                // Send a POST request to take a screenshot
+                fetch('/admin/ctrl/kodi/screenshot/' + hostId, {
+                    method: 'POST'
+                })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Failed to fetch media details');
+                        throw new Error('Failed to take screenshot');
                     }
+                    console.log('Screenshot request successful');
                     return response.json();
                 })
                 .then(data => {
-                    populateMediaForm(data);
+                    // Once the screenshot is taken, construct the URL for the latest screenshot
+                    fetch(`/admin/ctrl/kodi/screenshot/latest/${hostId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to retrieve latest screenshot');
+                            }
+                            console.log('Latest screenshot request successful');
+                            return response.json();
+                        })
+                        .then(screenshotData => {
+                            console.log('Received screenshot data:', screenshotData);
+                            const latestScreenshotNumber = screenshotData.latestScreenshotNumber;
+                            const baseURL = `${window.location.protocol}//${window.location.host}`;
+                            const screenshotURL = `${baseURL}/screenshots/${hostId}/screenshot${latestScreenshotNumber}.png`;
+                            console.log(latestScreenshotNumber);
+                            console.log(screenshotURL);
+    
+                            // Attempt to load the image with retries
+                            const loadImageWithRetries = (retryCount) => {
+                                if (retryCount <= 0) {
+                                    // Retry limit reached, replace the original image
+                                    console.error('Retry limit reached, replacing original image');
+                                    kodiImage.src = 'original_image_url.jpg'; // Replace with the original image URL
+                                    return;
+                                }
+    
+                                const img = new Image();
+                                img.onload = () => {
+                                    // Image loaded successfully, update the src attribute
+                                    kodiImage.src = screenshotURL;
+                                };
+                                img.onerror = () => {
+                                    // Error loading image, retry after a short delay
+                                    console.error(`Error loading image, retrying... (Attempts left: ${retryCount})`);
+                                    setTimeout(() => loadImageWithRetries(retryCount - 1), 1000); // Retry after 1 second
+                                };
+                                img.src = screenshotURL; // Start loading the image
+                            };
+    
+                            // Initial attempt to load the image with retries
+                            loadImageWithRetries(5); // Retry 5 times
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error loading media details');
                 });
             });
         });
     });
+    
     
     // Event listeners for Update buttons in the edit forms
     document.querySelector('#save-host-button').addEventListener('click', updateHost);
     document.querySelector('#save-schedule-button').addEventListener('click', updateSchedule);
     document.querySelector('#save-group-button').addEventListener('click', updateGroup);
     document.querySelector('#save-playlist-button').addEventListener('click', updatePlaylist);
-    document.querySelector('#save-contentitem-button').addEventListener('click', updateContentItem);
-
-
+    // document.querySelector('#save-contentitem-button').addEventListener('click', updateContentItem);
+    
+    // Screenshots
+    document.querySelectorAll('.kodi-image').forEach(image => {
+        image.addEventListener('click', function() {
+            // Extract the host ID from the data-host-id attribute of the parent element
+            const hostId = this.closest('.host-widget').getAttribute('data-host-id');
+            // console.log('Host ID:', hostId);
+    
+            // Send a POST request to take a screenshot
+            fetch('/admin/ctrl/kodi/screenshot/' + hostId, {
+                method: 'POST'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to take screenshot');
+                }
+                console.log('Screenshot request successful');
+                return response.json();
+            })
+            .then(data => {
+                // Once the screenshot is taken, construct the URL for the latest screenshot
+                fetch(`/admin/ctrl/kodi/screenshot/latest/${hostId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to retrieve latest screenshot');
+                        }
+                        // console.log('Latest screenshot request successful');
+                        return response.json();
+                    })
+                    .then(screenshotData => {
+                        const latestScreenshotNumber = screenshotData.latestScreenshotNumber;
+                        const baseURL = `${window.location.protocol}//${window.location.host}`;
+                        const screenshotURL = `${baseURL}/screenshots/${hostId}/screenshot${latestScreenshotNumber}.png`;
+                        // console.log(latestScreenshotNumber);
+                        // console.log(screenshotURL);
+    
+                        // Attempt to load the image with retries
+                        const loadImageWithRetries = (retryCount) => {
+                            if (retryCount <= 0) {
+                                // Retry limit reached, replace the original image
+                                console.error('Retry limit reached, replacing original image');
+                                image.src = '/img/kodi.png'; // Replace with the original image URL
+                                return;
+                            }
+    
+                            const img = new Image();
+                            img.onload = () => {
+                                // Image loaded successfully, update the src attribute
+                                image.src = screenshotURL;
+                            };
+                            img.onerror = () => {
+                                // Error loading image, retry after a short delay
+                                console.error(`Error loading image, retrying... (Attempts left: ${retryCount})`);
+                                setTimeout(() => loadImageWithRetries(retryCount - 1), 1000); // Retry after 1 second
+                            };
+                            img.src = screenshotURL; // Start loading the image
+                        };
+    
+                        // Initial attempt to load the image with retries
+                        loadImageWithRetries(5); // Retry 5 times
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+    
+    
 });
 
 
@@ -867,14 +988,12 @@ function checkHostStatuses() {
                 }
             }
         });
-        logToConsole('Ping!...Pong! - Host status updated');
+        logToConsole('Ping?...Pong! - Host status updated');
     })
     .catch(error => {
         logToConsole(`Error checking host statuses: ${error.message}`);
     });
 }
-
-
 
 function postImageUrl(hostId, imageUrl) {
     console.log(`Sending Image URL: ${imageUrl} to host ID: ${hostId}`);

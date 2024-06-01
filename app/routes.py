@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 from mongoengine import InvalidQueryError
 from dateutil import parser
 from flask import Flask, request, send_file, render_template, redirect, url_for
+from flask import send_from_directory
 import requests
 import json
 import re
@@ -670,7 +671,67 @@ def check_host_status():
 
     return jsonify(results), 200
 
+@main.route('/admin/ctrl/kodi/screenshot/<id>', methods=['POST'])
+def take_kodi_screenshot(id):
+    # Stop any existing playback on the host
+    stop_playback(id)
 
+    # Retrieve the host based on the provided ID
+    host = Host.objects(id=id).first()
+    if not host:
+        return jsonify({'error': 'Host not found'}), 404
+
+    # Construct the Kodi JSON-RPC command to take a screenshot
+    command = {
+        "jsonrpc": "2.0",
+        "method": "Input.ExecuteAction",
+        "params": {"action": "screenshot"},
+        "id": 5
+    }
+
+    # Convert the command to JSON format
+    json_command = json.dumps([command])
+
+    # Construct the URL for the Kodi JSON-RPC API endpoint
+    url = f"http://{host.username}:{host.password}@{host.ip}:{host.port}/jsonrpc"
+
+    # Define headers for the HTTP request
+    headers = {'Content-Type': 'application/json'}
+
+    try:
+        # Send the POST request to the Kodi JSON-RPC API endpoint
+        response = requests.post(url, headers=headers, data=json_command)
+        response.raise_for_status()
+        return jsonify({"message": "Screenshot taken successfully", "response": response.json()}), 200
+    except Exception as e:
+        return jsonify({'error': f'Failed to take screenshot: {str(e)}'}), 500
+
+@main.route('/admin/ctrl/kodi/screenshot/latest/<host_id>', methods=['GET'])
+def get_latest_screenshot(host_id):
+    screenshot_dir = f'/screenshots/{host_id}/'  # Update the path to your screenshot directory
+    if not os.path.isdir(screenshot_dir):
+        return jsonify({'error': 'Screenshot directory not found'}), 404
+
+    screenshot_files = [f for f in os.listdir(screenshot_dir) if f.startswith('screenshot') and f.endswith('.png')]
+    if not screenshot_files:
+        return jsonify({'error': 'No screenshot files found'}), 404
+
+    # Extract and sort the numeric part of the filename to find the latest screenshot
+    screenshot_numbers = [int(f.split('screenshot')[-1].split('.')[0]) for f in screenshot_files]
+    latest_screenshot_number = max(screenshot_numbers)
+
+    # Pad the number with leading zeros to ensure consistency in the filename format
+    latest_screenshot_number_padded = str(latest_screenshot_number).zfill(5)  # Assuming maximum 5-digit numbering
+
+    return jsonify({'latestScreenshotNumber': latest_screenshot_number_padded}), 200
+
+@main.route('/screenshots/<host_id>/<filename>')
+def get_screenshot(host_id, filename):
+    # Define the directory where the screenshots are stored
+    screenshot_dir = f'/screenshots/{host_id}/'  # Update the path to your screenshot directory
+
+    # Return the image file from the specified directory
+    return send_from_directory(screenshot_dir, filename)
 
 #####################
 # Standard Handling #
