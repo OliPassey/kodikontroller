@@ -98,12 +98,16 @@ header img {
     padding: 20px;
 }
 
+.host-header {
+    width: fit-content;
+}
+
 .host-widget {
     background: rgba(0, 0, 0, 0.5);  /* Semi-transparent background for readability */
     border: 1px solid #00f5e8;
     padding: 20px;
     margin: 10px;
-    width: 400px;
+    width: 750px;
     box-sizing: border-box; /* Ensure padding and border are included in the width */
 }
 
@@ -111,10 +115,22 @@ header img {
     color: #fff;
 }
 
-.host-controls {
+.host-widget {
     display: flex;
-    flex-direction: column;
 }
+
+.host-header,
+.host-controls {
+    width: 40%; /* Adjusted width for the first column */
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.host-controls {
+    width: 60%; /* Adjusted width for the second column */
+}
+
+
 
 .host-controls h3 {
     margin: 10px 10px 5px 10px;
@@ -227,6 +243,10 @@ header img {
     color: #fff;
     border: none;
     cursor: pointer;
+}
+.host-playing {
+    white-space: pre-wrap; /* This ensures that the text wraps at whitespace or line breaks */
+    word-wrap: break-word; /* This allows long words to be broken and wrap onto the next line */
 }
 
 .dropdown-group {
@@ -410,6 +430,33 @@ header img {
     border-radius: 8px;
 }
 
+.notify-input-group, .yt-input-group {
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    border-radius: 8px;
+}
+
+.notify-input-group input[type="text"] {
+    flex-grow: 1;
+    margin-right: 10px; /* Spacing between input and button */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.3); /* Darker background for the input */
+    color: #fff; /* White text color for visibility */
+}
+
+.yt-input-group select {
+    flex-grow: 1;
+    margin-right: 10px; /* Spacing between input and button */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.3); /* Darker background for the input */
+    color: #fff; /* White text color for visibility */
+}
+
 .input-group.expanded {
     display: flex; /* Show expanded input groups */
 }
@@ -469,6 +516,7 @@ header img {
 
 .screenshotContainer {
     text-align: center; /* Center align the image */
+
 }
 
 .kodi-image {

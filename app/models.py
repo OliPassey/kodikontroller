@@ -6,7 +6,7 @@ class Media(db.Document):
     description = db.StringField()
     type = db.StringField(required=True, choices=('audio', 'video', 'image', 'youtube'))
     path = db.StringField()
-    url = db.StringField(unique=True, regex='^http[s]?://')
+    url = db.StringField(unique=True)
 
 class Group(db.Document):
     name = db.StringField(required=True)

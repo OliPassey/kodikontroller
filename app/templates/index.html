@@ -28,28 +28,28 @@
             <div class="host-controls">
                 <div class="notifications-group">
                     <h3>Notifications</h3>
-                    <input type="text" class="notification-headline-input" placeholder="Headline">
-                    <input type="text" class="notification-message-input" placeholder="Message">
-                    <div class="dropdown-group">
-                        <select class="notification-duration-select">
-                            <option value="10000">10s</option>
-                            <option value="30000">30s</option>
-                            <option value="60000">1m</option>
-                        </select>
-                        <select class="notification-image-select">
-                            <option value="info">Info</option>
-                            <option value="warning">Warning</option>
-                            <option value="error">Error</option>
-                        </select>
+                    <div class="notify-input-group">
+                        <input type="text" class="notification-headline-input" placeholder="Headline">
+                        <input type="text" class="notification-message-input" placeholder="Message">
+                        <div class="dropdown-group">
+                            <select class="notification-duration-select">
+                                <option value="10000">10s</option>
+                                <option value="30000">30s</option>
+                                <option value="60000">1m</option>
+                            </select>
+                            <select class="notification-image-select">
+                                <option value="info">Info</option>
+                                <option value="warning">Warning</option>
+                                <option value="error">Error</option>
+                            </select>
+                        </div>
+                        <button class="notify-button">Send Notification</button>
                     </div>
-                    <button class="notify-button">Send Notification</button>
                 </div>
                 <h3>YouTube</h3>
-                <div class="input-group">
+                <div class="yt-input-group">
                     <input type="text" class="youtube-url-input" placeholder="Enter a YouTube URL">
                     <button class="play-button">Play URL</button>
-                </div>
-                <div class="input-group">
                     <select class="youtube-media-select">
                         <option value="">Select a YouTube video</option>
                         <!-- Options will be populated here dynamically -->

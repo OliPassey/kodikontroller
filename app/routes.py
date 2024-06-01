@@ -46,7 +46,18 @@ def get_youtube_media():
 @main.route('/admin/media/video')
 def get_video_media():
     video_media = Media.objects(type='video')
-    return jsonify([{ 'name': media.name, 'url': media.url } for media in video_media]), 200
+    media_list = []
+    for media in video_media:
+        if media.url:
+            media_url = media.url
+        elif media.path:
+            media_url = media.path
+        else:
+            media_url = None
+        if media_url:
+            media_list.append({'name': media.name, 'url': media_url})
+    return jsonify(media_list), 200
+
 
 @main.route('/admin/media/audio')
 def get_audio_media():
@@ -571,6 +582,7 @@ def stop_playback(id):
             response.raise_for_status()
             results.append(response.json())
 
+
         return jsonify({"message": "Playback stopped successfully", "responses": results}), 200
     except requests.exceptions.HTTPError as e:
         return jsonify({'error': f'HTTP error occurred: {str(e)}'}), 500
@@ -673,9 +685,6 @@ def check_host_status():
 
 @main.route('/admin/ctrl/kodi/screenshot/<id>', methods=['POST'])
 def take_kodi_screenshot(id):
-    # Stop any existing playback on the host
-    stop_playback(id)
-
     # Retrieve the host based on the provided ID
     host = Host.objects(id=id).first()
     if not host:
@@ -686,7 +695,7 @@ def take_kodi_screenshot(id):
         "jsonrpc": "2.0",
         "method": "Input.ExecuteAction",
         "params": {"action": "screenshot"},
-        "id": 5
+        "id": 1
     }
 
     # Convert the command to JSON format

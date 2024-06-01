@@ -204,6 +204,22 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Existing play button functionality
+    document.querySelectorAll('.play-media-button').forEach(button => {
+        button.addEventListener('click', function () {
+            const widget = button.closest('.host-widget');
+            const hostId = widget.getAttribute('data-host-id');
+            const input = widget.querySelector('.youtube-media-select');
+            const youtubeUrl = input.value.trim();
+
+            if (youtubeUrl) {
+                postYouTubeUrl(hostId, youtubeUrl);
+            } else {
+                displayError(widget, 'Please enter a valid YouTube URL.');
+            }
+        });
+    });
+
     // Existing notify button functionality
     document.querySelectorAll('.notify-button').forEach(button => {
         button.addEventListener('click', function () {
@@ -925,7 +941,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (retryCount <= 0) {
                                 // Retry limit reached, replace the original image
                                 console.error('Retry limit reached, replacing original image');
-                                image.src = '/img/kodi.png'; // Replace with the original image URL
+                                image.src = '/static/img/kodi.png'; // Replace with the original image URL
                                 return;
                             }
     
@@ -933,6 +949,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             img.onload = () => {
                                 // Image loaded successfully, update the src attribute
                                 image.src = screenshotURL;
+                                // Reset the image back to default after 10 seconds
+                                setTimeout(() => {
+                                    image.src = '/static/img/kodi.png'; // Replace with the original image URL
+                                }, 10000); // 10 seconds delay
                             };
                             img.onerror = () => {
                                 // Error loading image, retry after a short delay
@@ -956,6 +976,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     
     
+    
 });
 
 
@@ -963,37 +984,58 @@ setInterval(checkHostStatuses, 300000); // Check every 5 minutes
 checkHostStatuses(); // Initial check
 
 function checkHostStatuses() {
-    fetch('/admin/host_status', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        const statuses = data;  // Assuming the data is an array of status objects
-        statuses.forEach(status => {
-            const widget = document.querySelector(`.host-widget[data-host-id="${status.host_id}"]`);
-            if (widget) {
-                // Update the host status display
-                const statusElement = widget.querySelector('.host-status');
-                if (statusElement) {
-                    statusElement.textContent = `Status: ${status.status}`;
+    let callCount = 0; // Counter to track the number of calls made
+
+    // Function to fetch host statuses and update the UI
+    const fetchHostStatuses = () => {
+        fetch('/admin/host_status', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const statuses = data;  // Assuming the data is an array of status objects
+            statuses.forEach(status => {
+                const widget = document.querySelector(`.host-widget[data-host-id="${status.host_id}"]`);
+                if (widget) {
+                    // Update the host status display
+                    const statusElement = widget.querySelector('.host-status');
+                    if (statusElement) {
+                        statusElement.textContent = `Status: ${status.status}`;
+                    }
+                    
+                    // Update the currently playing media display
+                    const playingElement = widget.querySelector('.host-playing');
+                    if (playingElement) {
+                        playingElement.textContent = `Now Playing: ${status.playing}`;
+                    }
                 }
-                
-                // Update the currently playing media display
-                const playingElement = widget.querySelector('.host-playing');
-                if (playingElement) {
-                    playingElement.textContent = `Now Playing: ${status.playing}`;
-                }
+            });
+            callCount++; // Increment the call count after each successful call
+
+            // Check if the call count has reached the limit of 3
+            if (callCount < 3) {
+                // Schedule the next fetch after 5 seconds
+                setTimeout(fetchHostStatuses, 5000);
+            }
+        })
+        .catch(error => {
+            logToConsole(`Error checking host statuses: ${error.message}`);
+            callCount++; // Increment the call count even if an error occurs
+            // Check if the call count has reached the limit of 3
+            if (callCount < 3) {
+                // Schedule the next fetch after 5 seconds
+                setTimeout(fetchHostStatuses, 5000);
             }
         });
-        logToConsole('Ping?...Pong! - Host status updated');
-    })
-    .catch(error => {
-        logToConsole(`Error checking host statuses: ${error.message}`);
-    });
+    };
+
+    // Initial call to fetch host statuses
+    fetchHostStatuses();
 }
+
 
 function postImageUrl(hostId, imageUrl) {
     console.log(`Sending Image URL: ${imageUrl} to host ID: ${hostId}`);
@@ -1014,6 +1056,7 @@ function postImageUrl(hostId, imageUrl) {
     .then(response => {
         console.log('Image URL sent successfully!');
         console.log(response);
+        checkHostStatuses();
     })
     .catch(error => {
         console.error('Error:', error);
@@ -1041,6 +1084,7 @@ function postYouTubeUrl(hostId, youtubeUrl) {
     .then(response => {
         console.log('YouTube video sent successfully!');
         console.log(response);
+        checkHostStatuses();
     })
     .catch(error => {
         console.error('Error:', error);
@@ -1094,6 +1138,7 @@ function stopPlayback(hostId) {
     .then(response => {
         console.log('Stop command sent successfully!');
         console.log(response);
+        checkHostStatuses();
     })
     .catch(error => {
         console.error('Error:', error);
