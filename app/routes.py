@@ -4,16 +4,19 @@ from mongoengine.errors import ValidationError, NotUniqueError
 from bson.objectid import ObjectId
 from mongoengine import InvalidQueryError
 from dateutil import parser
+from flask import Flask, request, send_file, render_template, redirect, url_for
 import requests
 import json
 import re
+import os
+
 
 # Define the Blueprint
 main = Blueprint('main', __name__)
 
 @main.route('/')
 def index():
-    hosts = Host.objects.all()
+    hosts = Host.objects(status__in=["active", "inactive"])
     media = Media.objects.all()
     return render_template('index.html', hosts=hosts, media=media)
 
@@ -200,7 +203,9 @@ def delete_group_by_id(id):
 
 @main.route('/admin/hosts', methods=['GET'])
 def get_hosts():
-    hosts = Host.objects()
+    # Fetch hosts with "active" or "inactive" status
+    hosts = Host.objects(status__in=["active", "inactive"])
+
     # Manually construct a list of dictionaries representing each host
     host_list = []
     for host in hosts:
@@ -214,10 +219,12 @@ def get_hosts():
             "location": host.location,
             "group": host.group,
             "cec": host.cec,
-            "os": host.os
+            "os": host.os,
+            "status": host.status  # Include the "status" field
         }
         host_list.append(host_data)
     return jsonify(host_list), 200
+
 
 @main.route('/admin/hosts/<id>', methods=['GET'])
 def get_host_by_id(id):
@@ -662,6 +669,8 @@ def check_host_status():
         })
 
     return jsonify(results), 200
+
+
 
 #####################
 # Standard Handling #
