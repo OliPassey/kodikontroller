@@ -4,8 +4,7 @@ v4.0
 ![image](https://github.com/OliPassey/kodikontroller/assets/7745805/66125687-3568-4da6-ba1a-cf25535f25f6)
 
 v4.0.5
-![image](https://github.com/OliPassey/kodikontroller/assets/7745805/ab615168-a278-4aa6-bfc3-255fea628c47)
-
+![image](https://github.com/OliPassey/kodikontroller/assets/7745805/5760b7e3-207d-45ae-8896-898729e4814e)
 
 ### Current Status: 
 Kodi Controls are working, Media Mgmt is in progress but the basics work. It is very rough around the edges but i'm working quickly to get things to a stable point. 
