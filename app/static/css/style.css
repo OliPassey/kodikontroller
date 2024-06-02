@@ -1,0 +1,542 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('/static/img/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;  /* Ensure the background image covers the entire viewport height */
+    margin: 0;  /* Remove default margin */
+    color: #fff;  /* Adjust text color for visibility on background */
+}
+
+@media (max-width: 768px) {
+    body {
+        background-image: url('/static/img/bg_mobile.jpg');  /* Optional: Load a different, smaller image for mobile devices */
+        background-position: top center;  /* Adjust positioning if necessary for better visibility/focus on mobile */
+        background-size: auto;
+    }
+}
+
+header {
+    text-align: center;
+    padding: 10px;
+    background-color: #444;
+    opacity: 90%;  /* Make the header slightly transparent */
+    position: relative;
+}
+
+header img {
+    width: 50%;  /* Adjust size as necessary */
+    max-width: 450px;
+}
+
+.admin-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.admin-overlay {
+    display: none;  /* Initially hidden */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    height: 70%;
+    background-color: #333;  /* Solid background color */
+    color: #fff;
+    z-index: 1000;
+    padding: 20px;
+    border: 2px solid #ccc;  /* Add border */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);  /* Optional shadow for better visibility */
+    overflow-y: auto;  /* Enable scrolling if content overflows */
+}
+
+.admin-tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.close-admin {
+    background-color: #c00;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    position: absolute;
+    top: 75px;
+    right: 20px;
+}
+
+.tab-content {
+    display: none;  /* Initially hidden */
+}
+
+.tab-content.active {
+    display: block;  /* Show active tab content */
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.host-header {
+    width: fit-content;
+}
+
+.host-widget {
+    background: rgba(0, 0, 0, 0.5);  /* Semi-transparent background for readability */
+    border: 1px solid #00f5e8;
+    padding: 20px;
+    margin: 10px;
+    width: 750px;
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.host-header h2 {
+    color: #fff;
+}
+
+.host-widget {
+    display: flex;
+}
+
+.host-header,
+.host-controls {
+    width: 40%; /* Adjusted width for the first column */
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.host-controls {
+    width: 60%; /* Adjusted width for the second column */
+}
+
+
+
+.host-controls h3 {
+    margin: 10px 10px 5px 10px;
+    color: #fff;
+}
+
+.host-controls input[type="text"],
+.host-controls select {
+    width: calc(100% - 20px);
+    padding: 8px;
+    margin: 5px 10px;
+    background: none;
+    border: 1px solid #ccc;
+    color: #fff;
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.host-controls .play-button {
+    margin: 5px 10px;
+    padding: 8px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.host-header .stop-button {
+    margin: 5px 10px;
+    padding: 8px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.host-controls .image-button {
+    margin: 5px 10px;
+    padding: 8px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.host-controls .notify-button {
+    margin: 5px 10px;
+    padding: 8px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.host-controls .play-button {
+    margin: 5px 10px;
+    padding: 8px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.host-controls .play-audio-button {
+    margin: 5px 10px;
+    padding: 8px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.host-controls .play-video-button {
+    margin: 5px 10px;
+    padding: 8px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.host-controls .play-media-button {
+    margin: 5px 10px;
+    padding: 8px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.host-controls .select-image-button {
+    margin: 5px 10px;
+    padding: 8px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.host-controls .youtube-url-input {
+    flex-grow: 1;
+}
+
+.host-controls .input-group {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.host-controls .input-group .play-button {
+    flex-shrink: 0;
+    margin-left: 10px;
+    padding: 8px;
+    background: #444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.host-playing {
+    white-space: pre-wrap; /* This ensures that the text wraps at whitespace or line breaks */
+    word-wrap: break-word; /* This allows long words to be broken and wrap onto the next line */
+}
+
+.dropdown-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dropdown-group select {
+    width: calc(50% - 15px);
+    margin: 5px 10px;
+    background: #333;  /* Darker background */
+    color: #fff;  /* White text */
+    border: 1px solid #ccc;  /* Border for dropdown */
+    padding: 8px;  /* Padding for dropdown */
+    box-sizing: border-box;  /* Ensure padding and border are included in the width */
+}
+
+#console-output {
+    width: 100%;
+    height: 100px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.7);  /* Semi-transparent background */
+    color: #fff;
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.error-message {
+    color: red;
+    margin: 10px;
+    background-color: pink;
+    border-color: white;
+    border-radius: 4px;
+}
+
+/* Styles for the Edit/Add Host Form */
+.add-host {
+    background: rgba(0, 0, 0, 0.7);  /* Semi-transparent background */
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.add-host h4 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.add-host label {
+    width: 100%;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #fff;  /* Ensure label text is visible against background */
+}
+
+.add-host input[type="text"],
+.add-host input[type="password"],
+.add-host input[type="hidden"],
+.add-host select {
+    width: calc(50% - 10px);  /* Two inputs per row */
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.1);  /* Semi-transparent background */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #fff;  /* Ensure input text is visible against background */
+}
+
+.add-host input[type="hidden"] {
+    display: none;
+}
+
+.add-host input::placeholder {
+    color: #ccc;  /* Placeholder color */
+}
+
+.add-host input:focus,
+.add-host select:focus {
+    border-color: #444;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.add-host button {
+    width: calc(50% - 10px);
+    padding: 10px;
+    margin-top: 10px;
+    background: #444;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-host button:hover {
+    background: #555;
+}
+
+.add-host button#save-host-button {
+    margin-right: 10px;
+}
+
+.add-host button#add-host-button {
+    margin-left: 10px;
+}
+
+/* Styles for the Edit/Add Media Form */
+.add-media {
+    background: rgba(0, 0, 0, 0.7);  /* Semi-transparent background */
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.add-media h4 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.edit-media-type select {
+    flex-grow: 1;
+    margin-right: 10px; /* Spacing between input and button */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.3); /* Darker background for the input */
+    color: #fff; /* White text color for visibility */
+}
+
+
+.add-media input[type="text"],
+.add-media input[type="hidden"] {
+    width: calc(50% - 10px);  /* Two inputs per row */
+    padding: 10px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.1);  /* Semi-transparent background */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    color: #fff;  /* Ensure input text is visible against background */
+}
+
+.add-media input[type="hidden"] {
+    display: none;
+}
+
+.add-media input::placeholder {
+    color: #ccc;  /* Placeholder color */
+}
+
+.add-media input:focus {
+    border-color: #444;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.add-media button {
+    width: calc(50% - 10px);
+    padding: 10px;
+    margin-top: 10px;
+    background: #444;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-media button:hover {
+    background: #555;
+}
+
+.add-media button#save-media-button {
+    margin-right: 10px;
+}
+
+.add-media button#add-media-button {
+    margin-left: 10px;
+}
+
+/* Consolidate styles for input groups */
+.input-group {
+    display: none; /* Initially hide input groups */
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    border-radius: 8px;
+}
+
+.notify-input-group, .yt-input-group {
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    border-radius: 8px;
+}
+
+.notify-input-group input[type="text"], .yt-input-group input[type="text"] {
+    flex-grow: 1;
+    margin-right: 10px; /* Spacing between input and button */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.3); /* Darker background for the input */
+    color: #fff; /* White text color for visibility */
+}
+
+.yt-input-group select, .add-media select {
+    flex-grow: 1;
+    margin-right: 10px; /* Spacing between input and button */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.3); /* Darker background for the input */
+    color: #fff; /* White text color for visibility */
+}
+
+.input-group.expanded {
+    display: flex; /* Show expanded input groups */
+}
+
+/* Style for the YouTube URL input */
+.input-group input[type="text"],
+.input-group select {
+    flex-grow: 1;
+    margin-right: 10px; /* Spacing between input and button */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.3); /* Darker background for the input */
+    color: #fff; /* White text color for visibility */
+}
+
+/* General button styling */
+.input-group button {
+    padding: 2px 2px;
+    background-color: #444; /* Bootstrap primary blue */
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.input-group button:hover {
+    background-color: #444; /* Darker shade of blue on hover */
+}
+
+/* Dropdown specific styles */
+.input-group select {
+    width: 60%; /* Giving more space to the dropdown */
+    background-color: #333; /* Light background to stand out in the dark theme */
+    color: #fff; /* Text color */
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .input-group {
+        flex-direction: column; /* Stack elements vertically on small screens */
+    }
+
+    .input-group input[type="text"],
+    .input-group select,
+    .input-group button {
+        width: 100%; /* Full width for small screens */
+        margin-right: 0;
+        margin-bottom: 10px; /* Spacing between stacked elements */
+    }
+
+    .input-group button {
+        width: auto; /* Auto width for buttons */
+    }
+}
+
+.screenshotContainer {
+    text-align: center; /* Center align the image */
+
+}
+
+.kodi-image {
+    max-width: 100%; /* Ensure the image fits width-wise to its container */
+    height: auto; /* Maintain aspect ratio */
+    cursor: pointer; /* Show cursor as pointer on hover */
+    transition: transform 0.2s; /* Smooth transition on hover */
+}
+
+.kodi-image:hover {
+    transform: scale(1.1); /* Scale up by 10% on hover */
+}

@@ -1,9 +1,0 @@
-# Add a line of text centred to the video
-ffmpeg -i input.mp4 -vf drawtext="fontfile=c:\dashboard\foe_display-webfont.ttf text='Stuff Occurred!': fontcolor=white: fontsize=24: box=1: boxcolor=black@0.5 boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2" -codec:a copy output.mp4
-# Add multiple lines of text from a text file to a video, text will be aligned left.
-ffmpeg -i input4.mp4 -vf "[in]drawtext=fontfile=foe_display-webfont.ttf:fontsize=120:fontcolor=white:box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2:y=(h-text_h)/2:textfile='text.txt'[out]" -c:v libx264 -t 10 output4.mp4
-# Adds FontAwesome Icon to top of screen, removed shadow behind, re-insert below code to change this back
-# box=1: boxcolor=black@0.5: boxborderw=5:
-ffmpeg -i input5.mp4 -vf drawtext="fontfile=fontawesome-webfont.ttf: text='': fontcolor=white: fontsize=200: x=(w-text_w)/2: y=10:" -codec:a copy output9.mp4
-#2 Add a centred line of text, could be replaced by above text file code.
-ffmpeg -i output9.mp4 -vf drawtext="fontfile=foe_display-webfont.ttf: text='Drupal build starting!': fontcolor=white: fontsize=120: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2" -codec:a copy output91.mp4

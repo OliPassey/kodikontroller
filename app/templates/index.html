@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kodi Kontroller v4.0.5</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <img src="/static/img/logo.png" alt="Kodi Kontroller Logo">
+        <button class="admin-button">Admin</button>
+    </header>
+    <div class="container">
+        {% for host in hosts %}
+        <div class="host-widget" data-host-id="{{ host.id }}">
+            <div class="host-header">
+                <h2>{{ host.name }}</h2>
+                <div class="screenshot-container">
+                    <img src="{{ url_for('static', filename='img/kodi.png') }}" class="kodi-image" data-host-id="{{ host.id }}" alt="Kodi Image">
+                </div>
+                <p><span class="host-status">{{ host.status }}</span></p>
+                <p><span class="host-playing">{{ host.playing }}</span></p>
+                <button class="stop-button">Stop Playback</button>
+            </div>
+            <div class="error-message"></div>
+            <div class="host-controls">
+                <div class="notifications-group">
+                    <h3>Notifications</h3>
+                    <div class="notify-input-group">
+                        <input type="text" class="notification-headline-input" placeholder="Headline">
+                        <input type="text" class="notification-message-input" placeholder="Message">
+                        <div class="dropdown-group">
+                            <select class="notification-duration-select">
+                                <option value="10000">10s</option>
+                                <option value="30000">30s</option>
+                                <option value="60000">1m</option>
+                            </select>
+                            <select class="notification-image-select">
+                                <option value="info">Info</option>
+                                <option value="warning">Warning</option>
+                                <option value="error">Error</option>
+                            </select>
+                        </div>
+                        <button class="notify-button">Send Notification</button>
+                    </div>
+                </div>
+                <h3>YouTube</h3>
+                <div class="yt-input-group">
+                    <input type="text" class="youtube-url-input" placeholder="Enter a YouTube URL">
+                    <button class="play-button">Play URL</button>
+                    <select class="youtube-media-select">
+                        <option value="">Select a YouTube video</option>
+                        <!-- Options will be populated here dynamically -->
+                    </select>
+                    <button class="play-media-button">Play Selected</button>
+                </div>
+                <h3>Video</h3>
+                <div class="input-group">
+                    <select class="play-video-select">
+                        <option value="">Select a video</option>
+                    </select>
+                    <button class="play-video-button">Play Selected</button>
+                </div>
+                <h3>Audio</h3>
+                <div class="input-group">
+                    <select class="play-audio-input">
+                        <option value="">Select a track</option>
+                    </select>
+                    <button class="play-audio-button">Play Selected</button>
+                </div>
+                <h3>Image</h3>
+                <div class="input-group">
+                    <input type="text" class="image-url-input" placeholder="Enter an Image URL">
+                    <button class="image-button">Display Image</button>
+                </div>
+                <div class="input-group">
+                    <select class="image-select-input">
+                        <option value="">Select an image</option>
+                    </select>
+                    <button class="select-image-button">Show Selected</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="admin-overlay">
+        <div class="admin-tabs">
+            <button class="tab-button" data-tab="hosts">Hosts</button>
+            <button class="tab-button" data-tab="media">Media</button>
+            <button class="tab-button" data-tab="schedules">Schedules</button>
+            <button class="tab-button" data-tab="groups">Groups</button>
+            <button class="tab-button" data-tab="playlists">Playlists</button>
+            <button class="close-admin">Close</button>
+        </div>
+
+        <div class="tab-content" id="hosts">
+            <h3>Manage Hosts</h3>
+            <div class="current-hosts">
+                <!-- Loop through hosts to display current entries -->
+                {% for host in hosts %}
+                <div class="host-entry">
+                    <p>{{ host.name }}</p>
+                    <p>IP: {{ host.ip }} - Status: {{host.status}} - ID:{{ host.id }}</p>
+                    <button class="edit-host" data-id="{{ host.id }}">Edit</button>
+                    <button class="delete-host" data-id="{{ host.id }}">Delete</button>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="add-host">
+                <h4>Add/Edit Host</h4>
+                <input type="hidden" id="edit-host-id" placeholder="ID">
+                
+                <label for="edit-host-name">Name</label>
+                <input type="text" id="edit-host-name" placeholder="Name"><br>
+                
+                <label for="edit-host-ip">IP Address</label>
+                <input type="text" id="edit-host-ip" placeholder="IP Address"><br>
+                
+                <label for="edit-host-port">Port</label>
+                <input type="text" id="edit-host-port" placeholder="Port"><br>
+                
+                <label for="edit-host-username">Username</label>
+                <input type="text" id="edit-host-username" placeholder="Username"><br>
+                
+                <label for="edit-host-password">Password</label>
+                <input type="text" id="edit-host-password" placeholder="Password"><br>
+                
+                <label for="edit-host-group">Group ID</label>
+                <input type="text" id="edit-host-group" placeholder="Group ID"><br>
+                
+                <label for="edit-host-cec">CEC</label>
+                <select id="edit-host-cec">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select><br>
+                
+                <label for="edit-host-status">Status</label>
+                <select id="edit-host-status">
+                    <option value="new">New</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="error">Error</option>
+                </select><br>
+                
+                <label for="edit-host-os">OS</label>
+                <input type="text" id="edit-host-os" placeholder="OS"><br>
+                
+                <label for="edit-host-location">Location</label>
+                <input type="text" id="edit-host-location" placeholder="Location"><br>
+                
+                <button id="save-host-button">Save Host</button>
+                <button id="add-host-button">Add Host</button>
+            </div>
+            
+        </div>
+
+        <div class="tab-content" id="media">
+            <h3>Manage Media</h3>
+            <div class="current-media">
+                {% if media and media.count() > 0 %}
+                    <!-- Loop through media to display current entries -->
+                    {% for item in media %}
+                    <div class="media-entry">
+                        <p>{{ item.name }} - {{ item.type }}</p>
+                        <button class="edit-media" data-id="{{ item.id }}">Edit</button>
+                        <button class="delete-media" data-id="{{ item.id }}">Delete</button>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p>No media entries found.</p>
+                {% endif %}
+            </div>
+            
+            <div class="add-media">
+                <h4>Add/Edit Media</h4>
+                <input type="hidden" id="edit-media-id" placeholder="ID">
+                <input type="text" id="edit-media-name" placeholder="Name">
+                <input type="text" id="edit-media-description" placeholder="Description"><br>
+                <select id="edit-media-type">
+                    <option value="audio">Audio</option>
+                    <option value="video">Video</option>
+                    <option value="image">Image</option>
+                    <option value="youtube">YouTube</option>
+                </select><br>
+                <input type="text" id="edit-media-path" placeholder="Path">
+                <input type="text" id="edit-media-url" placeholder="URL">
+                <button id="save-media-button">Save Media</button>
+                <button id="add-media-button">Add Media</button>
+            </div>
+        </div>
+
+        <div class="tab-content" id="schedules">
+            <h3>Manage Schedules</h3>
+            <div class="current-schedules">
+                <!-- Loop through schedules to display current entries -->
+                {% for schedule in schedules %}
+                <div class="schedule-entry">
+                    <p>{{ schedule.name }} - {{ schedule.startDate }} to {{ schedule.endDate }}</p>
+                    <button class="edit-schedule" data-id="{{ schedule.id }}">Edit</button>
+                    <button class="delete-schedule" data-id="{{ schedule.id }}">Delete</button>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="add-schedule">
+                <h4>Add/Edit Schedule</h4>
+                <input type="hidden" id="edit-schedule-id" placeholder="ID">
+                <input type="text" id="edit-schedule-name" placeholder="Name">
+                <input type="text" id="edit-schedule-description" placeholder="Description">
+                <input type="datetime-local" id="edit-schedule-start" placeholder="Start Date">
+                <input type="datetime-local" id="edit-schedule-end" placeholder="End Date">
+                <input type="text" id="edit-schedule-playlist" placeholder="Playlist IDs (comma-separated)">
+                <input type="checkbox" id="edit-schedule-shuffle"> Shuffle
+                <button id="save-schedule-button">Save Schedule</button>
+                <button id="add-schedule-button">Add Schedule</button>
+            </div>
+        </div>
+
+        <div class="tab-content" id="groups">
+            <h3>Manage Groups</h3>
+            <div class="current-groups">
+                <!-- Loop through groups to display current entries -->
+                {% for group in groups %}
+                <div class="group-entry">
+                    <p>{{ group.name }} - {{ group.description }}</p>
+                    <button class="edit-group" data-id="{{ group.id }}">Edit</button>
+                    <button class="delete-group" data-id="{{ group.id }}">Delete</button>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="add-group">
+                <h4>Add/Edit Group</h4>
+                <input type="hidden" id="edit-group-id" placeholder="ID">
+                <input type="text" id="edit-group-name" placeholder="Name">
+                <input type="text" id="edit-group-description" placeholder="Description">
+                <input type="text" id="edit-group-members" placeholder="Member IDs (comma-separated)">
+                <button id="save-group-button">Save Group</button>
+                <button id="add-group-button">Add Group</button>
+            </div>
+        </div>
+
+        <div class="tab-content" id="playlists">
+            <h3>Manage Playlists</h3>
+            <div class="add-playlist">
+                <h4>Add/Edit Playlist</h4>
+                <input type="hidden" id="edit-playlist-id" placeholder="ID">
+                <input type="text" id="edit-playlist-name" placeholder="Playlist Name">
+                <input type="text" id="edit-playlist-description" placeholder="Playlist Description">
+                <input type="text" id="edit-playlist-content" placeholder="Content (comma-separated media IDs)">
+                <button id="save-playlist-button">Save Playlist</button>
+                <button id="add-playlist-button">Add Playlist</button>
+                <div class="error-message"></div>
+            </div>
+            <div class="existing-playlists">
+                <h4>Existing Playlists</h4>
+                <ul id="playlists-list">
+                    <!-- Loop through playlists to display current entries -->
+                    {% for playlist in playlists %}
+                    <li>
+                        <p>{{ playlist.name }} - {{ playlist.description }}</p>
+                        <button class="edit-playlist" data-id="{{ playlist.id }}">Edit</button>
+                        <button class="delete-playlist" data-id="{{ playlist.id }}">Delete</button>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <textarea id="console-output" readonly></textarea>
+
+    <script src="/static/js/script.js"></script>
+
+</body>
+</html>

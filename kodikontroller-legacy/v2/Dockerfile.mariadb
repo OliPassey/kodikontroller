@@ -1,3 +1,0 @@
-FROM amazeeio/mariadb
-
-COPY install/empty_db.sql /docker-entrypoint-initdb.d/
