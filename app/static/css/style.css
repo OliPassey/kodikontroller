@@ -8,7 +8,21 @@ body {
     margin: 0;  /* Remove default margin */
     color: #fff;  /* Adjust text color for visibility on background */
 }
-
+/* Host-widget adjustments */
+@media (max-width: 768px) {
+    .host-widget {
+        flex-direction: column; /* Display host-widget as a single column on mobile */
+        width: 100%; /* Full width on mobile screens */
+        box-sizing: border-box; /* Ensure padding and border are included in the width */
+    }
+}
+/* Container widths adjustments */
+@media (max-width: 768px) {
+    .host-header,
+    .host-controls {
+        width: 100%; /* Full width on mobile screens */
+    }
+}
 @media (max-width: 768px) {
     body {
         background-image: url('/static/img/bg_mobile.jpg');  /* Optional: Load a different, smaller image for mobile devices */
@@ -17,17 +31,60 @@ body {
     }
 }
 
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.host-header {
+    width: fit-content;
+}
+
+.host-widget {
+    background: rgba(0, 0, 0, 0.5);  /* Semi-transparent background for readability */
+    border: 1px solid #00f5e8;
+    padding: 20px;
+    margin: 10px;
+    width: 750px;
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.host-header h2 {
+    color: #fff;
+}
+
+.host-widget {
+    display: flex;
+}
+
+@media (min-width: 769px) {
+.host-header,
+.host-controls {
+    width: 40%; /* Adjusted width for the first column */
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.host-controls {
+    width: 60%; /* Adjusted width for the second column */
+}
+}
+
+
 header {
     text-align: center;
-    padding: 10px;
-    background-color: #444;
+    padding: 5px;
+    background-color: #1f1f1f;
     opacity: 90%;  /* Make the header slightly transparent */
     position: relative;
+    height: 80px;
 }
 
 header img {
-    width: 50%;  /* Adjust size as necessary */
     max-width: 450px;
+    max-height: 100%;
 }
 
 .admin-button {
@@ -35,10 +92,11 @@ header img {
     top: 10px;
     right: 10px;
     padding: 10px;
-    background-color: #555;
+    background-color: #d30000;
     color: #fff;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 .admin-overlay {
@@ -89,45 +147,6 @@ header img {
 
 .tab-content.active {
     display: block;  /* Show active tab content */
-}
-
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    padding: 20px;
-}
-
-.host-header {
-    width: fit-content;
-}
-
-.host-widget {
-    background: rgba(0, 0, 0, 0.5);  /* Semi-transparent background for readability */
-    border: 1px solid #00f5e8;
-    padding: 20px;
-    margin: 10px;
-    width: 750px;
-    box-sizing: border-box; /* Ensure padding and border are included in the width */
-}
-
-.host-header h2 {
-    color: #fff;
-}
-
-.host-widget {
-    display: flex;
-}
-
-.host-header,
-.host-controls {
-    width: 40%; /* Adjusted width for the first column */
-    box-sizing: border-box;
-    padding: 10px;
-}
-
-.host-controls {
-    width: 60%; /* Adjusted width for the second column */
 }
 
 
@@ -263,19 +282,34 @@ header img {
     padding: 8px;  /* Padding for dropdown */
     box-sizing: border-box;  /* Ensure padding and border are included in the width */
 }
-
 #console-output {
     width: 100%;
-    height: 100px;
+    height: 50px;
     position: fixed;
     bottom: 0;
     left: 0;
     background: rgba(0, 0, 0, 0.7);  /* Semi-transparent background */
-    color: #fff;
+    color: rgb(0, 216, 0);
     border: none;
     padding: 10px;
     box-sizing: border-box;
 }
+
+@media (max-width: 768px) {
+#console-output {
+    width: 100%;
+    height: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.7);  /* Semi-transparent background */
+    color: rgb(0, 216, 0);
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+}
+}
+
 
 .error-message {
     color: red;
@@ -508,6 +542,7 @@ header img {
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
+    /* Adjustments for small screens */
     .input-group {
         flex-direction: column; /* Stack elements vertically on small screens */
     }

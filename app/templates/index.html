@@ -9,14 +9,14 @@
 </head>
 <body>
     <header>
-        <img src="/static/img/logo.png" alt="Kodi Kontroller Logo">
+        <img src="/static/img/logo-transparent.png" alt="Kodi Kontroller Logo">
         <button class="admin-button">Admin</button>
     </header>
     <div class="container">
         {% for host in hosts %}
         <div class="host-widget" data-host-id="{{ host.id }}">
             <div class="host-header">
-                <h2>{{ host.name }}</h2>
+                <h1>{{ host.name }}</h1>
                 <div class="screenshot-container">
                     <img src="{{ url_for('static', filename='img/kodi.png') }}" class="kodi-image" data-host-id="{{ host.id }}" alt="Kodi Image">
                 </div>
