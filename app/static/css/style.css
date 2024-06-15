@@ -38,6 +38,11 @@ body {
     padding: 20px;
 }
 
+.host-status-container {
+    border: #1f1f1f;
+}
+
+
 .host-header {
     width: fit-content;
 }
@@ -120,14 +125,51 @@ header img {
     display: flex;
     justify-content: space-around;
     margin-bottom: 20px;
+    background-color: #0062f5b9;
+    padding: 10px;
+    border-radius: 23px;
+    max-width: 90%;
 }
 
 .tab-button {
-    background-color: #444;
+    background-color: rgb(0, 118, 145);
     color: #fff;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+    border-radius: 8px;
+}
+
+.preset-btn {
+    background-color: rgb(7, 8, 65);
+    color: #fff;
+    border: none;
+    margin: 5px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.content-schedule-btn, .ops-schedule-btn {
+    background-color: rgb(7, 8, 65);
+    color: #fff;
+    border: none;
+    margin: 5px;
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.host-header .stop-button {
+    background-color: rgb(109, 0, 0);
+    color: #fff;
+    border: none;
+    margin: 5px;
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 100%;
 }
 
 .close-admin {
@@ -176,14 +218,7 @@ header img {
     cursor: pointer;
 }
 
-.host-header .stop-button {
-    margin: 5px 10px;
-    padding: 8px;
-    background: #444;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
+
 
 .host-controls .image-button {
     margin: 5px 10px;
@@ -284,7 +319,7 @@ header img {
 }
 #console-output {
     width: 100%;
-    height: 50px;
+    height: 70px;
     position: fixed;
     bottom: 0;
     left: 0;

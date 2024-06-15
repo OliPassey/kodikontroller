@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kodi Kontroller v4.0.5</title>
+    <title>Kodi Kontroller v4.0.6</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
 </head>
 <body>
+
+
+
     <header>
         <img src="/static/img/logo-transparent.png" alt="Kodi Kontroller Logo">
         <button class="admin-button">Admin</button>
@@ -20,9 +23,20 @@
                 <div class="screenshot-container">
                     <img src="{{ url_for('static', filename='img/kodi.png') }}" class="kodi-image" data-host-id="{{ host.id }}" alt="Kodi Image">
                 </div>
-                <p><span class="host-status">{{ host.status }}</span></p>
-                <p><span class="host-playing">{{ host.playing }}</span></p>
-                <button class="stop-button">Stop Playback</button>
+                <div class="host-status-container">
+                    <p><span class="host-status">{{ host.status }}</span></p>
+                    <p><span class="host-playing">{{ host.playing }}</span></p>
+            </div>
+            <button class="stop-button">Stop Playback</button>
+                <div class="presets">
+                    <button class="preset-btn">Preset 1</button>
+                    <button class="preset-btn">Preset 2</button>
+                    <button class="preset-btn">Preset 3</button>
+                </div>
+                <div class="schedule-ctrl">
+                    <button class="content-schedule-btn">Content Schedule</button>
+                    <button class="ops-schedule-btn">Ops Schedule</button>
+                </div>
             </div>
             <div class="error-message"></div>
             <div class="host-controls">
@@ -272,6 +286,13 @@
     <textarea id="console-output" readonly></textarea>
 
     <script src="/static/js/script.js"></script>
+    <script type="module" src="/static/js/utils.js"></script>
+    <script type="module" src="/static/js/adm_groups.js"></script>
+    <script type="module" src="/static/js/adm_hosts.js"></script>
+    <script type="module" src="/static/js/adm_media.js"></script>
+    <script type="module" src="/static/js/adm_playlists.js"></script>
+    <script type="module" src="/static/js/adm_schedules.js"></script>
+    <script type="module" src="/static/js/host_controls.js"></script>
 
 </body>
 </html>
