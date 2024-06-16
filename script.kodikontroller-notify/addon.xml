@@ -1,0 +1,15 @@
+<addon id="script.kodikontroller-notify" version="1.0.0" name="Full Screen Notification" provider-name="PTSLondon">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+    </requires>
+    <extension point="xbmc.python.script" library="default.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>Full Screen Notification for Kodi</summary>
+        <description>A script to display full screen notifications in Kodi.</description>
+        <platform>all</platform>
+        <language>en</language>
+        <license>GPL-2.0</license>
+    </extension>
+</addon>
