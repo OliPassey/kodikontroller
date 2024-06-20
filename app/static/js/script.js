@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+
+
     // Event listeners for Update buttons in the edit forms
     // document.querySelector('#save-contentitem-button').addEventListener('click', updateContentItem);
     
@@ -466,7 +468,13 @@ function populatePlaylistForm(data) {
     document.querySelector('#edit-playlist-id').value = data.id;
     document.querySelector('#edit-playlist-name').value = data.name;
     document.querySelector('#edit-playlist-description').value = data.description;
-    document.querySelector('#edit-playlist-create-date').value = data.createDate;
+    const contentSelect = document.querySelector('#edit-playlist-content');
+    contentSelect.innerHTML = '';
+
+    data.content.forEach(item => {
+        const option = new Option(`${item.name} (${item.duration ? item.duration + 's' : 'No duration set'})`, item.mediaId, false, true);
+        contentSelect.appendChild(option);
+    });
 }
 
 function updatePlaylist() {
@@ -475,11 +483,13 @@ function updatePlaylist() {
     const updatedPlaylistData = {
         name: document.querySelector('#edit-playlist-name').value,
         description: document.querySelector('#edit-playlist-description').value,
-        createDate: document.querySelector('#edit-playlist-create-date').value,
-        content: Array.from(document.querySelectorAll('#edit-playlist-content option:checked')).map(option => option.value)
+        items: Array.from(document.querySelectorAll('#edit-playlist-content option:checked')).map(option => ({
+            mediaId: option.value
+            // Note: Since duration is not updated here, you need to handle it separately or adjust your model to accommodate.
+        }))
     };
 
-    fetch(`/playlists/update/${playlistId}`, {
+    fetch(`/admin/playlists/update/${playlistId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -495,47 +505,47 @@ function updatePlaylist() {
     })
     .then(data => {
         console.log('Playlist updated successfully:', data);
-        document.querySelector('#edit-playlist-modal').style.display = 'none';
+        location.reload();  // Refresh to reflect the changes
     })
     .catch(error => console.error('Error:', error));
 }
 
-function populateContentItemForm(data) {
-    document.querySelector('#edit-contentitem-id').value = data.id;
-    document.querySelector('#edit-contentitem-player').value = data.player;
-    document.querySelector('#edit-contentitem-path').value = data.path;
-    document.querySelector('#edit-contentitem-url').value = data.url;
-}
 
-function updateContentItem() {
-    const contentItemId = document.querySelector('#edit-contentitem-id').value;
+document.addEventListener('DOMContentLoaded', function() {
+    // Assuming your page has buttons to open editing, hooked with data attributes for IDs
+    document.querySelectorAll('.edit-playlist').forEach(button => {
+        button.addEventListener('click', function() {
+            const playlistId = this.getAttribute('data-id');
+            fetch(`/admin/playlists/${playlistId}`, {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => populatePlaylistForm(data))
+            .catch(error => console.error('Error loading playlist data:', error));
+        });
+    });
 
-    const updatedContentItemData = {
-        player: document.querySelector('#edit-contentitem-player').value,
-        path: document.querySelector('#edit-contentitem-path').value,
-        url: document.querySelector('#edit-contentitem-url').value
-    };
+    document.querySelectorAll('.delete-playlist').forEach(button => {
+        button.addEventListener('click', function() {
+            const playlistId = this.getAttribute('data-id');
+            if(confirm('Are you sure you want to delete this playlist?')) {
+                fetch(`/admin/playlists/delete/${playlistId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Playlist deleted successfully');
+                        location.reload();  // Refresh to reflect the changes
+                    } else {
+                        throw new Error('Failed to delete playlist');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    });
+});
 
-    fetch(`/contentitems/update/${contentItemId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updatedContentItemData)
-    })
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error('Failed to update content item');
-        }
-    })
-    .then(data => {
-        console.log('Content item updated successfully:', data);
-        document.querySelector('#edit-contentitem-modal').style.display = 'none';
-    })
-    .catch(error => console.error('Error:', error));
-}
 
 function populateMediaForm(data) {
     const idField = document.getElementById('edit-media-id');
@@ -554,4 +564,81 @@ function populateMediaForm(data) {
 
     logToConsole('Populating media form with data:');
     logToConsole(`ID: ${data._id.$oid}, Name: ${data.name}, Type: ${data.type}, Path: ${data.path}, URL: ${data.url}`);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetchPlaylists();
+});
+
+function fetchPlaylists() {
+    fetch('/admin/playlists', { // Ensure this endpoint correctly returns all playlists
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(playlists => {
+        displayPlaylists(playlists);
+    })
+    .catch(error => {
+        console.error('Error fetching playlists:', error);
+        logToConsole(`Error fetching playlists: ${error.message}`);
+    });
+}
+
+function displayPlaylists(playlists) {
+    const playlistsContainer = document.getElementById('playlists-list');
+    playlistsContainer.innerHTML = ''; // Clear existing entries
+
+    if (playlists.length === 0) {
+        playlistsContainer.innerHTML = '<li>No playlists found.</li>';
+    } else {
+        playlists.forEach(playlist => {
+            const playlistEntry = document.createElement('li');
+            playlistEntry.innerHTML = `
+                <p>${playlist.name} - ${playlist.description}</p>
+                <button class="edit-playlist" data-id="${playlist.id}">Edit</button>
+                <button class="delete-playlist" data-id="${playlist.id}">Delete</button>
+            `;
+            playlistsContainer.appendChild(playlistEntry);
+
+            // Attach event listeners to newly created buttons
+            playlistEntry.querySelector('.edit-playlist').addEventListener('click', function() {
+                editPlaylist(playlist.id);
+            });
+            playlistEntry.querySelector('.delete-playlist').addEventListener('click', function() {
+                deletePlaylist(playlist.id);
+            });
+        });
+    }
+}
+
+function editPlaylist(id) {
+    // Fetch and populate form for editing
+    fetch(`/admin/playlists/${id}`, {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        populatePlaylistForm(data);
+    })
+    .catch(error => console.error('Error fetching playlist details:', error));
+}
+
+function deletePlaylist(id) {
+    if (confirm('Are you sure you want to delete this playlist?')) {
+        fetch(`/admin/playlists/delete/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Playlist deleted successfully');
+                fetchPlaylists(); // Refresh the list
+            } else {
+                throw new Error('Failed to delete playlist');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
 }

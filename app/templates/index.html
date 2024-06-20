@@ -41,59 +41,78 @@
             <div class="error-message"></div>
             <div class="host-controls">
                 <div class="notifications-group">
-                    <h3>Notifications</h3>
-                    <div class="notify-input-group">
-                        <input type="text" class="notification-headline-input" placeholder="Headline">
-                        <input type="text" class="notification-message-input" placeholder="Message">
-                        <div class="dropdown-group">
-                            <select class="notification-duration-select">
-                                <option value="10000">10s</option>
-                                <option value="30000">30s</option>
-                                <option value="60000">1m</option>
-                            </select>
-                            <select class="notification-image-select">
-                                <option value="info">Info</option>
-                                <option value="warning">Warning</option>
-                                <option value="error">Error</option>
-                            </select>
+                    <button class="toggle-button" data-target="#notifications-container">Show Notifications</button>
+                    <div class="section-container hidden" id="notifications-container">
+                        <h3>Notifications</h3>
+                        <div class="notify-input-group">
+                            <input type="text" class="notification-headline-input" placeholder="Headline">
+                            <input type="text" class="notification-message-input" placeholder="Message">
+                            <div class="dropdown-group">
+                                <select class="notification-duration-select">
+                                    <option value="10000">10s</option>
+                                    <option value="30000">30s</option>
+                                    <option value="60000">1m</option>
+                                </select>
+                                <select class="notification-image-select">
+                                    <option value="info">Info</option>
+                                    <option value="warning">Warning</option>
+                                    <option value="error">Error</option>
+                                </select>
+                            </div>
+                            <button class="notify-button">Send Notification</button>
                         </div>
-                        <button class="notify-button">Send Notification</button>
                     </div>
                 </div>
-                <h3>YouTube</h3>
-                <div class="yt-input-group">
-                    <input type="text" class="youtube-url-input" placeholder="Enter a YouTube URL">
-                    <button class="play-button">Play URL</button>
-                    <select class="youtube-media-select">
-                        <option value="">Select a YouTube video</option>
-                        <!-- Options will be populated here dynamically -->
-                    </select>
-                    <button class="play-media-button">Play Selected</button>
+
+                <button class="toggle-button" data-target="#youtube-container">Show YouTube</button>
+                <div class="section-container hidden" id="youtube-container">
+                    <div class="yt-input-group">
+                        <h3>YouTube</h3>
+                        <input type="text" class="youtube-url-input" placeholder="Enter a YouTube URL">
+                        <button class="play-button">Play URL</button>
+                        <select class="youtube-media-select">
+                            <option value="">Select a YouTube video</option>
+                            <!-- Options will be populated here dynamically -->
+                        </select>
+                        <button class="play-media-button">Play Selected</button>
+                    </div>
                 </div>
-                <h3>Video</h3>
-                <div class="input-group">
-                    <select class="play-video-select">
-                        <option value="">Select a video</option>
-                    </select>
-                    <button class="play-video-button">Play Selected</button>
+
+                <button class="toggle-button" data-target="#video-container">Show Video</button>
+                <div class="section-container hidden" id="video-container">
+                    <h3>Video</h3>
+                    <div class="input-group">
+                        <select class="play-video-select">
+                            <option value="">Select a video</option>
+                        </select>
+                        <button class="play-video-button">Play Selected</button>
+                    </div>
                 </div>
-                <h3>Audio</h3>
-                <div class="input-group">
-                    <select class="play-audio-input">
-                        <option value="">Select a track</option>
-                    </select>
-                    <button class="play-audio-button">Play Selected</button>
+
+                <button class="toggle-button" data-target="#audio-container">Show Audio</button>
+                <div class="section-container hidden" id="audio-container">
+                    <h3>Audio</h3>
+                    <div class="input-group">
+                        <select class="play-audio-input">
+                            <option value="">Select a track</option>
+                        </select>
+                        <button class="play-audio-button">Play Selected</button>
+                    </div>
                 </div>
-                <h3>Image</h3>
-                <div class="input-group">
-                    <input type="text" class="image-url-input" placeholder="Enter an Image URL">
-                    <button class="image-button">Display Image</button>
-                </div>
-                <div class="input-group">
-                    <select class="image-select-input">
-                        <option value="">Select an image</option>
-                    </select>
-                    <button class="select-image-button">Show Selected</button>
+
+                <button class="toggle-button" data-target="#image-container">Show Image</button>
+                <div class="section-container hidden" id="image-container">
+                    <h3>Image</h3>
+                    <div class="input-group">
+                        <input type="text" class="image-url-input" placeholder="Enter an Image URL">
+                        <button class="image-button">Display Image</button>
+                    </div>
+                    <div class="input-group">
+                        <select class="image-select-input">
+                            <option value="">Select an image</option>
+                        </select>
+                        <button class="select-image-button">Show Selected</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -259,12 +278,20 @@
             <h3>Manage Playlists</h3>
             <div class="add-playlist">
                 <h4>Add/Edit Playlist</h4>
-                <input type="hidden" id="edit-playlist-id" placeholder="ID">
-                <input type="text" id="edit-playlist-name" placeholder="Playlist Name">
-                <input type="text" id="edit-playlist-description" placeholder="Playlist Description">
-                <input type="text" id="edit-playlist-content" placeholder="Content (comma-separated media IDs)">
+                <input type="hidden" id="edit-playlist-id">
+                <label for="edit-playlist-name">Playlist Name:</label>
+                <input type="text" id="edit-playlist-name" placeholder="Enter playlist name">
+                
+                <label for="edit-playlist-description">Playlist Description:</label>
+                <input type="text" id="edit-playlist-description" placeholder="Enter playlist description">
+        
+                <label for="edit-playlist-content">Select Media for Playlist:</label>
+                <select multiple id="edit-playlist-content" class="media-selector">
+                    <!-- Media options will be dynamically populated here -->
+                </select>
+                <div id="media-details-container"></div>
                 <button id="save-playlist-button">Save Playlist</button>
-                <button id="add-playlist-button">Add Playlist</button>
+                <button id="add-playlist-button">Add New Playlist</button>
                 <div class="error-message"></div>
             </div>
             <div class="existing-playlists">
@@ -280,7 +307,9 @@
                     {% endfor %}
                 </ul>
             </div>
+            
         </div>
+        
     </div>
 
     <textarea id="console-output" readonly></textarea>

@@ -9,6 +9,6 @@ class Config:
     MONGODB_PASSWORD = os.environ.get('MONGODB_PASSWORD', None) 
     MONGODB_AUTH_SOURCE = os.environ.get('MONGODB_AUTH_SOURCE', 'admin') 
 
-class TestConfig(Config):
-    TESTING = True
-    MONGODB_SETTINGS = {'db': 'kk_test_db', 'host': '10.0.3.12', 'port': 27017}
+    # RabbitMQ configuration
+    CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'amqp://10.0.3.17//')
+    CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'rpc://')

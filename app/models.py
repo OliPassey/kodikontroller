@@ -7,6 +7,7 @@ class Media(db.Document):
     type = db.StringField(required=True, choices=('audio', 'video', 'image', 'youtube'))
     path = db.StringField()
     url = db.StringField(unique=True)
+    duration = IntField()
 
 class Group(db.Document):
     name = db.StringField(required=True)
@@ -34,13 +35,8 @@ class Schedule(db.Document):
     playlist = db.ListField(db.ReferenceField('Playlist'))  # List of media references
     shuffle = db.BooleanField(default=False)
 
-class ContentItem(EmbeddedDocument):
-    player = db.IntField(required=True, choices=(1, 2, 3))
-    path = db.StringField()
-    url = db.StringField(regex='^http[s]?://')
-
 class Playlist(db.Document):
     name = db.StringField(required=True)
     description = db.StringField()
     createDate = db.DateTimeField(required=True)
-    content = db.ListField(EmbeddedDocumentField(ContentItem))
+    content = db.ListField(db.ReferenceField('Media'))

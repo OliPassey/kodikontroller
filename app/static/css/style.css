@@ -140,14 +140,25 @@ header img {
     border-radius: 8px;
 }
 
+.presets {
+    display: flex;          /* Enables flexbox layout */
+    justify-content: center; /* Centers flex items on the main-axis (horizontally) */
+    padding: 10px;          /* Adds some padding around the container */
+    gap: 10px;              /* Adds space between buttons */
+}
+
 .preset-btn {
-    background-color: rgb(7, 8, 65);
-    color: #fff;
-    border: none;
-    margin: 5px;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 8px;
+    padding: 8px 16px;      /* Adds padding inside each button */
+    background-color: #007BFF; /* Example button color */
+    color: white;           /* Text color for the buttons */
+    border: none;           /* No border */
+    border-radius: 5px;     /* Rounded corners */
+    cursor: pointer;        /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.preset-btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
 }
 
 .content-schedule-btn, .ops-schedule-btn {
@@ -155,7 +166,7 @@ header img {
     color: #fff;
     border: none;
     margin: 5px;
-    padding: 15px;
+    padding: 8px 16px; 
     cursor: pointer;
     border-radius: 8px;
     width: 100%;
@@ -182,6 +193,88 @@ header img {
     top: 75px;
     right: 20px;
 }
+
+.tab-content {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content h3, .tab-content h4 {
+    color: #333;
+    text-align: center;
+}
+
+.add-playlist, .existing-playlists {
+    margin-top: 20px;
+}
+
+.add-playlist input[type="text"], .add-playlist select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-playlist label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.add-playlist button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.add-playlist button:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    color: #cc0000;
+    margin-top: 10px;
+}
+
+.existing-playlists ul {
+    list-style: none;
+    padding: 0;
+}
+
+.existing-playlists li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.existing-playlists button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.existing-playlists button:hover {
+    background-color: #c0392b;
+}
+
+.media-selector {
+    height: 150px; /* Adjust based on preference */
+    overflow-y: auto;
+}
+
 
 .tab-content {
     display: none;  /* Initially hidden */
@@ -609,4 +702,21 @@ header img {
 
 .kodi-image:hover {
     transform: scale(1.1); /* Scale up by 10% on hover */
+}
+
+.hidden {
+    display: none;
+}
+
+.toggle-button {
+    padding: 2px 2px;
+    background-color: #006a8a; /* Bootstrap primary blue */
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 5px;
+    margin: 5px;
+    width: 120px;
 }

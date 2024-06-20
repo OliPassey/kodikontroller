@@ -16,9 +16,10 @@ export function addEventListenerToSelector(selector, event, handler) {
     document.querySelectorAll(selector).forEach(element => element.addEventListener(event, handler));
 }
 
+// Load Media from DB into Front-End Host Controls
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('Connecting Console...');
-    console.log('Kodi Kontroller v4 has loaded');
+    //console.log('Connecting Console...');
+    //console.log('Kodi Kontroller v4 has loaded');
 
     // Fetch YouTube media
     fetchData('/admin/media/youtube')
@@ -81,3 +82,24 @@ document.addEventListener('DOMContentLoaded', function () {
     .catch(error => console.error('Error loading YouTube media:', error));
 
 });
+
+// Show Hide Host Sections
+document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('toggle-button')) {
+            const targetId = e.target.getAttribute('data-target');
+            const targetElement = document.querySelector(targetId);
+
+            if (targetElement) {
+                targetElement.classList.toggle('hidden');
+                // Update the button text based on visibility
+                if (targetElement.classList.contains('hidden')) {
+                    e.target.textContent = "Show " + e.target.textContent.split(' ')[1];
+                } else {
+                    e.target.textContent = "Hide " + e.target.textContent.split(' ')[1];
+                }
+            }
+        }
+    });
+});
+

@@ -11,6 +11,8 @@ import json
 import re
 import os
 import time
+import datetime
+from datetime import datetime
 
 # Define the Blueprint
 main = Blueprint('main', __name__)
@@ -606,31 +608,88 @@ def stop_playback(id):
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
+@main.route('/admin/playlists', methods=['GET'])
+def get_playlists():
+    playlists = Playlist.objects()
+    playlist_list = []
+    for playlist in playlists:
+        playlist_data = {
+            "id": str(playlist.id),
+            "name": playlist.name,
+            "description": playlist.description,
+            "createDate": playlist.createDate.isoformat(),
+            "content": [{"mediaId": str(content.id), "name": content.name, "duration": content.duration} for content in playlist.content]
+        }
+        playlist_list.append(playlist_data)
+    return jsonify(playlist_list), 200
+
+
+@main.route('/admin/playlists/<id>', methods=['GET'])
+def get_playlist_by_id(id):
+    playlist = Playlist.objects(id=id).first()
+    if not playlist:
+        return jsonify({'error': 'Playlist not found'}), 404
+
+    playlist_data = {
+        "id": str(playlist.id),
+        "name": playlist.name,
+        "description": playlist.description,
+        "createDate": playlist.createDate.isoformat(),
+        "content": [{"mediaId": str(content.id), "name": content.name, "duration": content.duration} for content in playlist.content]
+    }
+    return jsonify(playlist_data), 200
+
+
 @main.route('/admin/playlists/add', methods=['POST'])
 def add_playlist():
     try:
+        media_ids = [item['mediaId'] for item in request.json.get('items', [])]
+        media_items = Media.objects(id__in=media_ids)  # Fetch media documents based on received IDs
+
         new_playlist = Playlist(
-            name=request.json.get('name'),
+            name=request.json['name'],
             description=request.json.get('description', ''),
-            createDate=parser.parse(request.json.get('createDate')),
-            content=[
-                Media(
-                    name=content.get('name'),
-                    description=content.get('description', ''),
-                    type=content.get('type'),
-                    path=content.get('path', ''),
-                    url=content.get('url', '')
-                ) for content in request.json.get('content', [])
-            ]
+            createDate=datetime.utcnow(),  # Automatically set the creation date to now
+            content=list(media_items)  # Directly assign the list of media items
         )
         new_playlist.save()
         return jsonify({"message": "Playlist added successfully"}), 201
     except ValidationError as e:
         return jsonify({"error": str(e)}), 400
-    except ValueError as e:  # Catch parsing errors
-        return jsonify({"error": f"Date parsing error: {str(e)}"}), 400
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+
+@main.route('/admin/playlists/update/<id>', methods=['PUT'])
+def update_playlist_by_id(id):
+    playlist = Playlist.objects(id=id).first()
+    if not playlist:
+        return jsonify({'error': 'Playlist not found'}), 404
+
+    try:
+        media_ids = [item['mediaId'] for item in request.json.get('items', [])]
+        media_items = Media.objects(id__in=media_ids)
+
+        playlist.update(
+            set__name=request.json.get('name', playlist.name),
+            set__description=request.json.get('description', playlist.description),
+            set__content=media_items
+        )
+        return jsonify({"message": "Playlist updated successfully"}), 200
+    except ValidationError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+@main.route('/admin/playlists/delete/<id>', methods=['DELETE'])
+def delete_playlist_by_id(id):
+    playlist = Playlist.objects(id=id).first()
+    if not playlist:
+        return jsonify({'error': 'Playlist not found'}), 404
+    
+    playlist.delete()
+    return jsonify({"message": "Playlist deleted successfully"}), 200
+
 
 @main.route('/admin/host_status', methods=['GET'])
 def check_host_status():
