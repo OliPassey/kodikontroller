@@ -58,7 +58,49 @@ Everything is very manual at the moment, but the long term goal is to build a sc
 - [ ] "Open Hours" to stop content and shut off screens (HDMI-CEC)
 - [ ] Incoming webhook notification mapping
 
-
-
 ### Help!
 I am not a developer, I like to tinker with code - if you want to see a project like this exist and are able to offer some assistance, please get in contact. Oli @ Infosec.Exchange (Mastodon) oli @ olipassey . me .uk (email)
+
+### API Routes n stuff
+| Route                              | Function                | Description                                                                                      |
+|------------------------------------|-------------------------|--------------------------------------------------------------------------------------------------|
+| /                                  | index                   | Renders the main index page with lists of hosts and media.                                        |
+| /admin/media                       | get_media               | Retrieves a list of all media items and details.                                                  |
+| /admin/media/youtube               | get_youtube_media       | Fetches all YouTube media items.                                                                  |
+| /admin/media/video                 | get_video_media         | Fetches all video media items, providing URLs or paths.                                            |
+| /admin/media/audio                 | get_audio_media         | Retrieves all audio media items and their URLs.                                                    |
+| /admin/media/image                 | get_image_media         | Fetches all image media items and their URLs.                                                      |
+| /admin/media/add                   | add_media               | Adds a new media item, handling unique and validation errors.                                      |
+| /admin/media/<id>                  | get_media_by_id         | Fetches a specific media item by ID.                                                               |
+| /admin/media/update/<id>           | update_media_by_id      | Updates a specific media item by ID, handling errors.                                              |
+| /admin/media/delete/<id>           | delete_media_by_id      | Deletes a specific media item by ID.                                                               |
+| /admin/groups                      | get_groups              | Retrieves a list of all groups and their details.                                                  |
+| /admin/groups/add                  | add_group               | Adds a new group, handling unique constraint and validation errors.                                 |
+| /admin/groups/update/<id>          | update_group_by_id      | Updates a specific group by ID, handling various errors.                                           |
+| /admin/groups/delete/<id>          | delete_group_by_id      | Deletes a specific group by ID.                                                                    |
+| /admin/hosts                       | get_hosts               | Retrieves a list of all hosts with their detailed information.                                     |
+| /admin/hosts/<id>                  | get_host_by_id          | Fetches a specific host by ID.                                                                     |
+| /admin/hosts/add                   | add_host                | Adds a new host and optionally triggers a media playback.                                           |
+| /admin/hosts/update/<id>           | update_host_by_id       | Updates a specific host by ID, handling errors during the update.                                   |
+| /admin/hosts/delete/<id>           | delete_host_by_id       | Deletes a specific host by ID.                                                                     |
+| /admin/schedules                   | get_schedules           | Retrieves all schedules with their detailed information.                                            |
+| /admin/schedules/add               | add_schedule            | Adds a new schedule, handling date parsing and other errors.                                        |
+| /admin/schedules/update/<id>       | update_schedule_by_id   | Updates a specific schedule by ID, handling various errors.                                         |
+| /admin/schedules/delete/<id>       | delete_schedule_by_id   | Deletes a specific schedule by ID.                                                                 |
+| /ctrl/notify/hosts/<id>            | notify_host             | Sends a notification to a specific host, handling command sending errors.                           |
+| /ctrl/image/hosts/<id>             | display_image_host      | Initiates image display on a specific host, handling command sending errors.                        |
+| /ctrl/youtube/hosts/<id>           | play_youtube_video      | Initiates YouTube video playback on a specific host, managing video ID extraction and command sending.|
+| /ctrl/audio/hosts/<id>             | play_audio              | Plays audio media on a specific host.                                                              |
+| /ctrl/video/hosts/<id>             | play_video              | Plays video media on a specific host.                                                              |
+| /ctrl/stop/<id>                    | stop_playback           | Stops all media playback on a specific host.                                                        |
+| /admin/playlists                    | get_playlists          | Retrieves all playlists with their content details.                                                 |
+| /admin/playlists/<id>               | get_playlist_by_id     | Retrieves a specific playlist by ID.                                                                |
+| /admin/playlists/add                | add_playlist           | Adds a new playlist, handling media ID validations and creation time setting.                        |
+| /admin/playlists/update/<id>        | update_playlist_by_id  | Updates a specific playlist by ID, managing media items and descriptions.                            |
+| /admin/playlists/delete/<id>        | delete_playlist_by_id  | Deletes a specific playlist by ID.                                                                   |
+| /admin/host_status                 | check_host_status       | Checks and updates the status of all hosts, handling request errors and status updates.             |
+| /admin/ctrl/kodi/screenshot/<id>   | take_kodi_screenshot    | Takes a screenshot on a specific host, handling command sending and response parsing.               |
+| /admin/ctrl/kodi/screenshot/latest/<host_id> | get_latest_screenshot | Retrieves the latest screenshot for a specific host, managing directory access and file sorting.    |
+| /screenshots/<host_id>/<filename>  | get_screenshot          | Returns an image file from the specified directory.                                                 |
+| /404                               | not_found_error         | Handles 404 errors by returning a JSON response.                                                    |
+| /500                               | internal_error          | Handles 500 errors by returning a JSON response.                                                    |
