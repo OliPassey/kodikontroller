@@ -1,18 +1,27 @@
 <window>
-    <defaultcontrol always="true">2</defaultcontrol>
     <controls>
-        <image id="1">
-            <position>0,0</position>
-            <size>1280,720</size>
-            <texture>background.jpg</texture>
-        </image>
-        <label id="2">
-            <position>60,300</position>
-            <size>1160,120</size>
-            <textcolor>0xFFFFFFFF</textcolor>
-            <font>font30_title</font>
-            <alignment>CENTER</alignment>
-            <label>Full Screen Notification Message</label>
-        </label>
+        <control type="image" id="1111">
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>100%</width>
+            <height>100%</height>
+            <texture>colors/black.png</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+        <control type="label" id="1112">
+            <posy>-200</posy>
+            <align>center</align>
+            <aligny>center</aligny>
+            <font>font60</font>
+            <textcolor>FFFFFFFF</textcolor>
+            <label>Kodi Kontroller Notification - No Msg</label>
+        </control>
+            <control type="label" id="1113">
+            <posy>20</posy>
+            <align>center</align>
+            <font>font60</font>
+            <textcolor>FFFFFFFF</textcolor>
+            <label>No Headline</label>
+        </control>
     </controls>
 </window>
