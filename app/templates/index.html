@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kodi Kontroller v4.0.6</title>
+    <title>Kodi Kontroller v4.0.7</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
 </head>
@@ -40,6 +40,7 @@
             </div>
             <div class="error-message"></div>
             <div class="host-controls">
+                <h3>Manual Controls</h3>
                 <div class="notifications-group">
                     <button class="toggle-button" data-target="#notifications-container">Show Notifications</button>
                     <div class="section-container hidden" id="notifications-container">
@@ -183,7 +184,13 @@
                 
                 <label for="edit-host-location">Location</label>
                 <input type="text" id="edit-host-location" placeholder="Location"><br>
-                
+
+                <label for="edit-host-default-image">Default Image</label>
+                <select id="edit-host-default-image">
+                    <option value="">Select an Image</option>
+                    <!-- Options will be dynamically populated here -->
+                </select><br>
+
                 <button id="save-host-button">Save Host</button>
                 <button id="add-host-button">Add Host</button>
             </div>

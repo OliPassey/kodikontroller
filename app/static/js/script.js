@@ -27,11 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
-
-
-
-    // Event listeners for Update buttons in the edit forms
-    // document.querySelector('#save-contentitem-button').addEventListener('click', updateContentItem);
     
     // Screenshots
     document.querySelectorAll('.kodi-image').forEach(image => {
@@ -123,9 +118,17 @@ function checkHostStatuses() {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok'); // Ensures we handle HTTP errors as well
+            }
+            return response.json();
+        })
         .then(data => {
-            const statuses = data;  // Assuming the data is an array of status objects
+            if (!Array.isArray(data)) {
+                throw new Error('Data is not an array'); // Check to ensure data is an array
+            }
+            const statuses = data;
             statuses.forEach(status => {
                 const widget = document.querySelector(`.host-widget[data-host-id="${status.host_id}"]`);
                 if (widget) {
@@ -143,16 +146,11 @@ function checkHostStatuses() {
                 }
             });
             callCount++; // Increment the call count after each successful call
-
-            // Check if the call count has reached the limit of 3
-            if (callCount < 3) {
-                // Schedule the next fetch after 5 seconds
-                setTimeout(fetchHostStatuses, 5000);
-            }
         })
         .catch(error => {
-            logToConsole(`Error checking host statuses: ${error.message}`);
-            callCount++; // Increment the call count even if an error occurs
+            console.error(`Error checking host statuses: ${error.message}`);
+        })
+        .finally(() => {
             // Check if the call count has reached the limit of 3
             if (callCount < 3) {
                 // Schedule the next fetch after 5 seconds
@@ -164,6 +162,7 @@ function checkHostStatuses() {
     // Initial call to fetch host statuses
     fetchHostStatuses();
 }
+
 
 
 function postImageUrl(hostId, imageUrl) {
@@ -329,6 +328,7 @@ function populateHostForm(data) {
     const statusField = document.getElementById('edit-host-status');
     const osField = document.getElementById('edit-host-os');
     const locationField = document.getElementById('edit-host-location');
+    const defaultImageField = document.getElementById('edit-host-default-image');
 
     if (idField) idField.value = data._id.$oid;
     if (nameField) nameField.value = data.name;
@@ -341,6 +341,7 @@ function populateHostForm(data) {
     if (statusField) statusField.value = data.status;
     if (osField) osField.value = data.os;
     if (locationField) locationField.value = data.location;
+    if (defaultImageField) defaultImageField.value = data.defaultImage;
 
     logToConsole('Populating host form with data:');
     logToConsole(`ID: ${data._id.$oid}, Name: ${data.name}, IP: ${data.ip}, Port: ${data.port}`);
@@ -357,12 +358,13 @@ function updateHost() {
         port: document.querySelector('#edit-host-port').value,
         username: document.querySelector('#edit-host-username').value,
         password: document.querySelector('#edit-host-password').value,
-        //group: document.querySelector('#edit-host-group').value || null,
+        group: document.querySelector('#edit-host-group').value || null,
         cec: document.querySelector('#edit-host-cec').value,
         status: document.querySelector('#edit-host-status').value,
         schedule: document.querySelector('#edit-host-schedule').value,
         os: document.querySelector('#edit-host-os').value,
-        location: document.querySelector('#edit-host-location').value
+        location: document.querySelector('#edit-host-location').value,
+        defaultImage: document.querySelector('#edit-host-default-image').value
     };
 
     fetch(`/admin/hosts/update/${hostId}`, {
@@ -642,3 +644,4 @@ function deletePlaylist(id) {
         .catch(error => console.error('Error:', error));
     }
 }
+

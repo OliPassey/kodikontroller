@@ -50,3 +50,20 @@ addEventListenerToSelector('.delete-host', 'click', async function() {
 });
 
 document.querySelector('#save-host-button').addEventListener('click', updateHost);
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetchDefaultImages();
+
+    function fetchDefaultImages() {
+        fetch('/admin/media/image')
+            .then(response => response.json())
+            .then(images => {
+                const defaultImageSelect = document.getElementById('edit-host-default-image');
+                images.forEach(image => {
+                    const option = new Option(image.name, image.id);
+                    defaultImageSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching images:', error));
+    }
+});

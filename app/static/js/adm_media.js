@@ -2,8 +2,7 @@
 import { fetchData, handleFetchError } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log('Connecting Console...');
-    console.log('Kodi Kontroller v4 has loaded');
+/*
 
     // Fetch YouTube media
     fetchData('/admin/media/youtube')
@@ -45,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
         })
-        .catch(error => handleFetchError(error));
+        .catch(error => handleFetchError(error)); */
 
 
     // Add Media functionality
