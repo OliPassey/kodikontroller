@@ -6,6 +6,9 @@ v4.0
 v4.0.5
 ![image](https://github.com/OliPassey/kodikontroller/assets/7745805/5760b7e3-207d-45ae-8896-898729e4814e)
 
+v4.0.7
+![image](https://github.com/OliPassey/kodikontroller/assets/7745805/ff677022-fc81-4f27-a8e1-04a7114c2106)
+
 ### Current Status: 
 Kodi Controls are working, Media Mgmt is in progress but the basics work. It is very rough around the edges but i'm working quickly to get things to a stable point. 
 Please do not treat this as production ready yet, it should be noted there is zero authentication on this app and it should be secured by other means - it can change content on big displays ffs...
