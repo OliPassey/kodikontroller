@@ -1,267 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    //Welcome msg
-    console.log('Connecting Console...');
-    console.log('Kodi Kontroller v4 has loaded');
-
-    //Fetch YouTube media
-    fetch('/admin/media/youtube')  // Assuming this endpoint returns YouTube media
-    .then(response => response.json())
-    .then(data => {
-        // Select all YouTube dropdowns in each host widget
-        document.querySelectorAll('.host-widget').forEach(widget => {
-            const youtubeSelect = widget.querySelector('.youtube-media-select');
-            // Ensure the dropdown is cleared initially (important if this code runs more than once)
-            youtubeSelect.innerHTML = '<option value="">Select a YouTube video</option>';
-            // Populate the dropdown with new options
-            data.forEach(media => {
-                const option = new Option(media.name, media.url);
-                youtubeSelect.appendChild(option);
-            });
-        });
-    })
-    .catch(error => console.error('Error loading YouTube media:', error));
-
-    //Fetch Video media
-    fetch('/admin/media/video')  // Assuming this endpoint returns YouTube media
-    .then(response => response.json())
-    .then(data => {
-        // Select all YouTube dropdowns in each host widget
-        document.querySelectorAll('.host-widget').forEach(widget => {
-            const videoSelect = widget.querySelector('.play-video-select');
-            // Ensure the dropdown is cleared initially (important if this code runs more than once)
-            videoSelect.innerHTML = '<option value="">Select a video</option>';
-            // Populate the dropdown with new options
-            data.forEach(media => {
-                const option = new Option(media.name, media.url);
-                videoSelect.appendChild(option);
-            });
-        });
-    })
-    .catch(error => console.error('Error loading video media:', error));
-
-    //Fetch Audio media
-    fetch('/admin/media/audio')  // Assuming this endpoint returns YouTube media
-    .then(response => response.json())
-    .then(data => {
-        // Select all YouTube dropdowns in each host widget
-        document.querySelectorAll('.host-widget').forEach(widget => {
-            const audioSelect = widget.querySelector('.play-audio-input');
-            // Ensure the dropdown is cleared initially (important if this code runs more than once)
-            audioSelect.innerHTML = '<option value="">Select an audio</option>';
-            // Populate the dropdown with new options
-            data.forEach(media => {
-                const option = new Option(media.name, media.url);
-                audioSelect.appendChild(option);
-            });
-        });
-    })
-    .catch(error => console.error('Error loading audio media:', error));
-
-    //Fetch Image media
-    fetch('/admin/media/image')  // Assuming this endpoint returns YouTube media
-    .then(response => response.json())
-    .then(data => {
-        // Select all YouTube dropdowns in each host widget
-        document.querySelectorAll('.host-widget').forEach(widget => {
-            const imageSelect = widget.querySelector('.image-select-input');
-            // Ensure the dropdown is cleared initially (important if this code runs more than once)
-            imageSelect.innerHTML = '<option value="">Select a image</option>';
-            // Populate the dropdown with new options
-            data.forEach(media => {
-                const option = new Option(media.name, media.url);
-                imageSelect.appendChild(option);
-            });
-        });
-    })
-    .catch(error => console.error('Error loading YouTube media:', error));
-
-    // Video Dropdown Play button
-    document.querySelector('.play-video-button').addEventListener('click', function () {
-        const select = this.closest('.host-widget').querySelector('.play-video-select');
-        const url = select.value;
-        const widget = this.closest('.host-widget');
-        const hostId = widget.getAttribute('data-host-id');
-    
-        if (url) {
-            fetch(`/ctrl/video/hosts/${hostId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ media_path: url })
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Video sent successfully!');
-                    return response.json();
-                } else {
-                    throw new Error('Failed to send Video URL');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                displayError(widget, error.message);
-            });
-        } else {
-            console.error('No video selected');
-            displayError(widget, 'Please select a video to play.');
-        }
-    });
-
-    // Audio Dropdown Play button
-    document.querySelector('.play-audio-button').addEventListener('click', function () {
-        const select = this.closest('.host-widget').querySelector('.play-audio-input');
-        const url = select.value;
-        const widget = this.closest('.host-widget');
-        const hostId = widget.getAttribute('data-host-id');
-    
-        if (url) {
-            fetch(`/ctrl/audio/hosts/${hostId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ media_path: url })
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Audio sent successfully!');
-                    return response.json();
-                } else {
-                    throw new Error('Failed to send Audio URL');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                displayError(widget, error.message);
-            });
-        } else {
-            console.error('No audio selected');
-            displayError(widget, 'Please select a track to play.');
-        }
-    });
-
-    // Image Dropdown Play button
-    document.querySelector('.select-image-button').addEventListener('click', function () {
-        const select = this.closest('.host-widget').querySelector('.image-select-input');
-        const url = select.value;
-        const widget = this.closest('.host-widget');
-        const hostId = widget.getAttribute('data-host-id');
-    
-        if (url) {
-            fetch(`/ctrl/image/hosts/${hostId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ image_url: url })
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Image sent successfully!');
-                    return response.json();
-                } else {
-                    throw new Error('Failed to send YouTube URL');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                displayError(widget, error.message);
-            });
-        } else {
-            console.error('No Image selected');
-            displayError(widget, 'Please select an Image to play.');
-        }
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const youtubeGroup = document.querySelectorAll(".youtube-group");
-        
-        youtubeGroup.forEach(function (group) {
-            const arrow = group.querySelector(".arrow");
-    
-            arrow.addEventListener("click", function () {
-                const content = this.parentNode.nextElementSibling;
-                content.classList.toggle("hidden");
-            });
-        });
-    });
-    
-
-    // Existing play button functionality
-    document.querySelectorAll('.play-button').forEach(button => {
-        button.addEventListener('click', function () {
-            const widget = button.closest('.host-widget');
-            const hostId = widget.getAttribute('data-host-id');
-            const input = widget.querySelector('.youtube-url-input');
-            const youtubeUrl = input.value.trim();
-
-            if (youtubeUrl) {
-                postYouTubeUrl(hostId, youtubeUrl);
-            } else {
-                displayError(widget, 'Please enter a valid YouTube URL.');
-            }
-        });
-    });
-
-    // Existing play button functionality
-    document.querySelectorAll('.play-media-button').forEach(button => {
-        button.addEventListener('click', function () {
-            const widget = button.closest('.host-widget');
-            const hostId = widget.getAttribute('data-host-id');
-            const input = widget.querySelector('.youtube-media-select');
-            const youtubeUrl = input.value.trim();
-
-            if (youtubeUrl) {
-                postYouTubeUrl(hostId, youtubeUrl);
-            } else {
-                displayError(widget, 'Please enter a valid YouTube URL.');
-            }
-        });
-    });
-
-    // Existing notify button functionality
-    document.querySelectorAll('.notify-button').forEach(button => {
-        button.addEventListener('click', function () {
-            const widget = button.closest('.host-widget');
-            const hostId = widget.getAttribute('data-host-id');
-            const headline = widget.querySelector('.notification-headline-input').value.trim();
-            const message = widget.querySelector('.notification-message-input').value.trim();
-            const duration = parseInt(widget.querySelector('.notification-duration-select').value, 10);  // Ensure duration is an integer
-            const image = widget.querySelector('.notification-image-select').value;
-
-            if (headline && message) {
-                postNotification(hostId, headline, message, duration, image);
-            } else {
-                displayError(widget, 'Please enter both a headline and a message for the notification.');
-            }
-        });
-    });
-
-    // Add an event listener for the stop button
-    document.querySelectorAll('.stop-button').forEach(button => {
-        button.addEventListener('click', function () {
-            const widget = button.closest('.host-widget');
-            const hostId = widget.getAttribute('data-host-id');
-            stopPlayback(hostId);
-        });
-    });
-
-    // Add an event listener for the image button
-    document.querySelectorAll('.image-button').forEach(button => {
-        button.addEventListener('click', function () {
-            const widget = button.closest('.host-widget');
-            const hostId = widget.getAttribute('data-host-id');
-            const input = widget.querySelector('.image-url-input');
-            const imageUrl = input.value.trim();
-
-            if (imageUrl) {
-                postImageUrl(hostId, imageUrl);
-            } else {
-                displayError(widget, 'Please enter a valid Image URL.');
-            }
-        });
-    });
 
     // Admin button functionality
     const adminButton = document.querySelector('.admin-button');
@@ -290,616 +27,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
-
-    // Add Host functionality
-    document.getElementById('add-host-button').addEventListener('click', function () {
-        const name = document.getElementById('edit-host-name').value.trim();
-        const ip = document.getElementById('edit-host-ip').value.trim();
-        const port = parseInt(document.getElementById('edit-host-port').value, 10);
-        const username = document.getElementById('edit-host-username').value.trim();
-        const password = document.getElementById('edit-host-password').value.trim();
-        const group = document.getElementById('edit-host-group').value.trim();
-        const cec = document.getElementById('edit-host-cec').value.trim();
-        const status = document.getElementById('edit-host-status').value.trim();
-        const os = document.getElementById('edit-host-os').value.trim();
-        const location = document.getElementById('edit-host-location').value.trim();
-
-        const newHost = { name, ip, port, username, password, group, cec, status, os, location };
-
-        fetch('/admin/hosts/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newHost)
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                return response.json().then(err => { throw new Error(err.error); });
-            }
-        })
-        .then(response => {
-            console.log('Host added successfully!');
-            console.log(response);
-            location.reload();  // Reload the page to reflect the new host
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            displayError(document.querySelector('.add-host'), error.message);
-        });
-    });
-
-    // Edit Form populate form
-    document.querySelectorAll('.edit-host').forEach(button => {
-        button.addEventListener('click', async function() {
-            const hostId = button.getAttribute('data-id');
-            logToConsole(`Editing host ID: ${hostId}`);
-    
-            try {
-                const response = await fetch(`/admin/hosts/${hostId}`);
-                if (response.ok) {
-                    const hostData = await response.json();
-                    populateHostForm(hostData);
-                    logToConsole(JSON.stringify(hostData, null, 2)); // Convert object to string
-                } else {
-                    throw new Error('Failed to fetch host data.');
-                }
-            } catch (error) {
-                logToConsole(`Error: ${error.message}`);
-            }
-        });
-    });
-    
-    // Save Edit Host
-    document.getElementById('save-host-button').addEventListener('click', async function() {
-        const hostId = document.getElementById('edit-host-id').value;
-        const hostData = {
-            name: document.getElementById('edit-host-name').value,
-            ip: document.getElementById('edit-host-ip').value,
-            port: document.getElementById('edit-host-port').value,
-            username: document.getElementById('edit-host-username').value,
-            password: document.getElementById('edit-host-password').value,
-            group: document.getElementById('edit-host-group').value,
-            cec: document.getElementById('edit-host-cec').value,
-            status: document.getElementById('edit-host-status').value,
-            os: document.getElementById('edit-host-os').value,
-            location: document.getElementById('edit-host-location').value
-        };
-    
-        logToConsole(`Saving host ID: ${hostId}`);
-    
-        try {
-            const response = await fetch(`/admin/hosts/update/${hostId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(hostData)
-            });
-    
-            if (response.ok) {
-                logToConsole(`Host ID: ${hostId} updated successfully.`);
-                location.reload();
-            } else {
-                throw new Error('Failed to update host.');
-            }
-        } catch (error) {
-            logToConsole(`Error: ${error.message}`);
-        }
-    });
-    
-    // Delete Host Func
-    document.querySelectorAll('.delete-host').forEach(button => {
-        button.addEventListener('click', async function() {
-            const hostId = button.getAttribute('data-id');
-            logToConsole(`Deleting host ID: ${hostId}`);
-    
-            try {
-                const response = await fetch(`/admin/hosts/delete/${hostId}`, {
-                    method: 'DELETE'
-                });
-    
-                if (response.ok) {
-                    logToConsole(`Host ID: ${hostId} deleted successfully.`);
-                    location.reload();
-                } else {
-                    throw new Error('Failed to delete host.');
-                }
-            } catch (error) {
-                logToConsole(`Error: ${error.message}`);
-            }
-        });
-    });
-
-    // Add Media functionality
-    document.getElementById('add-media-button').addEventListener('click', function () {
-        const name = document.getElementById('edit-media-name').value.trim();
-        const description = document.getElementById('edit-media-description').value.trim();
-        const type = document.getElementById('edit-media-type').value.trim();
-        const path = document.getElementById('edit-media-path').value.trim();
-        const url = document.getElementById('edit-media-url').value.trim();
-
-        const newMedia = { name, description, type, path, url };
-
-        fetch('/admin/media/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newMedia)
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                return response.json().then(err => { throw new Error(err.error); });
-            }
-        })
-        .then(response => {
-            console.log('Media added successfully!');
-            console.log(response);
-            location.reload();  // Reload the page to reflect the new media
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            displayError(document.querySelector('.add-media'), error.message);
-        });
-    });
-
-    // Edit Media
-    document.querySelectorAll('.edit-media').forEach(button => {
-        button.addEventListener('click', async function() {
-            const mediaId = button.getAttribute('data-id');
-            logToConsole(`Editing media ID: ${mediaId}`);
-    
-            try {
-                const response = await fetch(`/admin/media/${mediaId}`);
-                if (response.ok) {
-                    const mediaData = await response.json();
-                    populateMediaForm(mediaData);
-                    logToConsole(JSON.stringify(mediaData, null, 2)); // Convert object to string
-                } else {
-                    throw new Error('Failed to fetch media data.');
-                }
-            } catch (error) {
-                logToConsole(`Error: ${error.message}`);
-            }
-        });
-    });
-    
-    // Save Edit Media
-    document.getElementById('save-media-button').addEventListener('click', async function() {
-        const mediaId = document.getElementById('edit-media-id').value;
-        const mediaData = {
-            name: document.getElementById('edit-media-name').value,
-            description: document.getElementById('edit-media-description').value,
-            type: document.getElementById('edit-media-type').value,
-            path: document.getElementById('edit-media-path').value,
-            url: document.getElementById('edit-media-url').value
-        };
-    
-        logToConsole(`Saving media ID: ${mediaId}`);
-    
-        try {
-            const response = await fetch(`/admin/media/update/${mediaId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(mediaData)
-            });
-    
-            if (response.ok) {
-                logToConsole(`Media ID: ${mediaId} updated successfully.`);
-                location.reload();
-            } else {
-                throw new Error('Failed to update media.');
-            }
-        } catch (error) {
-            logToConsole(`Error: ${error.message}`);
-        }
-    });
-    
-    // Delete Media
-    document.querySelectorAll('.delete-media').forEach(button => {
-        button.addEventListener('click', async function() {
-            const mediaId = button.getAttribute('data-id');
-            logToConsole(`Deleting media ID: ${mediaId}`);
-    
-            try {
-                const response = await fetch(`/admin/media/delete/${mediaId}`, {
-                    method: 'DELETE'
-                });
-    
-                if (response.ok) {
-                    logToConsole(`Media ID: ${mediaId} deleted successfully.`);
-                    location.reload();
-                } else {
-                    throw new Error('Failed to delete media.');
-                }
-            } catch (error) {
-                logToConsole(`Error: ${error.message}`);
-            }
-        });
-    });
-
-    // Add Schedule functionality
-    document.getElementById('add-schedule-button').addEventListener('click', function () {
-        const name = document.getElementById('edit-schedule-name').value.trim();
-        const description = document.getElementById('edit-schedule-description').value.trim();
-        const startDate = document.getElementById('edit-schedule-start').value.trim();
-        const endDate = document.getElementById('edit-schedule-end').value.trim();
-        const playlist = document.getElementById('edit-schedule-playlist').value.trim().split(',').map(id => new ObjectId(id));
-        const shuffle = document.getElementById('edit-schedule-shuffle').checked;
-
-        const newSchedule = { name, description, startDate, endDate, playlist, shuffle };
-
-        fetch('/admin/schedules/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newSchedule)
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                return response.json().then(err => { throw new Error(err.error); });
-            }
-        })
-        .then(response => {
-            console.log('Schedule added successfully!');
-            console.log(response);
-            location.reload();  // Reload the page to reflect the new schedule
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            displayError(document.querySelector('.add-schedule'), error.message);
-        });
-    });
-
-
-    // Edit Schedule 
-    document.querySelectorAll('.edit-schedule').forEach(button => {
-        button.addEventListener('click', async function() {
-            const scheduleId = button.getAttribute('data-id');
-            logToConsole(`Editing schedule ID: ${scheduleId}`);
-    
-            try {
-                const response = await fetch(`/admin/schedules/${scheduleId}`);
-                if (response.ok) {
-                    const scheduleData = await response.json();
-                    populateScheduleForm(scheduleData);
-                    logToConsole(JSON.stringify(scheduleData, null, 2)); // Convert object to string
-                } else {
-                    throw new Error('Failed to fetch schedule data.');
-                }
-            } catch (error) {
-                logToConsole(`Error: ${error.message}`);
-            }
-        });
-    });
-
-    // Save Edit Schedule
-    document.getElementById('save-schedule-button').addEventListener('click', async function() {
-        const scheduleId = document.getElementById('edit-schedule-id').value;
-        const scheduleData = {
-            name: document.getElementById('edit-schedule-name').value,
-            description: document.getElementById('edit-schedule-description').value,
-            startDate: document.getElementById('edit-schedule-start-date').value,
-            endDate: document.getElementById('edit-schedule-end-date').value,
-            shuffle: document.getElementById('edit-schedule-shuffle').checked
-        };
-    
-        logToConsole(`Saving schedule ID: ${scheduleId}`);
-    
-        try {
-            const response = await fetch(`/admin/schedules/update/${scheduleId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(scheduleData)
-            });
-    
-            if (response.ok) {
-                logToConsole(`Schedule ID: ${scheduleId} updated successfully.`);
-                location.reload();
-            } else {
-                throw new Error('Failed to update schedule.');
-            }
-        } catch (error) {
-            logToConsole(`Error: ${error.message}`);
-        }
-    });
-    
-    // Delete Schedule
-    document.querySelectorAll('.delete-schedule').forEach(button => {
-        button.addEventListener('click', async function() {
-            const scheduleId = button.getAttribute('data-id');
-            logToConsole(`Deleting schedule ID: ${scheduleId}`);
-    
-            try {
-                const response = await fetch(`/admin/schedules/delete/${scheduleId}`, {
-                    method: 'DELETE'
-                });
-    
-                if (response.ok) {
-                    logToConsole(`Schedule ID: ${scheduleId} deleted successfully.`);
-                    location.reload();
-                } else {
-                    throw new Error('Failed to delete schedule.');
-                }
-            } catch (error) {
-                logToConsole(`Error: ${error.message}`);
-            }
-        });
-    });
-
-    // Add Group functionality
-    document.getElementById('add-group-button').addEventListener('click', function () {
-        const name = document.getElementById('new-group-name').value.trim();
-        const description = document.getElementById('new-group-description').value.trim();
-        const members = document.getElementById('new-group-members').value.trim().split(',');
-
-        const newGroup = { name, description, members };
-
-        fetch('/admin/groups/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newGroup)
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                return response.json().then(err => { throw new Error(err.error); });
-            }
-        })
-        .then(response => {
-            console.log('Group added successfully!');
-            console.log(response);
-            location.reload();  // Reload the page to reflect the new group
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            displayError(document.querySelector('.add-group'), error.message);
-        });
-    });
-
-    // Edit Group
-    document.querySelectorAll('.edit-group').forEach(button => {
-        button.addEventListener('click', function () {
-            const groupId = button.getAttribute('data-id');
-
-            // Fetch existing group data
-            fetch(`/admin/groups/${groupId}`)
-                .then(response => response.json())
-                .then(data => {
-                    populateGroupForm(data);
-                    document.querySelector('#edit-group-modal').style.display = 'block';
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    });
-
-    // Delete Group
-    document.querySelectorAll('.delete-group').forEach(button => {
-        button.addEventListener('click', async function() {
-            const groupId = button.getAttribute('data-id');
-            logToConsole(`Deleting group ID: ${groupId}`);
-    
-            try {
-                const response = await fetch(`/admin/groups/delete/${groupId}`, {
-                    method: 'DELETE'
-                });
-    
-                if (response.ok) {
-                    logToConsole(`Group ID: ${groupId} deleted successfully.`);
-                    location.reload();
-                } else {
-                    throw new Error('Failed to delete group.');
-                }
-            } catch (error) {
-                logToConsole(`Error: ${error.message}`);
-            }
-        });
-    });
-
-    // Add Playlist functionality
-    document.getElementById('add-playlist-button').addEventListener('click', function () {
-        const name = document.getElementById('edit-playlist-name').value.trim();
-        const description = document.getElementById('edit-playlist-description').value.trim();
-        const content = document.getElementById('edit-playlist-content').value.trim().split(',');
-        const createDate = new Date().toISOString(); // Get current timestamp in ISO format
-
-        const newPlaylist = { name, description, content, createDate };
-
-        fetch('/admin/playlists/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newPlaylist)
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                return response.json().then(err => { throw new Error(err.error); });
-            }
-        })
-        .then(response => {
-            console.log('Playlist added successfully!');
-            console.log(response);
-            location.reload();  // Reload the page to reflect the new playlist
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            displayError(document.querySelector('.add-playlist'), error.message);
-        });
-    });
-
-
-    // Edit Playlist
-    document.querySelectorAll('.edit-playlist').forEach(button => {
-        button.addEventListener('click', async function() {
-            const playlistId = button.getAttribute('data-id');
-            logToConsole(`Editing playlist ID: ${playlistId}`);
-    
-            try {
-                const response = await fetch(`/admin/playlists/${playlistId}`);
-                if (response.ok) {
-                    const playlistData = await response.json();
-                    populatePlaylistForm(playlistData);
-                    logToConsole(JSON.stringify(playlistData, null, 2)); // Convert object to string
-                } else {
-                    throw new Error('Failed to fetch playlist data.');
-                }
-            } catch (error) {
-                logToConsole(`Error: ${error.message}`);
-            }
-        });
-    });
-
-    // Save Edit Playlist
-    document.getElementById('save-playlist-button').addEventListener('click', async function() {
-        const playlistId = document.getElementById('edit-playlist-id').value;
-        const playlistData = {
-            name: document.getElementById('edit-playlist-name').value,
-            description: document.getElementById('edit-playlist-description').value,
-            content: document.getElementById('edit-playlist-content').value.trim().split(',')
-        };
-    
-        logToConsole(`Saving playlist ID: ${playlistId}`);
-    
-        try {
-            const response = await fetch(`/admin/playlists/update/${playlistId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(playlistData)
-            });
-    
-            if (response.ok) {
-                logToConsole(`Playlist ID: ${playlistId} updated successfully.`);
-                location.reload();
-            } else {
-                throw new Error('Failed to update playlist.');
-            }
-        } catch (error) {
-            logToConsole(`Error: ${error.message}`);
-        }
-    });
-
-    // Delete Playlist
-    document.querySelectorAll('.delete-playlist').forEach(button => {
-        button.addEventListener('click', async function() {
-            const playlistId = button.getAttribute('data-id');
-            logToConsole(`Deleting playlist ID: ${playlistId}`);
-    
-            try {
-                const response = await fetch(`/admin/playlists/delete/${playlistId}`, {
-                    method: 'DELETE'
-                });
-    
-                if (response.ok) {
-                    logToConsole(`Playlist ID: ${playlistId} deleted successfully.`);
-                    location.reload();
-                } else {
-                    throw new Error('Failed to delete playlist.');
-                }
-            } catch (error) {
-                logToConsole(`Error: ${error.message}`);
-            }
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.kodi-Image').forEach(kodiImage => {
-            kodiImage.addEventListener('click', () => {
-                // Extract the host ID from the data-host-id attribute of the parent element
-                const hostId = kodiImage.closest('.host-widget').getAttribute('data-host-id');
-                console.log('Host ID:', hostId);
-    
-                // Send a POST request to take a screenshot
-                fetch('/admin/ctrl/kodi/screenshot/' + hostId, {
-                    method: 'POST'
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to take screenshot');
-                    }
-                    console.log('Screenshot request successful');
-                    return response.json();
-                })
-                .then(data => {
-                    // Once the screenshot is taken, construct the URL for the latest screenshot
-                    fetch(`/admin/ctrl/kodi/screenshot/latest/${hostId}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Failed to retrieve latest screenshot');
-                            }
-                            console.log('Latest screenshot request successful');
-                            return response.json();
-                        })
-                        .then(screenshotData => {
-                            console.log('Received screenshot data:', screenshotData);
-                            const latestScreenshotNumber = screenshotData.latestScreenshotNumber;
-                            const baseURL = `${window.location.protocol}//${window.location.host}`;
-                            const screenshotURL = `${baseURL}/screenshots/${hostId}/screenshot${latestScreenshotNumber}.png`;
-                            console.log(latestScreenshotNumber);
-                            console.log(screenshotURL);
-    
-                            // Attempt to load the image with retries
-                            const loadImageWithRetries = (retryCount) => {
-                                if (retryCount <= 0) {
-                                    // Retry limit reached, replace the original image
-                                    console.error('Retry limit reached, replacing original image');
-                                    kodiImage.src = 'original_image_url.jpg'; // Replace with the original image URL
-                                    return;
-                                }
-    
-                                const img = new Image();
-                                img.onload = () => {
-                                    // Image loaded successfully, update the src attribute
-                                    kodiImage.src = screenshotURL;
-                                };
-                                img.onerror = () => {
-                                    // Error loading image, retry after a short delay
-                                    console.error(`Error loading image, retrying... (Attempts left: ${retryCount})`);
-                                    setTimeout(() => loadImageWithRetries(retryCount - 1), 1000); // Retry after 1 second
-                                };
-                                img.src = screenshotURL; // Start loading the image
-                            };
-    
-                            // Initial attempt to load the image with retries
-                            loadImageWithRetries(5); // Retry 5 times
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            });
-        });
-    });
-    
-    
-    // Event listeners for Update buttons in the edit forms
-    document.querySelector('#save-host-button').addEventListener('click', updateHost);
-    document.querySelector('#save-schedule-button').addEventListener('click', updateSchedule);
-    document.querySelector('#save-group-button').addEventListener('click', updateGroup);
-    document.querySelector('#save-playlist-button').addEventListener('click', updatePlaylist);
-    // document.querySelector('#save-contentitem-button').addEventListener('click', updateContentItem);
     
     // Screenshots
     document.querySelectorAll('.kodi-image').forEach(image => {
@@ -974,9 +101,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
-    
-    
-    
 });
 
 
@@ -994,9 +118,17 @@ function checkHostStatuses() {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok'); // Ensures we handle HTTP errors as well
+            }
+            return response.json();
+        })
         .then(data => {
-            const statuses = data;  // Assuming the data is an array of status objects
+            if (!Array.isArray(data)) {
+                throw new Error('Data is not an array'); // Check to ensure data is an array
+            }
+            const statuses = data;
             statuses.forEach(status => {
                 const widget = document.querySelector(`.host-widget[data-host-id="${status.host_id}"]`);
                 if (widget) {
@@ -1014,16 +146,11 @@ function checkHostStatuses() {
                 }
             });
             callCount++; // Increment the call count after each successful call
-
-            // Check if the call count has reached the limit of 3
-            if (callCount < 3) {
-                // Schedule the next fetch after 5 seconds
-                setTimeout(fetchHostStatuses, 5000);
-            }
         })
         .catch(error => {
-            logToConsole(`Error checking host statuses: ${error.message}`);
-            callCount++; // Increment the call count even if an error occurs
+            console.error(`Error checking host statuses: ${error.message}`);
+        })
+        .finally(() => {
             // Check if the call count has reached the limit of 3
             if (callCount < 3) {
                 // Schedule the next fetch after 5 seconds
@@ -1035,6 +162,7 @@ function checkHostStatuses() {
     // Initial call to fetch host statuses
     fetchHostStatuses();
 }
+
 
 
 function postImageUrl(hostId, imageUrl) {
@@ -1200,6 +328,7 @@ function populateHostForm(data) {
     const statusField = document.getElementById('edit-host-status');
     const osField = document.getElementById('edit-host-os');
     const locationField = document.getElementById('edit-host-location');
+    const defaultImageField = document.getElementById('edit-host-default-image');
 
     if (idField) idField.value = data._id.$oid;
     if (nameField) nameField.value = data.name;
@@ -1212,6 +341,7 @@ function populateHostForm(data) {
     if (statusField) statusField.value = data.status;
     if (osField) osField.value = data.os;
     if (locationField) locationField.value = data.location;
+    if (defaultImageField) defaultImageField.value = data.defaultImage;
 
     logToConsole('Populating host form with data:');
     logToConsole(`ID: ${data._id.$oid}, Name: ${data.name}, IP: ${data.ip}, Port: ${data.port}`);
@@ -1228,12 +358,13 @@ function updateHost() {
         port: document.querySelector('#edit-host-port').value,
         username: document.querySelector('#edit-host-username').value,
         password: document.querySelector('#edit-host-password').value,
-        //group: document.querySelector('#edit-host-group').value || null,
+        group: document.querySelector('#edit-host-group').value || null,
         cec: document.querySelector('#edit-host-cec').value,
         status: document.querySelector('#edit-host-status').value,
         schedule: document.querySelector('#edit-host-schedule').value,
         os: document.querySelector('#edit-host-os').value,
-        location: document.querySelector('#edit-host-location').value
+        location: document.querySelector('#edit-host-location').value,
+        defaultImage: document.querySelector('#edit-host-default-image').value
     };
 
     fetch(`/admin/hosts/update/${hostId}`, {
@@ -1339,7 +470,13 @@ function populatePlaylistForm(data) {
     document.querySelector('#edit-playlist-id').value = data.id;
     document.querySelector('#edit-playlist-name').value = data.name;
     document.querySelector('#edit-playlist-description').value = data.description;
-    document.querySelector('#edit-playlist-create-date').value = data.createDate;
+    const contentSelect = document.querySelector('#edit-playlist-content');
+    contentSelect.innerHTML = '';
+
+    data.content.forEach(item => {
+        const option = new Option(`${item.name} (${item.duration ? item.duration + 's' : 'No duration set'})`, item.mediaId, false, true);
+        contentSelect.appendChild(option);
+    });
 }
 
 function updatePlaylist() {
@@ -1348,11 +485,13 @@ function updatePlaylist() {
     const updatedPlaylistData = {
         name: document.querySelector('#edit-playlist-name').value,
         description: document.querySelector('#edit-playlist-description').value,
-        createDate: document.querySelector('#edit-playlist-create-date').value,
-        content: Array.from(document.querySelectorAll('#edit-playlist-content option:checked')).map(option => option.value)
+        items: Array.from(document.querySelectorAll('#edit-playlist-content option:checked')).map(option => ({
+            mediaId: option.value
+            // Note: Since duration is not updated here, you need to handle it separately or adjust your model to accommodate.
+        }))
     };
 
-    fetch(`/playlists/update/${playlistId}`, {
+    fetch(`/admin/playlists/update/${playlistId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
@@ -1368,47 +507,47 @@ function updatePlaylist() {
     })
     .then(data => {
         console.log('Playlist updated successfully:', data);
-        document.querySelector('#edit-playlist-modal').style.display = 'none';
+        location.reload();  // Refresh to reflect the changes
     })
     .catch(error => console.error('Error:', error));
 }
 
-function populateContentItemForm(data) {
-    document.querySelector('#edit-contentitem-id').value = data.id;
-    document.querySelector('#edit-contentitem-player').value = data.player;
-    document.querySelector('#edit-contentitem-path').value = data.path;
-    document.querySelector('#edit-contentitem-url').value = data.url;
-}
 
-function updateContentItem() {
-    const contentItemId = document.querySelector('#edit-contentitem-id').value;
+document.addEventListener('DOMContentLoaded', function() {
+    // Assuming your page has buttons to open editing, hooked with data attributes for IDs
+    document.querySelectorAll('.edit-playlist').forEach(button => {
+        button.addEventListener('click', function() {
+            const playlistId = this.getAttribute('data-id');
+            fetch(`/admin/playlists/${playlistId}`, {
+                method: 'GET'
+            })
+            .then(response => response.json())
+            .then(data => populatePlaylistForm(data))
+            .catch(error => console.error('Error loading playlist data:', error));
+        });
+    });
 
-    const updatedContentItemData = {
-        player: document.querySelector('#edit-contentitem-player').value,
-        path: document.querySelector('#edit-contentitem-path').value,
-        url: document.querySelector('#edit-contentitem-url').value
-    };
+    document.querySelectorAll('.delete-playlist').forEach(button => {
+        button.addEventListener('click', function() {
+            const playlistId = this.getAttribute('data-id');
+            if(confirm('Are you sure you want to delete this playlist?')) {
+                fetch(`/admin/playlists/delete/${playlistId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Playlist deleted successfully');
+                        location.reload();  // Refresh to reflect the changes
+                    } else {
+                        throw new Error('Failed to delete playlist');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    });
+});
 
-    fetch(`/contentitems/update/${contentItemId}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updatedContentItemData)
-    })
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error('Failed to update content item');
-        }
-    })
-    .then(data => {
-        console.log('Content item updated successfully:', data);
-        document.querySelector('#edit-contentitem-modal').style.display = 'none';
-    })
-    .catch(error => console.error('Error:', error));
-}
 
 function populateMediaForm(data) {
     const idField = document.getElementById('edit-media-id');
@@ -1428,3 +567,81 @@ function populateMediaForm(data) {
     logToConsole('Populating media form with data:');
     logToConsole(`ID: ${data._id.$oid}, Name: ${data.name}, Type: ${data.type}, Path: ${data.path}, URL: ${data.url}`);
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetchPlaylists();
+});
+
+function fetchPlaylists() {
+    fetch('/admin/playlists', { // Ensure this endpoint correctly returns all playlists
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(playlists => {
+        displayPlaylists(playlists);
+    })
+    .catch(error => {
+        console.error('Error fetching playlists:', error);
+        logToConsole(`Error fetching playlists: ${error.message}`);
+    });
+}
+
+function displayPlaylists(playlists) {
+    const playlistsContainer = document.getElementById('playlists-list');
+    playlistsContainer.innerHTML = ''; // Clear existing entries
+
+    if (playlists.length === 0) {
+        playlistsContainer.innerHTML = '<li>No playlists found.</li>';
+    } else {
+        playlists.forEach(playlist => {
+            const playlistEntry = document.createElement('li');
+            playlistEntry.innerHTML = `
+                <p>${playlist.name} - ${playlist.description}</p>
+                <button class="edit-playlist" data-id="${playlist.id}">Edit</button>
+                <button class="delete-playlist" data-id="${playlist.id}">Delete</button>
+            `;
+            playlistsContainer.appendChild(playlistEntry);
+
+            // Attach event listeners to newly created buttons
+            playlistEntry.querySelector('.edit-playlist').addEventListener('click', function() {
+                editPlaylist(playlist.id);
+            });
+            playlistEntry.querySelector('.delete-playlist').addEventListener('click', function() {
+                deletePlaylist(playlist.id);
+            });
+        });
+    }
+}
+
+function editPlaylist(id) {
+    // Fetch and populate form for editing
+    fetch(`/admin/playlists/${id}`, {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        populatePlaylistForm(data);
+    })
+    .catch(error => console.error('Error fetching playlist details:', error));
+}
+
+function deletePlaylist(id) {
+    if (confirm('Are you sure you want to delete this playlist?')) {
+        fetch(`/admin/playlists/delete/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Playlist deleted successfully');
+                fetchPlaylists(); // Refresh the list
+            } else {
+                throw new Error('Failed to delete playlist');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+}
+

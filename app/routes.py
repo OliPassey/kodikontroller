@@ -10,7 +10,9 @@ import requests
 import json
 import re
 import os
-
+import time
+import datetime
+from datetime import datetime, timedelta
 
 # Define the Blueprint
 main = Blueprint('main', __name__)
@@ -232,7 +234,8 @@ def get_hosts():
             "group": host.group,
             "cec": host.cec,
             "os": host.os,
-            "status": host.status  # Include the "status" field
+            "status": host.status,
+            "defaultImage": host.defaultImage
         }
         host_list.append(host_data)
     return jsonify(host_list), 200
@@ -260,14 +263,28 @@ def add_host():
             status=request.json.get('status'),
             schedule=request.json.get('schedule'),  # ID of the Schedule
             os=request.json.get('os'),
-            location=request.json.get('location')
+            location=request.json.get('locationField'),
+            defaultImage=request.json.get('defaultImage')
         )
         new_host.save()
+
+        # Add a 2-second delay before making the request to play the video
+        time.sleep(2)
+
+        # Make a request to the YouTube control route for the newly added host
+        host_id = new_host.id
+        youtube_url = "https://www.youtube.com/watch?v=ts8i-6AtDfc"  # Hardcoded YouTube URL
+        base_url = request.url_root
+        response = requests.post(f'{base_url}ctrl/youtube/hosts/{host_id}', json={'youtube_url': youtube_url})
+        response.raise_for_status()
+
         return jsonify({"message": "Host added successfully"}), 201
     except NotUniqueError:
         return jsonify({"error": "A host with the specified name already exists"}), 400
     except ValidationError as e:
         return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @main.route('/admin/hosts/update/<id>', methods=['PUT'])
 def update_host_by_id(id):
@@ -593,31 +610,87 @@ def stop_playback(id):
     except Exception as e:
         return jsonify({'error': f'An error occurred: {str(e)}'}), 500
 
+@main.route('/admin/playlists', methods=['GET'])
+def get_playlists():
+    playlists = Playlist.objects()
+    playlist_list = []
+    for playlist in playlists:
+        playlist_data = {
+            "id": str(playlist.id),
+            "name": playlist.name,
+            "description": playlist.description,
+            "createDate": playlist.createDate.isoformat(),
+            "content": [{"mediaId": str(content.id), "name": content.name, "duration": content.duration} for content in playlist.content]
+        }
+        playlist_list.append(playlist_data)
+    return jsonify(playlist_list), 200
+
+
+@main.route('/admin/playlists/<id>', methods=['GET'])
+def get_playlist_by_id(id):
+    playlist = Playlist.objects(id=id).first()
+    if not playlist:
+        return jsonify({'error': 'Playlist not found'}), 404
+
+    playlist_data = {
+        "id": str(playlist.id),
+        "name": playlist.name,
+        "description": playlist.description,
+        "createDate": playlist.createDate.isoformat(),
+        "content": [{"mediaId": str(content.id), "name": content.name, "duration": content.duration} for content in playlist.content]
+    }
+    return jsonify(playlist_data), 200
+
+
 @main.route('/admin/playlists/add', methods=['POST'])
 def add_playlist():
     try:
+        media_ids = [item['mediaId'] for item in request.json.get('items', [])]
+        media_items = Media.objects(id__in=media_ids)  # Fetch media documents based on received IDs
+
         new_playlist = Playlist(
-            name=request.json.get('name'),
+            name=request.json['name'],
             description=request.json.get('description', ''),
-            createDate=parser.parse(request.json.get('createDate')),
-            content=[
-                Media(
-                    name=content.get('name'),
-                    description=content.get('description', ''),
-                    type=content.get('type'),
-                    path=content.get('path', ''),
-                    url=content.get('url', '')
-                ) for content in request.json.get('content', [])
-            ]
+            createDate=datetime.utcnow(),  # Automatically set the creation date to now
+            content=list(media_items)  # Directly assign the list of media items
         )
         new_playlist.save()
         return jsonify({"message": "Playlist added successfully"}), 201
     except ValidationError as e:
         return jsonify({"error": str(e)}), 400
-    except ValueError as e:  # Catch parsing errors
-        return jsonify({"error": f"Date parsing error: {str(e)}"}), 400
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+
+@main.route('/admin/playlists/update/<id>', methods=['PUT'])
+def update_playlist_by_id(id):
+    playlist = Playlist.objects(id=id).first()
+    if not playlist:
+        return jsonify({'error': 'Playlist not found'}), 404
+
+    try:
+        media_ids = [item['mediaId'] for item in request.json.get('items', [])]
+        media_items = Media.objects(id__in=media_ids)
+
+        playlist.update(
+            set__name=request.json.get('name', playlist.name),
+            set__description=request.json.get('description', playlist.description),
+            set__content=media_items
+        )
+        return jsonify({"message": "Playlist updated successfully"}), 200
+    except ValidationError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+@main.route('/admin/playlists/delete/<id>', methods=['DELETE'])
+def delete_playlist_by_id(id):
+    playlist = Playlist.objects(id=id).first()
+    if not playlist:
+        return jsonify({'error': 'Playlist not found'}), 404
+    
+    playlist.delete()
+    return jsonify({"message": "Playlist deleted successfully"}), 200
 
 @main.route('/admin/host_status', methods=['GET'])
 def check_host_status():
@@ -635,19 +708,17 @@ def check_host_status():
                 "id": 1,
                 "method": "Player.GetActivePlayers"
             }
-            response = requests.post(url, headers=headers, data=json.dumps(active_players_command))
+            response = requests.post(url, headers=headers, json=active_players_command)
             response.raise_for_status()
             active_players = response.json().get('result', [])
 
-            # Process each active player
             if active_players:
                 host.status = 'active'
+                host.last_inactive_time = None  # Clear the last_inactive_time if the host is active
                 playing_info_list = []
 
                 for player in active_players:
                     player_id = player['playerid']
-                    
-                    # Get details of the current item being played by each player
                     get_item_command = {
                         "jsonrpc": "2.0",
                         "id": 1,
@@ -657,31 +728,65 @@ def check_host_status():
                             "properties": ["title", "album", "artist", "duration"]
                         }
                     }
-                    response = requests.post(url, headers=headers, data=json.dumps(get_item_command))
+                    response = requests.post(url, headers=headers, json=get_item_command)
                     response.raise_for_status()
                     playing_info = response.json().get('result', {}).get('item', {})
-
-                    # Append each player's current playing title to a list
                     playing_info_list.append(playing_info.get('label', 'Unknown Media'))
 
-                # Combine all playing titles for the host
                 host.player = ", ".join(playing_info_list)
             else:
                 host.status = 'inactive'
-                host.player = ''
+                host.player = ''  # Clear the player field when host is inactive
+                if not host.last_inactive_time:  # If last_inactive_time is not set, set it now
+                    host.last_inactive_time = datetime.now()
+                elif datetime.now() - host.last_inactive_time > timedelta(minutes=2):  # Check if the host has been inactive for more than 2 minutes
+                    if host.defaultImage:
+                        display_default_image(host.id, host.defaultImage)
+                    host.last_inactive_time = datetime.now()  # Reset the time to prevent multiple triggers
+
+            host.save()  # Save any changes made to the host document
+            results.append({
+                "host_id": str(host.id),
+                "status": host.status,
+                "playing": host.player
+            })
 
         except requests.exceptions.RequestException as e:
             host.status = 'error'
             host.player = 'Error accessing host'
-
-        host.save()
-        results.append({
-            "host_id": str(host.id),
-            "status": host.status,
-            "playing": host.player
-        })
+            host.save()
+            results.append({
+                "host_id": str(host.id),
+                "status": host.status,
+                "playing": host.player
+            })
 
     return jsonify(results), 200
+
+
+def display_default_image(host_id, image_media):
+    """Function to send command to display default image on a Kodi host."""
+    if not image_media or not image_media.url:
+        return {'error': 'Image URL is required'}, 400
+
+    command = {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "Player.Open",
+        "params": {"item": {"file": image_media.url}}
+    }
+    host = Host.objects(id=host_id).first()
+    if host:
+        json_command = json.dumps(command)
+        url = f"http://{host.username}:{host.password}@{host.ip}:{host.port}/jsonrpc"
+        headers = {'Content-Type': 'application/json'}
+        try:
+            response = requests.post(url, headers=headers, data=json_command)
+            response.raise_for_status()
+            return {'message': "Image display initiated successfully", 'response': response.json()}, 200
+        except Exception as e:
+            return {'error': f'Failed to send command: {str(e)}'}, 500
+
 
 @main.route('/admin/ctrl/kodi/screenshot/<id>', methods=['POST'])
 def take_kodi_screenshot(id):
@@ -721,9 +826,21 @@ def get_latest_screenshot(host_id):
     if not os.path.isdir(screenshot_dir):
         return jsonify({'error': 'Screenshot directory not found'}), 404
 
-    screenshot_files = [f for f in os.listdir(screenshot_dir) if f.startswith('screenshot') and f.endswith('.png')]
+    # Get the current time minus 24 hours (in seconds)
+    cutoff_time = time.time() - (24 * 60 * 60)
+
+    screenshot_files = []
+    for f in os.listdir(screenshot_dir):
+        filepath = os.path.join(screenshot_dir, f)
+        if f.startswith('screenshot') and f.endswith('.png'):
+            file_mtime = os.path.getmtime(filepath)  # Modification time of the file
+            if file_mtime < cutoff_time:
+                os.remove(filepath)  # Delete the file if older than 24 hours
+            else:
+                screenshot_files.append(f)
+
     if not screenshot_files:
-        return jsonify({'error': 'No screenshot files found'}), 404
+        return jsonify({'error': 'No recent screenshot files found'}), 404
 
     # Extract and sort the numeric part of the filename to find the latest screenshot
     screenshot_numbers = [int(f.split('screenshot')[-1].split('.')[0]) for f in screenshot_files]

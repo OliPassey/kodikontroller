@@ -8,7 +8,21 @@ body {
     margin: 0;  /* Remove default margin */
     color: #fff;  /* Adjust text color for visibility on background */
 }
-
+/* Host-widget adjustments */
+@media (max-width: 768px) {
+    .host-widget {
+        flex-direction: column; /* Display host-widget as a single column on mobile */
+        width: 100%; /* Full width on mobile screens */
+        box-sizing: border-box; /* Ensure padding and border are included in the width */
+    }
+}
+/* Container widths adjustments */
+@media (max-width: 768px) {
+    .host-header,
+    .host-controls {
+        width: 100%; /* Full width on mobile screens */
+    }
+}
 @media (max-width: 768px) {
     body {
         background-image: url('/static/img/bg_mobile.jpg');  /* Optional: Load a different, smaller image for mobile devices */
@@ -17,17 +31,65 @@ body {
     }
 }
 
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.host-status-container {
+    border: #1f1f1f;
+}
+
+
+.host-header {
+    width: fit-content;
+}
+
+.host-widget {
+    background: rgba(0, 0, 0, 0.5);  /* Semi-transparent background for readability */
+    border: 1px solid #00f5e8;
+    padding: 20px;
+    margin: 10px;
+    width: 750px;
+    box-sizing: border-box; /* Ensure padding and border are included in the width */
+}
+
+.host-header h2 {
+    color: #fff;
+}
+
+.host-widget {
+    display: flex;
+}
+
+@media (min-width: 769px) {
+.host-header,
+.host-controls {
+    width: 40%; /* Adjusted width for the first column */
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.host-controls {
+    width: 60%; /* Adjusted width for the second column */
+}
+}
+
+
 header {
     text-align: center;
-    padding: 10px;
-    background-color: #444;
+    padding: 5px;
+    background-color: #1f1f1f;
     opacity: 90%;  /* Make the header slightly transparent */
     position: relative;
+    height: 80px;
 }
 
 header img {
-    width: 50%;  /* Adjust size as necessary */
     max-width: 450px;
+    max-height: 100%;
 }
 
 .admin-button {
@@ -35,10 +97,11 @@ header img {
     top: 10px;
     right: 10px;
     padding: 10px;
-    background-color: #555;
+    background-color: #d30000;
     color: #fff;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 .admin-overlay {
@@ -62,14 +125,62 @@ header img {
     display: flex;
     justify-content: space-around;
     margin-bottom: 20px;
+    background-color: #0062f5b9;
+    padding: 10px;
+    border-radius: 23px;
+    max-width: 90%;
 }
 
 .tab-button {
-    background-color: #444;
+    background-color: rgb(0, 118, 145);
     color: #fff;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+    border-radius: 8px;
+}
+
+.presets {
+    display: flex;          /* Enables flexbox layout */
+    justify-content: center; /* Centers flex items on the main-axis (horizontally) */
+    padding: 10px;          /* Adds some padding around the container */
+    gap: 10px;              /* Adds space between buttons */
+}
+
+.preset-btn {
+    padding: 8px 16px;      /* Adds padding inside each button */
+    background-color: #007BFF; /* Example button color */
+    color: white;           /* Text color for the buttons */
+    border: none;           /* No border */
+    border-radius: 5px;     /* Rounded corners */
+    cursor: pointer;        /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.preset-btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+.content-schedule-btn, .ops-schedule-btn {
+    background-color: rgb(7, 8, 65);
+    color: #fff;
+    border: none;
+    margin: 5px;
+    padding: 8px 16px; 
+    cursor: pointer;
+    border-radius: 8px;
+    width: 100%;
+}
+
+.host-header .stop-button {
+    background-color: rgb(109, 0, 0);
+    color: #fff;
+    border: none;
+    margin: 5px;
+    padding: 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 100%;
 }
 
 .close-admin {
@@ -84,50 +195,93 @@ header img {
 }
 
 .tab-content {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content h3, .tab-content h4 {
+    color: #333;
+    text-align: center;
+}
+
+.add-playlist, .existing-playlists {
+    margin-top: 20px;
+}
+
+.add-playlist input[type="text"], .add-playlist select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-playlist label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.add-playlist button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.add-playlist button:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    color: #cc0000;
+    margin-top: 10px;
+}
+
+.existing-playlists ul {
+    list-style: none;
+    padding: 0;
+}
+
+.existing-playlists li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.existing-playlists button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.existing-playlists button:hover {
+    background-color: #c0392b;
+}
+
+.media-selector {
+    height: 150px; /* Adjust based on preference */
+    overflow-y: auto;
+}
+
+
+.tab-content {
     display: none;  /* Initially hidden */
 }
 
 .tab-content.active {
     display: block;  /* Show active tab content */
-}
-
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    padding: 20px;
-}
-
-.host-header {
-    width: fit-content;
-}
-
-.host-widget {
-    background: rgba(0, 0, 0, 0.5);  /* Semi-transparent background for readability */
-    border: 1px solid #00f5e8;
-    padding: 20px;
-    margin: 10px;
-    width: 750px;
-    box-sizing: border-box; /* Ensure padding and border are included in the width */
-}
-
-.host-header h2 {
-    color: #fff;
-}
-
-.host-widget {
-    display: flex;
-}
-
-.host-header,
-.host-controls {
-    width: 40%; /* Adjusted width for the first column */
-    box-sizing: border-box;
-    padding: 10px;
-}
-
-.host-controls {
-    width: 60%; /* Adjusted width for the second column */
 }
 
 
@@ -157,14 +311,7 @@ header img {
     cursor: pointer;
 }
 
-.host-header .stop-button {
-    margin: 5px 10px;
-    padding: 8px;
-    background: #444;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
+
 
 .host-controls .image-button {
     margin: 5px 10px;
@@ -263,19 +410,34 @@ header img {
     padding: 8px;  /* Padding for dropdown */
     box-sizing: border-box;  /* Ensure padding and border are included in the width */
 }
-
 #console-output {
     width: 100%;
-    height: 100px;
+    height: 70px;
     position: fixed;
     bottom: 0;
     left: 0;
     background: rgba(0, 0, 0, 0.7);  /* Semi-transparent background */
-    color: #fff;
+    color: rgb(0, 216, 0);
     border: none;
     padding: 10px;
     box-sizing: border-box;
 }
+
+@media (max-width: 768px) {
+#console-output {
+    width: 100%;
+    height: 20px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.7);  /* Semi-transparent background */
+    color: rgb(0, 216, 0);
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+}
+}
+
 
 .error-message {
     color: red;
@@ -371,6 +533,17 @@ header img {
     margin-bottom: 20px;
 }
 
+.edit-media-type select {
+    flex-grow: 1;
+    margin-right: 10px; /* Spacing between input and button */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.3); /* Darker background for the input */
+    color: #fff; /* White text color for visibility */
+}
+
+
 .add-media input[type="text"],
 .add-media input[type="hidden"] {
     width: calc(50% - 10px);  /* Two inputs per row */
@@ -437,7 +610,7 @@ header img {
     border-radius: 8px;
 }
 
-.notify-input-group input[type="text"] {
+.notify-input-group input[type="text"], .yt-input-group input[type="text"] {
     flex-grow: 1;
     margin-right: 10px; /* Spacing between input and button */
     padding: 10px;
@@ -447,7 +620,7 @@ header img {
     color: #fff; /* White text color for visibility */
 }
 
-.yt-input-group select {
+.yt-input-group select, .add-media select {
     flex-grow: 1;
     margin-right: 10px; /* Spacing between input and button */
     padding: 10px;
@@ -497,6 +670,7 @@ header img {
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
+    /* Adjustments for small screens */
     .input-group {
         flex-direction: column; /* Stack elements vertically on small screens */
     }
@@ -528,4 +702,21 @@ header img {
 
 .kodi-image:hover {
     transform: scale(1.1); /* Scale up by 10% on hover */
+}
+
+.hidden {
+    display: none;
+}
+
+.toggle-button {
+    padding: 2px 2px;
+    background-color: #006a8a; /* Bootstrap primary blue */
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    padding: 5px;
+    margin: 5px;
+    width: 120px;
 }
