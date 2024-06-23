@@ -12,7 +12,7 @@ class Media(Document):
 class Group(Document):
     name = StringField(required=True)
     description = StringField()
-    members = ListField(ReferenceField('Host'))  # List of host references
+    members = ListField(ReferenceField('Host'))  
 
 class Host(Document):
     name = StringField(required=True)
@@ -20,22 +20,22 @@ class Host(Document):
     port = IntField(required=True)
     username = StringField()
     password = StringField()
-    group = StringField()  # Temporarily removed for now
-    cec = StringField()  # Consumer Electronics Control (optional)
+    group = StringField()  
+    cec = StringField()  
     status = StringField(required=True, choices=('new', 'active', 'inactive', 'error'))
-    schedule = ReferenceField('Schedule')  # Link to a Schedule if applicable
-    os = StringField()  # Operating system
-    location = StringField()  # Physical or logical location
-    defaultImage = ReferenceField('Media')  # Reference to a Media document for default image
+    schedule = ReferenceField('Schedule') 
+    os = StringField()  
+    location = StringField()  
+    defaultImage = ReferenceField('Media') 
     last_inactive_time = DateTimeField(default=None)
-    player = StringField(default='')  # Adds a player attribute to store the media info
+    player = StringField(default='') 
 
 class Schedule(Document):
     name = StringField(required=True)
     description = StringField()
     startDate = DateTimeField(required=True)
     endDate = DateTimeField(required=True)
-    playlist = ListField(ReferenceField('Playlist'))  # List of media references
+    playlist = ListField(ReferenceField('Playlist')) 
     shuffle = BooleanField(default=False)
 
 class Playlist(Document):
