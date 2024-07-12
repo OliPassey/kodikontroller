@@ -107,3 +107,53 @@ I am not a developer, I like to tinker with code - if you want to see a project 
 | /screenshots/<host_id>/<filename>  | get_screenshot          | Returns an image file from the specified directory.                                                 |
 | /404                               | not_found_error         | Handles 404 errors by returning a JSON response.                                                    |
 | /500                               | internal_error          | Handles 500 errors by returning a JSON response.                                                    |
+
+### Operational Modes
+Kodi Kontroller is being designed to work in a few different scenarios / envrionments. The current thinking is;
+
+1. Manual Mode (main template)
+
+    Functionality: Full manual control with no automation. Users manually control all aspects of media playback, settings, and configurations.
+    UI Elements:
+        Full access to all control elements.
+        Buttons and interfaces for manual playback of audio, video, and images.
+        Manual scheduling options and immediate overrides.
+    Use Case: Ideal for environments where detailed, moment-to-moment control is necessary, such as in a production setting or when syncing media with live events.
+
+2. Auto Mode
+
+    Functionality: Fully automated, schedule-driven operation. The system autonomously follows a preset schedule without user intervention.
+    UI Elements:
+        Minimal UI with display of current and upcoming schedules.
+        Group, Media, Playlist, Schedule Mgmt.
+        No manual control interfaces, beyond assigning host to schedules etc.
+        Status indicators showing current playback and what’s next according to the schedule.
+    Use Case: Best for environments like digital signage where the system needs to operate independently once schedules are set, such as in transit systems or automated advertising displays.
+
+4. Home Mode
+
+    Functionality: Primarily displays image media. Can be interrupted for manual overrides but generally runs a pre-defined set of visual content.
+    UI Elements:
+        Simplified interface focusing on image display.
+        Optional manual override controls for playing specific media or playlists.
+        Background music control if applicable.
+        Potential Home Assistant intergration.
+    Use Case: Suited for home environments where the system might display art, personal photos, or ambient video without requiring frequent interaction. I'd like to be able to render webpages such as Magic Mirror for display, but this will be screenshots at best as Kodi does not have a browser.
+
+5. Retail Mode
+
+    Functionality: Focuses on playing slideshows of folders containing images and videos during operational hours. Can be set to turn off or display static images outside of business hours.
+    UI Elements:
+        Schedule setup for operational hours.
+        Folder-based media organization for easy slideshow setup.
+        Controls for setting duration and transitions of slideshows.
+    Use Case: Retail settings where dynamic advertisements or informational displays are necessary during business hours.
+
+6. Office Mode
+
+    Functionality: Primarily runs image slideshows but includes capabilities for live notifications and interrupts such as text notifications or video announcements.
+    UI Elements:
+        Slideshow controls and setup.
+        Notification management interface for scheduling and immediate pushing of text or video notifications.
+        Display of current status and content, with options for immediate interruption or updates.
+    Use Case: Office environments where internal communications and ambient display media are needed, such as company announcements, news, or webhook based notifications alongside visual media.
