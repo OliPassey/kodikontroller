@@ -36,15 +36,17 @@ You can retrieve the hostIDs by calling http://<your-domain>/admin/hosts
 ### Usage 
 This is the control part of an office dashboard display system, utilising Kodi connected to large monitors & TVs. It was designed with offices in mind but it will be useful anywhere you need to manage multiple screens.  
 Once you have the docker container running and connected to MongoDB you should add your Kodi Hosts and some media. 
-There is no scheduling available yet and all controls are manual. 
+In it's default state all controls are manual, but a scheduling component exists here: https://github.com/OliPassey/kodikontroller-celery/tree/main
 
 Kodi should be set up as usual and a user / pass set on the web control / api. Details of each Kodi instance should be added via the admin interface (button, top right)
 Everything is very manual at the moment, but the long term goal is to build a scheduler to automate display, and then the use case is to use this app for one-off notifications or amending the schedule.
 
 ### New New (2024) To Do List;
 - [x] Media Management MVP
+- [x] Schedule Runner (Celery) Basics
+- [ ] Schedule Runner Automation of playlists (In Progress)
 - [ ] Sort layout for non 1440p resolutions (sorry)
-- [ ] Playlists, Schedules, Groups
+- [ ] Playlists, Groups
 - [x] Screenshot
 - [x] Hide Offline Hosts
 - [x] YouTube links to instances
