@@ -29,6 +29,7 @@ class Host(Document):
     defaultImage = ReferenceField('Media') 
     last_inactive_time = DateTimeField(default=None)
     player = StringField(default='') 
+    time_zone = StringField(default='Europe/London')
 
 class Schedule(Document):
     name = StringField(required=True)
@@ -43,3 +44,16 @@ class Playlist(Document):
     description = StringField()
     createDate = DateTimeField(required=True)
     content = ListField(ReferenceField('Media'))
+
+class Admin(Document):
+    root_content_dir = StringField(required=True)
+    root_time_zone = StringField()
+    ops_mode = StringField(choices=('Auto', 'Manual', 'Home', 'Retail', 'Office'))
+    allow_youtube = BooleanField(default=True)
+    maintenance_mode = BooleanField()
+    site_name = StringField()
+    admin_email = StringField()
+    techsupp_email = StringField()
+    new_host_video = StringField()
+    corp_logo_img = StringField()
+    corp_logo_vid = StringField()

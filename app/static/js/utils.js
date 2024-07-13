@@ -96,28 +96,32 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.toggle-button').forEach(button => {
         button.addEventListener('click', function() {
-            // Get the target class from the button's data-target attribute
             const targetClass = this.getAttribute('data-target');
-            // Ensure the class name is correct (adding '.' only if not using IDs)
             const selector = targetClass.startsWith('#') ? targetClass : '.' + targetClass;
-            // Find the closest host-widget parent to ensure we're only toggling within the same widget
             const hostWidget = this.closest('.host-widget');
-            // Find the target section within this host widget using the class obtained from data-target
             const targetSection = hostWidget.querySelector(selector);
 
             if (targetSection) {
-                // Toggle the 'hidden' class to show/hide the section
                 targetSection.classList.toggle('hidden');
-                // Update the button text based on visibility
-                if (targetSection.classList.contains('hidden')) {
-                    this.textContent = "Show " + this.textContent.split(' ')[1];
-                } else {
-                    this.textContent = "Hide " + this.textContent.split(' ')[1];
-                }
+                this.textContent = targetSection.classList.contains('hidden') ? 
+                    "Show " + this.textContent.split(' ')[1] : 
+                    "Hide " + this.textContent.split(' ')[1];
+
+                adjustHostControlsWidth(hostWidget);
             }
         });
     });
 });
+
+function adjustHostControlsWidth(hostWidget) {
+    const controls = hostWidget.querySelector('.host-controls');
+    const sections = controls.querySelectorAll('.section-container');
+    let allHidden = Array.from(sections).every(section => section.classList.contains('hidden'));
+
+    controls.style.flexGrow = allHidden ? '0' : '1'; // Adjust flex-grow based on visibility
+}
+
+
 
 
 

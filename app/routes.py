@@ -1,8 +1,9 @@
 from flask import request, jsonify, Blueprint, render_template
-from app.models import Host, Group, Schedule, Playlist, Media
+from app.models import Host, Group, Schedule, Playlist, Media, Admin
 from mongoengine.errors import ValidationError, NotUniqueError
 from bson.objectid import ObjectId
 from mongoengine import InvalidQueryError
+from mongoengine.connection import get_connection
 from dateutil import parser
 from flask import Flask, request, send_file, render_template, redirect, url_for
 from flask import send_from_directory
@@ -12,16 +13,97 @@ import re
 import os
 import time
 import datetime
+import logging
 from datetime import datetime, timedelta
 
 # Define the Blueprint
 main = Blueprint('main', __name__)
 
+# Main Route, checks for mongo, if no connection, goes to /mongo otherwise renders the index template
 @main.route('/')
 def index():
-    hosts = Host.objects(status__in=["active", "inactive"])
-    media = Media.objects.all()
-    return render_template('index.html', hosts=hosts, media=media)
+    try:
+        # Test MongoDB connection by retrieving the first Media document
+        connection = get_connection()
+        if not connection or not Media.objects.first():
+            raise Exception("Database connection failed")
+
+        # Check for the existence of any Hosts or Admins
+        if not Host.objects.count() or not Admin.objects.count():
+            return redirect(url_for('main.setup'))
+
+        # Get the first Admin record and check its ops_mode
+        admin = Admin.objects.first()
+        if admin and admin.ops_mode:
+            if admin.ops_mode == 'Auto':
+                return render_template('auto.html', hosts=Host.objects(status__in=["active", "inactive"]), media=Media.objects.all())
+            elif admin.ops_mode == 'Manual':
+                return render_template('manual.html', hosts=Host.objects(status__in=["active", "inactive"]), media=Media.objects.all())
+            elif admin.ops_mode == 'Home':
+                return render_template('home.html', hosts=Host.objects(status__in=["active", "inactive"]), media=Media.objects.all())
+            elif admin.ops_mode == 'Retail':
+                return render_template('retail.html', hosts=Host.objects(status__in=["active", "inactive"]), media=Media.objects.all())
+            elif admin.ops_mode == 'Office':
+                return render_template('office.html', hosts=Host.objects(status__in=["active", "inactive"]), media=Media.objects.all())
+            else:
+                # Fallback if ops_mode is not recognized
+                return render_template('index.html', hosts=Host.objects(status__in=["active", "inactive"]), media=Media.objects.all())
+        else:
+            # If no admin or ops_mode not set, use default template
+            return render_template('index.html', hosts=Host.objects(status__in=["active", "inactive"]), media=Media.objects.all())
+
+    except Exception as e:
+        # Redirect to /mongo page if connection fails
+        return redirect(url_for('main.mongo'))
+
+
+@main.route('/check_mongo_status')
+def check_mongo_status():
+    try:
+        # Try to retrieve the first Media document as a connection test
+        connection = get_connection()
+        if connection and Media.objects.first():
+            return jsonify(status="connected"), 200
+        else:
+            return jsonify(status="disconnected"), 200
+    except:
+        return jsonify(status="disconnected"), 200
+
+# No Mongo
+@main.route('/mongo')
+def check_mongo():
+    return render_template('nomongo.html')
+
+# First Run Setup
+@main.route('/setup')
+def setup():
+    return render_template('setup.html')
+
+@main.route('/admin/config/new', methods=['POST'])
+def new_admin_config():
+    try:
+        new_admin = Admin(
+            root_content_dir=request.json.get('root_content_dir'),
+            root_time_zone=request.json.get('root_time_zone', ''),
+            ops_mode=request.json.get('ops_mode', ''),
+            allow_youtube=request.json.get('allow_youtube', True),
+            maintenance_mode=request.json.get('maintenance_mode', False),
+            site_name=request.json.get('site_name', ''),
+            admin_email=request.json.get('admin_email', ''),
+            techsupp_email=request.json.get('techsupp_email', ''),
+            new_host_video=request.json.get('new_host_video', ''),
+            corp_logo_img=request.json.get('corp_logo_img', ''),
+            corp_logo_vid=request.json.get('corp_logo_vid', '')
+        )
+        new_admin.save()
+        return jsonify({"message": "Admin configuration saved successfully"}), 201
+    except ValidationError as e:
+        return jsonify({"error": str(e)}), 400
+    except NotUniqueError:
+        return jsonify({"error": "An admin configuration with specified attributes already exists"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 @main.route('/admin/media', methods=['GET'])
 def get_media():
@@ -273,7 +355,7 @@ def add_host():
 
         # Make a request to the YouTube control route for the newly added host
         host_id = new_host.id
-        youtube_url = "https://www.youtube.com/watch?v=ts8i-6AtDfc"  # Hardcoded YouTube URL
+        youtube_url = "https://www.youtube.com/watch?v=H6UbYt_oj8s"  # Hardcoded YouTube URL
         base_url = request.url_root
         response = requests.post(f'{base_url}ctrl/youtube/hosts/{host_id}', json={'youtube_url': youtube_url})
         response.raise_for_status()
@@ -826,8 +908,9 @@ def get_latest_screenshot(host_id):
     if not os.path.isdir(screenshot_dir):
         return jsonify({'error': 'Screenshot directory not found'}), 404
 
-    # Get the current time minus 24 hours (in seconds)
-    cutoff_time = time.time() - (24 * 60 * 60)
+    # Get the current time minus 5 minutes (in seconds)
+    current_time = time.time()
+    cutoff_time = current_time - (5 * 60)  # 5 minutes ago
 
     screenshot_files = []
     for f in os.listdir(screenshot_dir):
@@ -835,7 +918,7 @@ def get_latest_screenshot(host_id):
         if f.startswith('screenshot') and f.endswith('.png'):
             file_mtime = os.path.getmtime(filepath)  # Modification time of the file
             if file_mtime < cutoff_time:
-                os.remove(filepath)  # Delete the file if older than 24 hours
+                os.remove(filepath)  # Delete the file if older than the cut-off
             else:
                 screenshot_files.append(f)
 

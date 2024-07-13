@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/setup.css">
+    <title>Kodi Kontroller - Setup</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="header">
+        <h1>Kodi Kontroller - Setup</h1>
+    </div>
+    <div class="body-db">
+        <p>You are seeing this page because Kodi Kontroller could not connect to MongoDB.</p>
+        <p>These settings should be set via Docker Environment Variables.</p>
+        <p>Full details are available on <a href="https://github.com/OliPassey/kodikontroller?tab=readme-ov-file#current-status">GitHub</a>.</p>
+        <p>Once you have defined these variables, click retry</p>
+    </div>
+    <div class="container">
+
+        <button onclick="retryHome()">Retry</button>
+    </div>
+    <script>
+        function retryHome() {
+            // Redirects to the home URL, potentially triggering a refresh
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

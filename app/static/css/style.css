@@ -44,7 +44,7 @@ body {
 
 
 .host-header {
-    width: fit-content;
+    max-width: 50%;
 }
 
 .host-widget {
@@ -65,17 +65,17 @@ body {
 }
 
 @media (min-width: 769px) {
-.host-header,
-.host-controls {
-    width: 40%; /* Adjusted width for the first column */
-    box-sizing: border-box;
-    padding: 10px;
-}
-
-.host-controls {
-    width: 60%; /* Adjusted width for the second column */
-}
-}
+    .host-header,
+    .host-controls {
+        
+        box-sizing: border-box;
+        padding: 10px;
+    }
+    
+    .host-controls {
+        width: 60%; /* Adjusted width for the second column */
+    }
+    }
 
 
 header {
@@ -92,6 +92,30 @@ header img {
     max-height: 100%;
 }
 
+.groups-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px;
+    background-color: #005c00;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.hosts-button {
+    position: absolute;
+    top: 10px;
+    left: 100px;
+    padding: 10px;
+    background-color: #005c00;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
 .admin-button {
     position: absolute;
     top: 10px;
@@ -102,6 +126,12 @@ header img {
     border: none;
     cursor: pointer;
     border-radius: 5px;
+}
+
+.ops-status {
+    position: absolute;
+    top: 40px;
+    right: 10px;
 }
 
 .admin-overlay {
@@ -425,16 +455,7 @@ header img {
 
 @media (max-width: 768px) {
 #console-output {
-    width: 100%;
-    height: 20px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    background: rgba(0, 0, 0, 0.7);  /* Semi-transparent background */
-    color: rgb(0, 216, 0);
-    border: none;
-    padding: 10px;
-    box-sizing: border-box;
+    display: none
 }
 }
 
@@ -708,15 +729,26 @@ header img {
     display: none;
 }
 
+.schedule-ctrl {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Two columns of equal width */
+    gap: 10px; /* Space between grid items */
+    justify-content: center; /* Center grid items along the row */
+    align-items: center; /* Center grid items vertically */
+    max-width: 80%; /* Adjust this value based on design needs */
+    margin: 0 auto; /* This centers the .schedule-ctrl within its parent element */
+}
+
+
 .toggle-button {
-    padding: 2px 2px;
-    background-color: #006a8a; /* Bootstrap primary blue */
+    padding: 5px;                  /* Uniform padding */
+    background-color: #006a8a;     /* Bootstrap primary blue */
     border: none;
     border-radius: 4px;
     color: white;
     cursor: pointer;
     transition: background-color 0.3s;
-    padding: 5px;
     margin: 5px;
-    width: 120px;
+    width: 100px;                  /* Fixed width for each button */
+    min-height: 50px;              /* Minimum height for each button */
 }

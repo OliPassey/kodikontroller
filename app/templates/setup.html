@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/setup.css">
+    <title>Kodi Kontroller - Setup</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="header">
+        <h1>Kodi Kontroller - Setup</h1>
+    </div>
+    <div class="body-dbok">
+        <p id="mongoStatus">Checking MongoDB connection...</p>
+        <p>Please add your first host to be controlled</p>
+        <p>Then complete the initial admin form</p>
+        <p>Once both forms are submitted, click Retry</p>
+    </div>
+    <div class="container">
+        <div class="host">
+        <h1>Step 1:</h1>
+        <h2>Setup Initial Host</h2>
+        <form id="hostForm">
+            <input type="text" name="name" placeholder="Host Name / IP Address" required>
+            <input type="text" name="ip" placeholder="IP Address" required>
+            <input type="number" name="port" placeholder="Port" required>
+            <input type="text" name="username" placeholder="Username (optional)">
+            <input type="text" name="password" placeholder="Password (optional)">
+            <input type="hidden" name="status" value="new">
+            <button type="button" onclick="submitHostForm()">Create Host</button>
+        </form>
+        </div>
+
+        <div class="admin">
+        <h1>Step 2:</h1>
+        <h2>Setup Initial Admin</h2>
+        <form id="adminForm">
+            <input type="text" name="root_content_dir" placeholder="Root Content Directory" required>
+            <input type="text" name="root_time_zone" placeholder="Europe/London" >
+            <select name="ops_mode">
+                <option value="">Select Ops Mode</option>
+                <option value="Auto">Auto</option>
+                <option value="Manual">Manual</option>
+                <option value="Home">Home</option>
+                <option value="Retail">Retail</option>
+                <option value="Office">Office</option>
+            </select>
+            <div>
+                <label><input type="checkbox" name="allow_youtube" checked> Allow YouTube</label>
+            </div>
+            <div>
+                <label><input type="checkbox" name="maintenance_mode"> Maintenance Mode</label>
+            </div>
+            <input type="text" name="site_name" placeholder="Site Name">
+            <input type="email" name="admin_email" placeholder="Admin Email">
+            <input type="email" name="techsupp_email" placeholder="Tech Support Email">
+            <input type="text" name="new_host_video" placeholder="New Host Confirmation Video (YT)">
+            <input type="text" name="corp_logo_img" placeholder="Corporate Logo (URL)">
+            <input type="text" name="corp_logo_vid" placeholder="Corporate Logo Animation (YT)">
+            <button type="button" onclick="submitAdminForm()">Create Admin</button>
+        </form>
+        </div>
+    </div>
+    <button onclick="retryHome()">Retry</button>
+    <script>
+        function retryHome() {
+            // Redirects to the home URL, potentially triggering a refresh
+            window.location.href = '/';
+        }
+
+        function submitHostForm() {
+            var formData = {
+                'name': $('input[name="name"]').val(),
+                'ip': $('input[name="ip"]').val(),
+                'port': parseInt($('input[name="port"]').val(), 10),
+                'username': $('input[name="username"]').val(),
+                'password': $('input[name="password"]').val(),
+                'status': $('input[name="status"]').val(),
+                'group': null,  // Assuming no group is assigned during initial setup
+                'cec': '',
+                'schedule': null,  // Assuming no schedule is assigned during initial setup
+                'os': '',
+                'location': '',
+                'defaultImage': null  // Assuming no default image is assigned during initial setup
+            };
+
+            $.ajax({
+                url: '/admin/hosts/add',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    alert('Host created successfully');
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    alert('Error: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function submitAdminForm() {
+        var formData = {
+            'root_content_dir': $('input[name="root_content_dir"]').val(),
+            'root_time_zone': $('input[name="root_time_zone"]').val(),
+            'ops_mode': $('select[name="ops_mode"]').val(),
+            'allow_youtube': $('input[name="allow_youtube"]').is(':checked'),
+            'maintenance_mode': $('input[name="maintenance_mode"]').is(':checked'),
+            'site_name': $('input[name="site_name"]').val(),
+            'admin_email': $('input[name="admin_email"]').val(),
+            'techsupp_email': $('input[name="techsupp_email"]').val(),
+            'new_host_video': $('input[name="new_host_video"]').val(),
+            'corp_logo_img': $('input[name="corp_logo_img"]').val(),
+            'corp_logo_vid': $('input[name="corp_logo_vid"]').val()
+        };
+
+        $.ajax({
+            url: '/admin/config/new',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                alert('Admin created successfully');
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+                alert('Error: ' + xhr.responseText);
+            }
+        });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/check_mongo_status')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'connected') {
+                    document.getElementById('mongoStatus').innerHTML = '<span style="color: green;">MongoDB is connected.</span>';
+                } else {
+                    document.getElementById('mongoStatus').innerHTML = '<span style="color: red;">MongoDB is not connected.</span>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('mongoStatus').innerHTML = '<span style="color: red;">Failed to check MongoDB status.</span>';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -7,4 +7,4 @@ class Config:
     MONGODB_PORT = int(os.environ.get('MONGODB_PORT', 27017))   
     MONGODB_USERNAME = os.environ.get('MONGODB_USERNAME', None) 
     MONGODB_PASSWORD = os.environ.get('MONGODB_PASSWORD', None) 
-    MONGODB_AUTH_SOURCE = os.environ.get('MONGODB_AUTH_SOURCE', 'admin') 
+    MONGODB_AUTH_SOURCE = os.environ.get('MONGODB_AUTH_SOURCE', 'admin')
